@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio de Trigonometría</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #0ea5e9;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #334155;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Tabs System */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            flex: 1; padding: 15px; border: none; border-radius: 8px;
+            background-color: #e2e8f0; color: #475569; font-size: 16px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn:hover { background-color: #cbd5e1; }
+        .tab-btn.active {
+            background-color: var(--primary); color: white;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; margin-bottom: 20px;
+        }
+        .card-title {
+            color: var(--primary-dark); font-size: 18px; font-weight: bold;
+            margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 10px;
+        }
+
+        /* Layouts */
+        .grid-layout { display: grid; grid-template-columns: 1fr 400px; gap: 20px; }
+        @media(max-width: 800px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* Canvas */
+        .canvas-wrapper { text-align: center; margin: 15px 0; }
+        canvas { background: white; border: 1px solid var(--border); border-radius: 8px; max-width: 100%; }
+
+        /* Inputs & Buttons */
+        select, input[type="range"] {
+            width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border);
+            margin-top: 5px; font-size: 15px;
+        }
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 10px 15px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%;
+        }
+        .btn:hover { background: var(--primary-dark); }
+        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        /* Quick Buttons (Explorador) */
+        .quick-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        .q-btn {
+            padding: 6px 12px; border: none; border-radius: 4px; background: #f1f5f9;
+            cursor: pointer; font-size: 13px;
+        }
+        .q-btn.active { background: var(--secondary); color: white; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+        th, td { border: 1px solid var(--border); padding: 10px; text-align: left; }
+        th { background: #f8fafc; color: var(--primary-dark); }
+        tr:hover { background: #f1f5f9; cursor: pointer; }
+
+        /* Tutor Steps */
+        .step {
+            padding: 15px; margin-bottom: 15px; border-radius: 8px;
+            border-left: 4px solid var(--border); background: #f8fafc; display: none;
+        }
+        .step.active { display: block; }
+        .step-alert { background: #fef2f2; border-left-color: var(--danger); color: #991b1b; }
+        .step-success { background: #f0fdf4; border-left-color: var(--success); color: #166534; }
+        .math-box {
+            background: white; border: 1px solid var(--border); padding: 10px;
+            text-align: center; font-family: serif; font-size: 18px; margin: 10px 0; border-radius: 6px;
+        }
+
+        /* Quizzes */
+        .quiz-opt {
+            display: block; padding: 10px; border: 1px solid var(--border); margin-bottom: 8px;
+            border-radius: 6px; cursor: pointer; background: white;
+        }
+        .quiz-opt:hover { background: #f1f5f9; }
+        .feedback { display: none; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 14px; }
+
+        /* Custom Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal { background: white; padding: 25px; border-radius: 12px; max-width: 400px; text-align: center; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Laboratorio: Ecuaciones Trigonométricas</h1>
+        <p>Herramienta Interactiva</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-explorador')">1. Explorador y Guía</button>
+        <button class="tab-btn" onclick="switchTab('tab-tutor')">2. Ejemplos</button>
+    </div>
+
+    <!-- PESTAÑA 1: EXPLORADOR Y GUÍA -->
+    <div id="tab-explorador" class="tab-content active">
+        <div class="grid-layout">
+            <!-- Izquierda: Controles y Guía -->
+            <div>
+                <div class="card">
+                    <div class="card-title">Guía de apoyo</div>
+                    <p style="font-size: 14px; margin-bottom:10px;">Haz clic en un ejercicio para auto-configurar el simulador. <strong>¡Sea cuidadoso en cada ejemplo!</strong></p>
+                    <table>
+                        <thead><tr><th>Guía #</th><th>Ecuación Original</th><th>Forma Despejada</th></tr></thead>
+                        <tbody>
+                            <tr onclick="loadPresetExp('sin', -0.7071)"><td>Ej. 1</td><td>sen(x) = -&radic;2/2</td><td>sen(x) &approx; -0.71</td></tr>
+                            <tr onclick="loadPresetExp('cos', -0.5)"><td>Ej. 19</td><td>2cos(t) + 1 = 0</td><td>cos(t) = -0.5</td></tr>
+                            <tr onclick="loadPresetExp('tan', 1.732)"><td>Ej. 3</td><td>tan(&theta;) = &radic;3</td><td>tan(&theta;) &approx; 1.73</td></tr>
+                            <tr onclick="showTrapModal()"><td>Ej. 7</td><td>sen(x) = &pi;/2</td><td>sen(x) &approx; 1.57</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Controles Manuales</div>
+                    <label>Función Trigonométrica:</label>
+                    <select id="funcSelectExp" onchange="updateExpRange()">
+                        <option value="sin">Seno / sen(x)</option>
+                        <option value="cos" selected>Coseno / cos(x)</option>
+                        <option value="tan">Tangente / tan(x)</option>
+                    </select>
+                    
+                    <label style="margin-top:15px; display:block;">Valor Despejado: <strong id="valLabelExp">0.5</strong></label>
+                    <input type="range" id="sliderExp" min="-1" max="1" step="0.01" value="0.5" oninput="updateExp()">
+                    
+                    <div class="quick-btns" id="quickBtnsExp"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: #eff6ff; border-radius: 8px;">
+                        <div style="font-family:serif; font-size:20px; font-weight:bold; text-align:center; margin-bottom:10px;" id="eqDisplayExp">cos(x) = 0.5</div>
+                        <div id="solDisplayExp" style="font-size: 14px;"></div>
+                        <div style="margin-top: 10px; border-top: 1px solid #bfdbfe; padding-top: 10px; font-size: 13px; color: #1e40af;">
+                            <strong>Periodo (General):</strong> <span id="genSolExp"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Derecha: Canvas, Reglas y Tabla -->
+            <div>
+                <!-- CONDICIONES (DOMINIO Y RANGO) -->
+                <div class="card" style="background-color: #fffbeb; border-color: #f59e0b;">
+                    <div class="card-title" style="font-size: 15px; color: #b45309; border-left-color: #b45309; margin-bottom: 10px;">Dominio y Rango en las funciones trigonométricas</div>
+                    <div style="font-size: 13px; color: #92400e; line-height: 1.5;">
+                        <strong style="font-size:14px;">1. Seno y Coseno:</strong><br>
+                        &bull; <em>Ángulo (x / Dominio):</em> Cualquier número real ]-&infin;, +&infin;[.<br>
+                        &bull; <em>Resultado (y / Rango):</em> Atrapado en el intervalo <strong>[-1, 1]</strong>. ¡Si despejas un valor mayor a 1 o menor a -1, la ecuación no tiene solución real!<br><br>
+                        <strong style="font-size:14px;">2. Tangente:</strong><br>
+                        &bull; <em>Resultado (y / Rango):</em> Cualquier número real ]-&infin;, +&infin;[. Puede tomar valores gigantes o muy pequeños.<br>
+                        &bull; <em>Ángulo (x / Dominio):</em> Todos los números <strong>excepto</strong> los múltiplos de <strong>&pi;/2</strong> (ej. 90&deg;, 270&deg;) donde la pendiente está <em>indefinida</em>.
+                    </div>
+                </div>
+
+                <div class="card canvas-wrapper">
+                    <h3 style="font-size: 16px; color:#475569; margin-bottom:10px;">Círculo Unitario</h3>
+                    <canvas id="canvasExp" width="350" height="350"></canvas>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title" style="font-size: 15px;">Tabla Exacta (Refuerzo)</div>
+                    <table style="font-size: 12px; text-align:center;">
+                        <tr><th>rad</th><th>deg</th><th>sen(y)</th><th>cos(x)</th><th>tan</th></tr>
+                        <tr><td>0</td><td>0&deg;</td><td>0</td><td>1</td><td>0</td></tr>
+                        <tr><td>&pi;/6</td><td>30&deg;</td><td>1/2</td><td>&radic;3/2</td><td>&radic;3/3</td></tr>
+                        <tr><td>&pi;/4</td><td>45&deg;</td><td>&radic;2/2</td><td>&radic;2/2</td><td>1</td></tr>
+                        <tr><td>&pi;/3</td><td>60&deg;</td><td>&radic;3/2</td><td>1/2</td><td>&radic;3</td></tr>
+                        <tr><td>&pi;/2</td><td>90&deg;</td><td>1</td><td>0</td><td>-</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 2: EJEMPLOS -->
+    <div id="tab-tutor" class="tab-content">
+        <div class="card">
+            <label style="font-weight:bold;">Analisis de Ejemplos:</label>
+            <select id="tutSelect" onchange="initTut()">
+                <option value="0">1. Ejemplo 1 </option>
+                <option value="1">2. Ejemplo 2 </option>
+                <option value="2">3. Ejemplo 3 </option>
+                <option value="3">4. Ejemplo 4 </option>
+                <option value="4">5. Ejemplo 5 </option>
+            </select>
+        </div>
+
+        <div class="grid-layout">
+            <div class="card">
+                <div id="tutEq" class="math-box" style="color:var(--primary-dark); font-weight:bold; font-size:22px;"></div>
+                <div id="tutSteps"></div>
+                <button class="btn" id="tutBtnNext" onclick="nextTutStep()">Siguiente Paso</button>
+            </div>
+
+            <div class="card canvas-wrapper">
+                <h3 style="font-size: 16px; color:#475569; margin-bottom:10px;">Visualización de las Respuestas en el Círculo Unitario</h3>
+                <canvas id="canvasTut" width="350" height="350"></canvas>
+                <p id="tutCanvasLabel" style="font-size:13px; color:#64748b; margin-top:10px;">Resuelve el quiz para graficar.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para la trampa del Dominio -->
+<div class="modal-overlay" id="trapModal">
+    <div class="modal">
+        <h2 style="color: var(--danger); margin-bottom: 15px;">¡Trampa del Dominio!</h2>
+        <p>El valor de <strong>&pi;/2</strong> es aproximadamente <strong>1.57</strong>.</p>
+        <p style="margin-top: 10px;">Recuerda que el <strong>Seno</strong> y el <strong>Coseno</strong> están atrapados en el círculo unitario, su valor máximo es 1 y mínimo -1.</p>
+        <div class="math-box" style="background:#fef2f2; border-color:var(--danger); color:var(--danger);">sen(x) = 1.57 &rarr; ¡Sin Solución Real!</div>
+        <button class="btn" onclick="document.getElementById('trapModal').style.display='none'">Entendido</button>
+    </div>
+</div>
+
+<script>
+    // --- LÓGICA DE PESTAÑAS ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function showTrapModal() { document.getElementById('trapModal').style.display = 'flex'; }
+
+    const CENTER = 175;
+    const RADIUS = 125;
+
+    // --- LÓGICA: PESTAÑA 1 (EXPLORADOR) ---
+    const presetsExp = {
+        sin: [
+            { l: '-1', v: -1, s: '-1', f: ['3&pi;/2'] },
+            { l: '-&radic;3/2', v: -0.866, s: '-&radic;3/2', f: ['4&pi;/3', '5&pi;/3'] },
+            { l: '-&radic;2/2', v: -0.707, s: '-&radic;2/2', f: ['5&pi;/4', '7&pi;/4'] },
+            { l: '-1/2', v: -0.5, s: '-1/2', f: ['7&pi;/6', '11&pi;/6'] },
+            { l: '0', v: 0, s: '0', f: ['0', '&pi;'] },
+            { l: '1/2', v: 0.5, s: '1/2', f: ['&pi;/6', '5&pi;/6'] },
+            { l: '&radic;2/2', v: 0.707, s: '&radic;2/2', f: ['&pi;/4', '3&pi;/4'] },
+            { l: '&radic;3/2', v: 0.866, s: '&radic;3/2', f: ['&pi;/3', '2&pi;/3'] },
+            { l: '1', v: 1, s: '1', f: ['&pi;/2'] }
+        ],
+        cos: [
+            { l: '-1', v: -1, s: '-1', f: ['&pi;'] },
+            { l: '-&radic;3/2', v: -0.866, s: '-&radic;3/2', f: ['5&pi;/6', '7&pi;/6'] },
+            { l: '-&radic;2/2', v: -0.707, s: '-&radic;2/2', f: ['3&pi;/4', '5&pi;/4'] },
+            { l: '-1/2', v: -0.5, s: '-1/2', f: ['2&pi;/3', '4&pi;/3'] },
+            { l: '0', v: 0, s: '0', f: ['&pi;/2', '3&pi;/2'] },
+            { l: '1/2', v: 0.5, s: '1/2', f: ['&pi;/3', '5&pi;/3'] },
+            { l: '&radic;2/2', v: 0.707, s: '&radic;2/2', f: ['&pi;/4', '7&pi;/4'] },
+            { l: '&radic;3/2', v: 0.866, s: '&radic;3/2', f: ['&pi;/6', '11&pi;/6'] },
+            { l: '1', v: 1, s: '1', f: ['0'] }
+        ],
+        tan: [
+            { l: '-&radic;3', v: -1.732, s: '-&radic;3', f: ['2&pi;/3', '5&pi;/3'] },
+            { l: '-1', v: -1, s: '-1', f: ['3&pi;/4', '7&pi;/4'] },
+            { l: '-&radic;3/3', v: -0.577, s: '-&radic;3/3', f: ['5&pi;/6', '11&pi;/6'] },
+            { l: '0', v: 0, s: '0', f: ['0', '&pi;'] },
+            { l: '&radic;3/3', v: 0.577, s: '&radic;3/3', f: ['&pi;/6', '7&pi;/6'] },
+            { l: '1', v: 1, s: '1', f: ['&pi;/4', '5&pi;/4'] },
+            { l: '&radic;3', v: 1.732, s: '&radic;3', f: ['&pi;/3', '4&pi;/3'] }
+        ]
+    };
+
+    function updateExpRange() {
+        const func = document.getElementById('funcSelectExp').value;
+        const slider = document.getElementById('sliderExp');
+        if (func === 'tan') { slider.min = -4; slider.max = 4; slider.step = 0.05; }
+        else { slider.min = -1; slider.max = 1; slider.step = 0.01; if(Math.abs(slider.value)>1) slider.value = 0.5; }
+        
+        const qContainer = document.getElementById('quickBtnsExp');
+        qContainer.innerHTML = '';
+        presetsExp[func].forEach(p => {
+            let btn = document.createElement('button');
+            btn.className = 'q-btn'; btn.innerHTML = p.l;
+            btn.onclick = () => { slider.value = p.v; document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); updateExp(); };
+            qContainer.appendChild(btn);
+        });
+        updateExp();
+    }
+
+    function loadPresetExp(func, val) {
+        document.getElementById('funcSelectExp').value = func;
+        updateExpRange();
+        document.getElementById('sliderExp').value = val;
+        updateExp();
+        document.getElementById('tab-explorador').scrollIntoView({behavior:'smooth'});
+    }
+
+    function updateExp() {
+        const func = document.getElementById('funcSelectExp').value;
+        const val = parseFloat(document.getElementById('sliderExp').value);
+        document.getElementById('valLabelExp').textContent = val.toFixed(2);
+        
+        let match = presetsExp[func].find(p => Math.abs(p.v - val) < 0.03);
+        let mathStr = match ? match.s : val.toFixed(2);
+        document.getElementById('eqDisplayExp').innerHTML = `${func}(x) = ${mathStr}`;
+
+        let angles = [];
+        if (func === 'sin' && Math.abs(val) <= 1) {
+            let asin = Math.asin(val);
+            angles.push(asin >= 0 ? asin : 2*Math.PI + asin);
+            if(Math.abs(angles[0] - (Math.PI - asin)) > 0.01) angles.push(Math.PI - asin);
+        } else if (func === 'cos' && Math.abs(val) <= 1) {
+            let acos = Math.acos(val);
+            angles.push(acos);
+            if(Math.abs(acos - (2*Math.PI - acos)) > 0.01 && acos !== 0) angles.push(2*Math.PI - acos);
+        } else if (func === 'tan') {
+            let atan = Math.atan(val);
+            angles.push(atan >= 0 ? atan : Math.PI + atan);
+            angles.push(angles[0] + Math.PI);
+        }
+        angles.sort((a,b)=>a-b);
+
+        let solHtml = '';
+        let genHtml = '';
+        if(angles.length === 0) {
+            solHtml = '<span style="color:var(--danger)">Fuera del rango real [-1, 1]</span>';
+            genHtml = '-';
+        } else {
+            angles.forEach((a, i) => {
+                let deg = a * 180 / Math.PI;
+                let fr = match && match.f[i] ? match.f[i] : (a/Math.PI).toFixed(2)+'&pi;';
+                solHtml += `x<sub>${i+1}</sub> = <strong>${deg.toFixed(1)}&deg;</strong> o <strong>${fr}</strong><br>`;
+            });
+            // Explicación rescatada del periodo
+            if(func === 'tan' && match) genHtml = `x = ${match.f[0]} + <strong>&pi;n</strong> <br><small>(La Tangente se repite cada media vuelta)</small>`;
+            else if(match) genHtml = angles.map((_,i) => `x = ${match.f[i]} + <strong>2&pi;n</strong>`).join('<br>') + `<br><small>(El ${func} requiere vueltas completas)</small>`;
+            else genHtml = `+ 2&pi;n`;
+        }
+        document.getElementById('solDisplayExp').innerHTML = solHtml;
+        document.getElementById('genSolExp').innerHTML = genHtml;
+
+        drawBaseCanvas('canvasExp');
+        drawFunctionLine('canvasExp', func, val);
+        drawAngles('canvasExp', angles, match ? match.f : angles.map(a=>(a/Math.PI).toFixed(2)+'π'));
+    }
+
+    // --- LÓGICA: PESTAÑA 2 (TUTOR RESCATADO CON ALGEBRA COMPLETA Y 3 OPCIONES EN QUIZZES) ---
+    const tutData = [
+        {
+            eq: "sen(&theta;) tan(&theta;) = sen(&theta;)",
+            steps: [
+                { t: "step-alert", title: "¡Peligro Algebraico!", txt: "Muchos estudiantes dividen ambos lados entre <b>sen(&theta;)</b> para 'cancelarlo'.<br><br><b>¡NUNCA DIVIDAS ENTRE VARIABLES!</b> Si lo haces, asumes que sen(&theta;) no es cero, perdiendo todas las respuestas válidas donde sí es cero." },
+                { t: "", title: "Álgebra: Paso 1 - Igualar a Cero", txt: "Para no perder soluciones, debemos agrupar todo en un solo lado. Pasamos el término de la derecha restando al lado izquierdo:", math: "sen(&theta;) tan(&theta;) - sen(&theta;) = 0" },
+                { t: "", title: "Álgebra: Paso 2 - Factor Común", txt: "Observamos que 'sen(&theta;)' está presente en ambos términos. Lo extraemos como factor común (es como sacar 'x' de 'xy - x'):", math: "sen(&theta;)[tan(&theta;) - 1] = 0" },
+                { t: "", title: "Álgebra: Paso 3 - Separar Factores", txt: "Si la multiplicación de dos factores da cero, obligatoriamente uno de ellos debe ser cero. Separamos la ecuación principal en dos mini-ecuaciones:", math: "A: sen(&theta;) = 0<br>B: tan(&theta;) - 1 = 0 &rArr; tan(&theta;) = 1" },
+                { t: "quiz", title: "Trigonometría: El Círculo Unitario", q: "Revisa la tabla de valores en la otra pestaña. Sabiendo que <b>sen(&theta;) = 0</b> y <b>tan(&theta;) = 1</b>, ¿cuáles son los ángulos correctos en la primera vuelta [0, 2&pi;)?", opts: [
+                    { txt: "0, &pi;/2, &pi;", ok: false, fb: "En &pi;/2 el seno es 1, no 0. Además, según las reglas del Dominio, ¡la tangente de &pi;/2 está indefinida!" },
+                    { txt: "&pi;/4, 3&pi;/4, 5&pi;/4", ok: false, fb: "Cuidado, en 3&pi;/4 la tangente es -1 (negativa). Además, te olvidaste de buscar las soluciones de la parte A: sen(&theta;) = 0." },
+                    { txt: "0, &pi;/4, &pi;, 5&pi;/4", ok: true, fb: "¡Excelente! El seno es 0 en el eje X horizontal (0 y &pi;). La tangente es +1 en el cuadrante I (&pi;/4) y en el cuadrante III (5&pi;/4)." }
+                ], draw: [{f:'sin', v:0}, {f:'tan', v:1}], angs: [0, Math.PI/4, Math.PI, 5*Math.PI/4], lbls: ["0", "&pi;/4", "&pi;", "5&pi;/4"] },
+                { t: "step-success", title: "Periodo y Solución General", txt: "Para infinitas vueltas, generalizamos:<br><br><b>Seno:</b> Cayó en 0 y &pi; (separados por media vuelta). Se resume como <b>&theta; = n&pi;</b>.<br><b>Tangente:</b> Su ciclo natural es cada media vuelta. Se resume tomando la primera respuesta y sumando n&pi;: <b>&theta; = &pi;/4 + n&pi;</b>." }
+            ]
+        },
+        {
+            eq: "2sen&sup2;(t) - cos(t) - 1 = 0",
+            steps: [
+                { t: "step-alert", title: "Idiomas Mezclados", txt: "No puedes resolver una ecuación que tiene senos y cosenos mezclados. Debemos convertir todo a una sola función trigonométrica usando identidades." },
+                { t: "", title: "Álgebra: Paso 1 - Identidad Pitagórica", txt: "Usamos la identidad fundamental <b>sen&sup2;(t) = 1 - cos&sup2;(t)</b> para reemplazar el seno. Ahora toda la ecuación estará en términos de coseno:", math: "2(1 - cos&sup2;(t)) - cos(t) - 1 = 0" },
+                { t: "", title: "Álgebra: Paso 2 - Distribuir y Simplificar", txt: "Multiplicamos el 2 por el paréntesis y sumamos los números sueltos (2 - 1):", math: "2 - 2cos&sup2;(t) - cos(t) - 1 = 0<br>-2cos&sup2;(t) - cos(t) + 1 = 0" },
+                { t: "", title: "Álgebra: Paso 3 - Factorizar Trinomio", txt: "Para que sea más fácil, multiplicamos toda la ecuación por -1. Luego, la factorizamos como si fuera una ecuación cuadrática (2x&sup2; + x - 1 = 0):", math: "2cos&sup2;(t) + cos(t) - 1 = 0<br>(2cos(t) - 1)(cos(t) + 1) = 0" },
+                { t: "", title: "Álgebra: Paso 4 - Despejes Finales", txt: "Separamos ambos paréntesis usando el teorema del factor cero y despejamos el coseno en cada uno:", math: "A: 2cos(t) - 1 = 0 &rArr; cos(t) = 1/2<br>B: cos(t) + 1 = 0 &rArr; cos(t) = -1" },
+                { t: "quiz", title: "Trigonometría: Búsqueda en el Círculo", q: "Revisa la tabla. Buscamos donde <b>cos(t) = 1/2</b> positivo y donde <b>cos(t) = -1</b>. ¿Cuáles son los ángulos?", opts: [
+                    { txt: "&pi;/3, &pi;, 2&pi;/3", ok: false, fb: "Cuidado. En el Cuadrante II (2&pi;/3), el coseno es NEGATIVO (-1/2)." },
+                    { txt: "Solo &pi;", ok: false, fb: "Esa es la solución correcta para B: cos(t) = -1. ¡Pero olvidaste buscar las soluciones de la parte A: cos(t) = 1/2!" },
+                    { txt: "&pi;/3, &pi;, 5&pi;/3", ok: true, fb: "¡Exacto! El coseno es +1/2 en los cuadrantes I (&pi;/3) y IV (5&pi;/3). Y vale -1 exactamente en el extremo izquierdo (&pi;)." }
+                ], draw: [{f:'cos', v:0.5}, {f:'cos', v:-1}], angs: [Math.PI/3, Math.PI, 5*Math.PI/3], lbls: ["&pi;/3", "&pi;", "5&pi;/3"] },
+                { t: "step-success", title: "Periodo Completo (+ 2&pi;n)", txt: "Como el coseno tiene un ciclo completo de 360&deg; (2&pi;), y estas respuestas no tienen un patrón simétrico de media vuelta, simplemente agregamos vueltas completas a cada una de nuestras respuestas:<br><br><b>t = &pi;/3 + 2&pi;n</b><br><b>t = &pi; + 2&pi;n</b><br><b>t = 5&pi;/3 + 2&pi;n</b>" }
+            ]
+        },
+        {
+            eq: "4sen&sup2;(x) tan(x) - tan(x) = 0",
+            steps: [
+                { t: "", title: "Álgebra: Paso 1 - Factor Común", txt: "Igual que en los ejemplos anteriores, extraemos el término repetido 'tan(x)':", math: "tan(x)[4sen&sup2;(x) - 1] = 0" },
+                { t: "", title: "Álgebra: Paso 2 - Despejar el Cuadrado", txt: "Igualamos a cero ambos factores. Para el seno, pasamos el 1 sumando y el 4 dividiendo:", math: "A: tan(x) = 0<br>B: 4sen&sup2;(x) = 1 &rArr; sen&sup2;(x) = 1/4" },
+                { t: "step-alert", title: "Álgebra: Paso 3 - La Trampa del Signo", txt: "Para eliminar el cuadrado de sen&sup2;(x) = 1/4, aplicamos raíz cuadrada a ambos lados. <b>¡No olvides el signo &plusmn;!</b> Si solo anotas la raíz positiva, pierdes la mitad de tus soluciones.", math: "sen(x) = &plusmn;&radic;(1/4)<br>sen(x) = &plusmn;1/2" },
+                { t: "quiz", title: "Trigonometría: 6 Soluciones", q: "Necesitas ángulos donde <b>tan(x) = 0</b>, donde <b>sen(x) = +1/2</b>, y donde <b>sen(x) = -1/2</b>. Elige la correcta:", opts: [
+                    { txt: "0, &pi;, &pi;/6, 5&pi;/6", ok: false, fb: "Te comiste la trampa de la raíz cuadrada. Olvidaste buscar en los cuadrantes de abajo donde el seno es -1/2." },
+                    { txt: "&pi;/6, 5&pi;/6, 7&pi;/6, 11&pi;/6", ok: false, fb: "Excelente que usaste los dos signos del seno (&plusmn;1/2), pero... ¿Te olvidaste de las respuestas de la parte A donde tan(x) = 0?" },
+                    { txt: "0, &pi;/6, 5&pi;/6, &pi;, 7&pi;/6, 11&pi;/6", ok: true, fb: "¡Perfecto! La tangente da 0 y &pi;. El seno &plusmn;1/2 nos da los 4 ángulos de la familia de &pi;/6, uno en cada cuadrante." }
+                ], draw: [{f:'tan', v:0}, {f:'sin', v:0.5}, {f:'sin', v:-0.5}], angs: [0, Math.PI/6, 5*Math.PI/6, Math.PI, 7*Math.PI/6, 11*Math.PI/6], lbls: ["0", "&pi;/6", "5&pi;/6", "&pi;", "7&pi;/6", "11&pi;/6"] }
+            ]
+        },
+        {
+            eq: "sen(2x) = &radic;3 / 2",
+            steps: [
+                { t: "", title: "Álgebra: Cambio de Variable (El Disfraz)", txt: "Tener '2x' asusta. El truco es hacer un cambio de variable temporal. Llamemos al ángulo completo <b>U</b>. Así que U = 2x.", math: "Resolveremos: sen(U) = &radic;3 / 2" },
+                { t: "quiz", title: "Quiz: Resolver para U", q: "¿En qué ángulos el seno (eje Y) vale &radic;3/2 positivo?", opts: [
+                    { txt: "&pi;/6 y 5&pi;/6", ok: false, fb: "En &pi;/6 el seno vale 1/2, no &radic;3/2." },
+                    { txt: "&pi;/3 y 2&pi;/3", ok: true, fb: "¡Correcto! En &pi;/3 (60&deg;) y en el segundo cuadrante 2&pi;/3." }
+                ], draw: [{f:'sin', v:0.866}], angs: [Math.PI/3, 2*Math.PI/3], lbls: ["&pi;/3", "2&pi;/3"] },
+                { t: "", title: "Generalizar U (+ 2&pi;n)", txt: "Como el seno requiere una vuelta completa para repetirse, la ecuación general para U es:<br><br><b>U = &pi;/3 + 2&pi;n</b><br><b>U = 2&pi;/3 + 2&pi;n</b>" },
+                { t: "", title: "Álgebra: Devolver el Disfraz y Dividir", txt: "Recordamos que <b>U = 2x</b>. Sustituimos de vuelta. Para despejar la 'x', <b>debemos dividir TODA la ecuación entre 2</b> (incluyendo el 2&pi;n):", math: "x = &pi;/6 + &pi;n<br>x = &pi;/3 + &pi;n" },
+                { t: "step-success", title: "Conclusión de Periodicidad", txt: "El '2' multiplicando a la x hizo que el periodo original (2&pi;n) se dividiera a la mitad, quedando <b>&pi;n</b>. La onda se repite el doble de rápido." }
+            ]
+        },
+        {
+            eq: "cos(x/2) = -&radic;2 / 2",
+            steps: [
+                { t: "", title: "Álgebra: Cambio de Variable", txt: "Hacemos el mismo truco. Llamaremos <b>U = x/2</b>. Resolvemos la ecuación simple para U.", math: "cos(U) = -&radic;2 / 2" },
+                { t: "quiz", title: "Quiz: Resolver para U", q: "Según la tabla, cos(&pi;/4) es &radic;2/2 positivo. Pero lo necesitamos NEGATIVO. ¿En qué cuadrantes el coseno es negativo?", opts: [
+                    { txt: "Cuadrantes I y IV", ok: false, fb: "El coseno mide el eje X. En I y IV la X es positiva." },
+                    { txt: "Cuadrantes II y III (3&pi;/4 y 5&pi;/4)", ok: true, fb: "¡Correcto! En la parte izquierda del círculo, la coordenada X (coseno) es negativa." }
+                ], draw: [{f:'cos', v:-0.707}], angs: [3*Math.PI/4, 5*Math.PI/4], lbls: ["3&pi;/4", "5&pi;/4"] },
+                { t: "", title: "Generalizar U (+ 2&pi;n)", txt: "Agregamos las vueltas completas normales del coseno:<br><br><b>U = 3&pi;/4 + 2&pi;n</b><br><b>U = 5&pi;/4 + 2&pi;n</b>" },
+                { t: "", title: "Álgebra: Devolver el Disfraz y Multiplicar", txt: "Recordamos que <b>U = x/2</b>. Sustituimos. Para despejar 'x', <b>debemos multiplicar TODO por 2</b> (incluyendo el 2&pi;n):", math: "x = 3&pi;/2 + 4&pi;n<br>x = 5&pi;/2 + 4&pi;n" },
+                { t: "step-success", title: "Conclusión de Periodicidad", txt: "¡Mira cómo cambió! Dividir el ángulo entre 2 provocó que el periodo pasara de 2&pi;n a <b>4&pi;n</b>. La onda viaja a la mitad de velocidad y necesita dos vueltas completas para repetirse." }
+            ]
+        }
+    ];
+
+    let tIdx = 0; let sIdx = 0;
+
+    function initTut() {
+        tIdx = parseInt(document.getElementById('tutSelect').value);
+        sIdx = 0;
+        document.getElementById('tutEq').innerHTML = tutData[tIdx].eq;
+        document.getElementById('tutSteps').innerHTML = '';
+        document.getElementById('tutBtnNext').disabled = false;
+        document.getElementById('tutBtnNext').textContent = "Siguiente Paso";
+        document.getElementById('tutCanvasLabel').textContent = "Resuelve el quiz para graficar.";
+        drawBaseCanvas('canvasTut');
+    }
+
+    function nextTutStep() {
+        if(sIdx >= tutData[tIdx].steps.length) return;
+        const d = tutData[tIdx].steps[sIdx];
+        
+        let html = `<div class="step active ${d.t}">
+            <div style="font-weight:bold; margin-bottom:5px;">${d.title}</div>`;
+        if(d.txt) html += `<p>${d.txt}</p>`;
+        if(d.math) html += `<div class="math-box">${d.math}</div>`;
+        
+        if(d.t === 'quiz') {
+            html += `<p style="margin-top:10px;">${d.q}</p><div style="margin-top:10px;">`;
+            d.opts.forEach((o, i) => {
+                html += `<label class="quiz-opt"><input type="radio" name="q_${sIdx}" value="${i}"> ${o.txt}</label>`;
+            });
+            html += `</div><div id="fb_${sIdx}" class="feedback"></div>
+                     <button class="btn" style="width:auto; margin-top:5px; background:#475569;" onclick="checkTutQuiz(${sIdx})">Verificar</button>`;
+            document.getElementById('tutBtnNext').disabled = true;
+        }
+        
+        html += `</div>`;
+        document.getElementById('tutSteps').innerHTML += html;
+        
+        // Scroll hacia abajo para ver el nuevo paso
+        setTimeout(() => {
+            document.getElementById('tutSteps').lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+
+        sIdx++;
+        if(sIdx >= tutData[tIdx].steps.length && d.t !== 'quiz') document.getElementById('tutBtnNext').disabled = true;
+    }
+
+    window.checkTutQuiz = function(idx) {
+        const d = tutData[tIdx].steps[idx];
+        const rads = document.getElementsByName(`q_${idx}`);
+        let sel = -1; rads.forEach(r => { if(r.checked) sel = parseInt(r.value); });
+        
+        const fb = document.getElementById(`fb_${idx}`);
+        fb.style.display = 'block';
+        if(sel === -1) { fb.style.background = '#fef3c7'; fb.innerHTML = 'Selecciona una opción.'; return; }
+        
+        if(d.opts[sel].ok) {
+            fb.style.background = '#dcfce7'; fb.style.color = '#166534';
+            fb.innerHTML = `<strong>¡Correcto!</strong> ${d.opts[sel].fb}`;
+            rads.forEach(r => r.disabled = true);
+            document.getElementById('tutBtnNext').disabled = sIdx >= tutData[tIdx].steps.length;
+            
+            // Draw
+            drawBaseCanvas('canvasTut');
+            d.draw.forEach(cmd => drawFunctionLine('canvasTut', cmd.f, cmd.v));
+            drawAngles('canvasTut', d.angs, d.lbls);
+            document.getElementById('tutCanvasLabel').innerHTML = "<strong>Visualización de las Respuestas en el Círculo Unitario</strong>";
+        } else {
+            fb.style.background = '#fee2e2'; fb.style.color = '#991b1b';
+            fb.innerHTML = `<strong>Incorrecto:</strong> ${d.opts[sel].fb}`;
+        }
+    }
+
+    // --- FUNCIONES COMUNES DE DIBUJO ---
+    function drawBaseCanvas(cId) {
+        const ctx = document.getElementById(cId).getContext('2d');
+        ctx.clearRect(0,0,350,350);
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1; ctx.beginPath();
+        ctx.moveTo(CENTER-RADIUS-20, CENTER); ctx.lineTo(CENTER+RADIUS+20, CENTER);
+        ctx.moveTo(CENTER, CENTER-RADIUS-20); ctx.lineTo(CENTER, CENTER+RADIUS+20); ctx.stroke();
+        
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.arc(CENTER, CENTER, RADIUS, 0, 2*Math.PI); ctx.stroke();
+        
+        ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif';
+        ctx.fillText('X (cos)', CENTER+RADIUS+5, CENTER-5);
+        ctx.fillText('Y (sen)', CENTER+5, CENTER-RADIUS-5);
+    }
+
+    function drawFunctionLine(cId, func, val) {
+        const ctx = document.getElementById(cId).getContext('2d');
+        ctx.lineWidth = 2; ctx.beginPath(); ctx.setLineDash([4,4]);
+        if(func === 'sin') {
+            ctx.strokeStyle = '#ef4444';
+            let y = CENTER - val*RADIUS;
+            ctx.moveTo(CENTER-RADIUS-10, y); ctx.lineTo(CENTER+RADIUS+10, y);
+        } else if(func === 'cos') {
+            ctx.strokeStyle = '#22c55e';
+            let x = CENTER + val*RADIUS;
+            ctx.moveTo(x, CENTER-RADIUS-10); ctx.lineTo(x, CENTER+RADIUS+10);
+        } else {
+            ctx.strokeStyle = '#f59e0b'; ctx.setLineDash([]);
+            let xt = CENTER+RADIUS; let yt = CENTER - val*RADIUS;
+            ctx.moveTo(xt, CENTER-RADIUS-20); ctx.lineTo(xt, CENTER+RADIUS+20); ctx.stroke();
+            ctx.beginPath(); ctx.fillStyle='#f59e0b'; ctx.arc(xt, yt, 4, 0, 2*Math.PI); ctx.fill();
+        }
+        ctx.stroke(); ctx.setLineDash([]);
+    }
+
+    function drawAngles(cId, angs, lbls) {
+        const ctx = document.getElementById(cId).getContext('2d');
+        angs.forEach((a, i) => {
+            let px = CENTER + Math.cos(a)*RADIUS; let py = CENTER - Math.sin(a)*RADIUS;
+            ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 2; ctx.beginPath();
+            ctx.moveTo(CENTER, CENTER); ctx.lineTo(px, py); ctx.stroke();
+            
+            ctx.fillStyle = '#1e40af'; ctx.beginPath(); ctx.arc(px, py, 5, 0, 2*Math.PI); ctx.fill();
+            
+            ctx.fillStyle = '#0f172a'; ctx.font = 'bold 13px sans-serif';
+            ctx.fillText(lbls[i].replace('&pi;','π'), px+(Math.cos(a)*15)-10, py-(Math.sin(a)*15)+5);
+        });
+    }
+
+    // Iniciar todo
+    updateExpRange();
+    initTut();
+</script>
+</body>
+</html>
