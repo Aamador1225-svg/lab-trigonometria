@@ -174,7 +174,7 @@
                 
                 <div class="input-group">
                     <label>Desfase de Entrada (c): <span id="valC">0.00</span></label>
-                    <input type="range" id="paramC" min="-3.1416" max="3.1416" step="0.7854" value="0" oninput="updateAll()">
+                    <input type="range" id="paramC" min="-6.2832" max="6.2832" step="0.7854" value="0" oninput="updateAll()">
                     <small style="color: #64748b; font-size: 11px;">Nota: Control configurado en múltiplos exactos de <span class="frac" style="font-size: 0.9em;"><span class="num">π</span><span class="den">4</span></span></small>
                 </div>
 
@@ -244,14 +244,25 @@
 
         if(func === 'sin' || func === 'cos') {
             formText.innerHTML = func === 'sin' ? 'y = a · sen(bx + c) + d' : 'y = a · cos(bx + c) + d';
-            ampText.innerHTML = "En las funciones seno y coseno, <b>|a|</b> represents la amplitud máxima de la onda desde su eje central. Si <b>a</b> es negativo, la gráfica sufre una reflexión respecto al eje horizontal.";
-            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.";
+            ampText.innerHTML = "En las funciones seno y coseno, <b>|a|</b> representa la amplitud máxima de la onda desde su eje central. Si <b>a</b> es negativo, la gráfica sufre una reflexión respecto al eje horizontal.";
+            
+            // Texto original + Anexo de la teoría de paridad
+            let identityExpl = func === 'sin' ? 
+                "El <b>seno es una función impar</b> [sen(-&theta;) = -sen(&theta;)]. Si la frecuencia <b>b</b> es negativa, podemos 'extraer' ese signo negativo multiplicándolo por la amplitud externa: <br><span style='display:block; text-align:center; margin: 5px 0; font-weight:bold; color:#1e3a8a;'>sen(-bx + c) = sen(-(bx - c)) = -sen(bx - c)</span>" : 
+                "El <b>coseno es una función par</b> [cos(-&theta;) = cos(&theta;)]. Si la frecuencia <b>b</b> es negativa, podemos omitir o factorizar ese signo negativo en el argumento interno sin afectar el exterior de la función: <br><span style='display:block; text-align:center; margin: 5px 0; font-weight:bold; color:#1e3a8a;'>cos(-bx + c) = cos(-(bx - c)) = cos(bx - c)</span>";
+
+            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.<br><br><b>💡 Identidad de Paridad:</b> En matemáticas, para evitar trabajar con una frecuencia negativa, utilizamos las propiedades de simetría para reescribir la ecuación de manera equivalente: <br>" + identityExpl;
+            
             ineqText.innerHTML = "0 &le; bx + c &le; 2&pi;";
             solveText.innerHTML = "-c &le; bx &le; 2&pi; - c<br><br><span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>";
+        
         } else if (func === 'tan') {
             formText.innerHTML = 'y = a · tan(bx + c) + d';
             ampText.innerHTML = "En la función tangente <b>no existe amplitud definida</b>, ya que la gráfica se extiende hacia el infinito positivo y negativo. El valor <b>a</b> determina el factor de estiramiento vertical de la curva entre las asíntotas.";
-            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. A diferencia del seno y coseno, el periodo exacto de la tangente se determina mediante la fórmula <b><span class='frac'><span class='num'>π</span><span class='den'>|b|</span></span></b>.";
+            
+            // Texto original + Anexo de la teoría de paridad para tangente
+            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. A diferencia del seno y coseno, el periodo exacto de la tangente se determina mediante la fórmula <b><span class='frac'><span class='num'>π</span><span class='den'>|b|</span></span></b>.<br><br><b>💡 Identidad de Paridad (Función Impar):</b> Al igual que el seno, la <b>tangente es una función impar</b> [tan(-&theta;) = -tan(&theta;)]. Si la frecuencia <b>b</b> es negativa, podemos transformar la ecuación aplicando el signo negativo hacia afuera: <br><span style='display:block; text-align:center; margin: 5px 0; font-weight:bold; color:#1e3a8a;'>tan(-bx + c) = tan(-(bx - c)) = -tan(bx - c)</span>";
+            
             ineqText.innerHTML = "<span class='frac'><span class='num'>-&pi;</span><span class='den'>2</span></span> < bx + c < <span class='frac'><span class='num'>&pi;</span><span class='den'>2</span></span>";
             solveText.innerHTML = "<span class='frac'><span class='num'>-&pi;</span><span class='den'>2</span></span> - c < bx < <span class='frac'><span class='num'>&pi;</span><span class='den'>2</span></span> - c<br><br><span class='frac'><span class='num'>-&pi;/2 - c</span><span class='den'>b</span></span> < x < <span class='frac'><span class='num'>&pi;/2 - c</span><span class='den'>b</span></span>";
         }
