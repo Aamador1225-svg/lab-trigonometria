@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Pro: Gráficas Trigonométricas</title>
+    
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5; 
+            --primary-dark: #3730a3;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #334155;
+            --border: #cbd5e1;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --info: #0ea5e9;
+            --step-bg: #f1f5f9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Tabs System */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            flex: 1; min-width: 150px; padding: 15px; border: none; border-radius: 8px;
+            background-color: #e2e8f0; color: #475569; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn:hover { background-color: #cbd5e1; }
+        .tab-btn.active { background-color: var(--primary); color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
+        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Grid Layout */
+        .grid-layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+        @media(max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+        
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .card-title { color: var(--primary-dark); font-size: 18px; font-weight: bold; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        /* Theory Box */
+        .theory-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .theory-box h3 { color: #1e3a8a; margin-bottom: 10px; font-size: 16px; }
+        .math-formula { font-family: 'Cambria', serif; font-size: 22px; font-style: italic; font-weight: bold; text-align: center; display: block; margin: 15px 0; color: var(--primary-dark);}
+        
+        /* Form Controls */
+        .selector { width: 100%; padding: 10px; border-radius: 6px; border: 2px solid var(--primary); margin-bottom: 15px; font-weight: bold; background: #eef2ff; color: var(--primary-dark); font-size: 15px; cursor: pointer;}
+        .input-group { margin-bottom: 15px; }
+        label { font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; }
+        input[type="range"] { width: 100%; margin-top: 5px; cursor: pointer; }
+
+        /* Contenedor de GeoGebra */
+        .geogebra-container { width: 100%; height: 450px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #f8fafc; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;}
+        
+        /* Procedimiento Analítico */
+        .param-extractor { background: #1e293b; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 16px; font-family: monospace; letter-spacing: 0.5px;}
+        .param-extractor span { color: #38bdf8; font-weight: bold; }
+        
+        .step-container { display: flex; flex-direction: column; gap: 15px; }
+        .step-box { background: var(--step-bg); border-left: 5px solid var(--primary); border-radius: 6px; padding: 15px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .step-title { font-weight: 700; color: var(--primary-dark); font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+        .math-line { font-family: 'Cambria', 'Times New Roman', serif; font-size: 17px; color: #334155; }
+        .math-label { font-family: 'Segoe UI', sans-serif; font-weight: bold; font-size: 13px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; width: 110px; display: inline-block;}
+        .result-line { background: #e0e7ff; padding: 8px 12px; border-radius: 6px; margin-top: 5px; font-weight: bold; color: #1e3a8a; border: 1px dashed #818cf8; font-size: 18px;}
+        
+        /* NATIVO: Clase para Fracciones Matemáticas Reales */
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 4px;
+            font-family: 'Cambria', 'Times New Roman', serif;
+            font-size: 0.95em;
+            font-weight: bold;
+        }
+        .frac .num {
+            border-bottom: 1.5px solid currentColor;
+            padding: 1px 4px;
+            line-height: 1.1;
+        }
+        .frac .den {
+            padding: 1px 4px;
+            line-height: 1.1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🔬 Laboratorio: Gráficas de Funciones Trigonométricas</h1>
+        <p>Análisis interactivo y procedimental de Amplitud, Periodo, Desfase y Ciclos</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('teoria', this)">📚 Marco Teórico</button>
+        <button class="tab-btn" onclick="openTab('explorador', this)">🎛️ Explorador Interactivo</button>
+    </div>
+
+    <div id="teoria" class="tab-content active">
+        <div class="card">
+            <h2 class="card-title">Análisis de la Ecuación General</h2>
+            
+            <select id="theoryFuncSelect" class="selector" onchange="updateTheorySection()">
+                <option value="sin">Análisis de la Función Seno: y = a · sen(bx + c) + d</option>
+                <option value="cos">Análisis de la Función Coseno: y = a · cos(bx + c) + d</option>
+                <option value="tan">Análisis de la Función Tangente: y = a · tan(bx + c) + d</option>
+            </select>
+
+            <span class="math-formula" id="theoryFormulaText">y = a · sen(bx + c) + d</span>
+            
+            <div class="theory-box">
+                <h3>Parámetro 'a' (Amplitud)</h3>
+                <p id="theoryAmpText">En las funciones seno y coseno, <b>|a|</b> representa la amplitud máxima de la onda desde su eje central. Si <b>a</b> es negativo, la gráfica sufre una reflexión respecto al eje horizontal.</p>
+            </div>
+            <div class="theory-box">
+                <h3>Parámetro 'b' (Frecuencia Angular y Periodo)</h3>
+                <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.</p>
+            </div>
+            <div class="theory-box">
+                <h3>Análisis del Ciclo Principal y Desfase (bx + c)</h3>
+                <p id="theoryCycleDesc">Para encontrar dónde inicia y dónde termina un ciclo completo de la onda, se evalúa el argumento <b>bx + c</b> dentro del periodo fundamental de la función. Para esta función, el ciclo principal ocurre en el intervalo:</p>
+                <div style="text-align: center; margin: 15px 0; font-size: 18px; font-weight: bold; color: #1e40af;" id="theoryInequality">
+                    0 &le; bx + c &le; 2&pi;
+                </div>
+                <p>Al despejar <b>x</b> en esta desigualdad, obtenemos los puntos de inicio y fin del ciclo en el eje horizontal:</p>
+                <div style="background: white; border: 1px dashed #94a3b8; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 15px;" id="theorySolve">
+                    -c &le; bx &le; 2&pi; - c<br><br>
+                    <span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px;"><i>Nota: El límite inferior correspondiente a la evaluación del lado izquierdo, representa exactamente el desplazamiento de fase (desfase) de la gráfica.</i></p>
+            </div>
+            <div class="theory-box">
+                <h3>Parámetro 'd' (Desplazamiento Vertical)</h3>
+                <p>Mueve la función completa de manera vertical, redefiniendo la recta base o "eje central" (y = d) sobre la cual oscila la onda.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="explorador" class="tab-content">
+        <div class="grid-layout">
+            
+            <div class="card">
+                <h2 class="card-title">Panel de Parámetros</h2>
+
+                <select id="funcSelect" class="selector" onchange="changeFunction()">
+                    <option value="sin">y = a · sen(bx + c) + d</option>
+                    <option value="cos">y = a · cos(bx + c) + d</option>
+                    <option value="tan">y = a · tan(bx + c) + d</option>
+                </select>
+
+                <div class="input-group">
+                    <label>Amplitud (a): <span id="valA">1.0</span></label>
+                    <input type="range" id="paramA" min="-4" max="4" step="0.5" value="1" oninput="updateAll()">
+                </div>
+                
+                <div class="input-group">
+                    <label>Frecuencia (b): <span id="valB">1.0</span></label>
+                    <input type="range" id="paramB" min="0.5" max="3" step="0.5" value="1" oninput="updateAll()">
+                </div>
+                
+                <div class="input-group">
+                    <label>Desfase de Entrada (c): <span id="valC">0.00</span></label>
+                    <input type="range" id="paramC" min="-3.1416" max="3.1416" step="0.7854" value="0" oninput="updateAll()">
+                    <small style="color: #64748b; font-size: 11px;">Nota: Control configurado en múltiplos exactos de <span class="frac" style="font-size: 0.9em;"><span class="num">π</span><span class="den">4</span></span></small>
+                </div>
+
+                <div class="input-group">
+                    <label>Desplazamiento Vertical (d): <span id="valD">0.0</span></label>
+                    <input type="range" id="paramD" min="-3" max="3" step="0.5" value="0" oninput="updateAll()">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Visualización en GeoGebra</h2>
+                <span class="math-formula" id="currentFormula">y = 1.0 sen(1.0x + 0.0) + 0.0</span>
+                <div class="geogebra-container" id="ggb-element">
+                    <span style="color: #94a3b8; font-size: 16px;">Cargando entorno desde la nube...</span>
+                </div>
+            </div>
+            
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title">📝 Desarrollo Procedimental Paso a Paso</h2>
+                
+                <div class="param-extractor" id="paramExtraction">
+                    </div>
+
+                <div class="step-container">
+                    
+                    <div class="step-box">
+                        <div class="step-title">Paso 1: Cálculo de Amplitud</div>
+                        <div id="stepAmp"></div>
+                    </div>
+
+                    <div class="step-box">
+                        <div class="step-title">Paso 2: Cálculo del Periodo (Longitud de onda)</div>
+                        <div id="stepPer"></div>
+                    </div>
+
+                    <div class="step-box">
+                        <div class="step-title">Paso 3: Desfase (Desplazamiento Horizontal)</div>
+                        <div id="stepFase"></div>
+                    </div>
+
+                    <div class="step-box">
+                        <div class="step-title">Paso 4: Análisis del Ciclo Principal</div>
+                        <div id="stepCiclo"></div>
+                    </div>
+
+                    <div class="step-box" style="border-left-color: #0ea5e9;">
+                        <div class="step-title">Paso 5: Eje de Equilibrio (Desplazamiento Vertical)</div>
+                        <div id="stepVert"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lógica del Marco Teórico
+    function updateTheorySection() {
+        const func = document.getElementById('theoryFuncSelect').value;
+        const formText = document.getElementById('theoryFormulaText');
+        const ampText = document.getElementById('theoryAmpText');
+        const perText = document.getElementById('theoryPerText');
+        const ineqText = document.getElementById('theoryInequality');
+        const solveText = document.getElementById('theorySolve');
+
+        if(func === 'sin' || func === 'cos') {
+            formText.innerHTML = func === 'sin' ? 'y = a · sen(bx + c) + d' : 'y = a · cos(bx + c) + d';
+            ampText.innerHTML = "En las funciones seno y coseno, <b>|a|</b> represents la amplitud máxima de la onda desde su eje central. Si <b>a</b> es negativo, la gráfica sufre una reflexión respecto al eje horizontal.";
+            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.";
+            ineqText.innerHTML = "0 &le; bx + c &le; 2&pi;";
+            solveText.innerHTML = "-c &le; bx &le; 2&pi; - c<br><br><span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>";
+        } else if (func === 'tan') {
+            formText.innerHTML = 'y = a · tan(bx + c) + d';
+            ampText.innerHTML = "En la función tangente <b>no existe amplitud definida</b>, ya que la gráfica se extiende hacia el infinito positivo y negativo. El valor <b>a</b> determina el factor de estiramiento vertical de la curva entre las asíntotas.";
+            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. A diferencia del seno y coseno, el periodo exacto de la tangente se determina mediante la fórmula <b><span class='frac'><span class='num'>π</span><span class='den'>|b|</span></span></b>.";
+            ineqText.innerHTML = "<span class='frac'><span class='num'>-&pi;</span><span class='den'>2</span></span> < bx + c < <span class='frac'><span class='num'>&pi;</span><span class='den'>2</span></span>";
+            solveText.innerHTML = "<span class='frac'><span class='num'>-&pi;</span><span class='den'>2</span></span> - c < bx < <span class='frac'><span class='num'>&pi;</span><span class='den'>2</span></span> - c<br><br><span class='frac'><span class='num'>-&pi;/2 - c</span><span class='den'>b</span></span> < x < <span class='frac'><span class='num'>&pi;/2 - c</span><span class='den'>b</span></span>";
+        }
+    }
+
+    // Configuración Base GeoGebra (INTOCABLE)
+    let ggbApplet; 
+    let geoGebraInjected = false;
+    let geogebraContainer; 
+
+    const params = {
+        "material_id": "fxrtq97y", 
+        "width": 800,
+        "height": 450,
+        "showToolBar": false,
+        "showMenuBar": false,
+        "showAlgebraInput": false,
+        "allowStyleBar": false,
+        "showResetIcon": false,
+        "enableLabelDrags": false,
+        "enableShiftDragZoom": true,
+        "enableRightClick": false,
+        "language": "es", 
+        "scaleContainerClass": "geogebra-container",
+        "appletOnLoad": function(api) {
+            ggbApplet = api;
+            try {
+                ggbApplet.setColor("f", 79, 70, 229); 
+                ggbApplet.setThickness("f", 5); 
+            } catch(e){}
+            updateAll(); 
+        }
+    };
+
+    window.onload = function() {
+        updateTheorySection();
+        updateAll();
+    };
+
+    function openTab(tabId, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        if (tabId === 'explorador' && !geoGebraInjected) {
+            const containerBox = document.getElementById('ggb-element');
+            containerBox.innerHTML = '<span style="color: #4f46e5; font-weight: bold;">Cargando tu archivo desde la nube de GeoGebra...</span>';
+            
+            setTimeout(() => {
+                try {
+                    if (typeof GGBApplet === 'undefined') return;
+                    geogebraContainer = new GGBApplet(params, true);
+                    geogebraContainer.inject('ggb-element');
+                    geoGebraInjected = true;
+                } catch (error) {
+                    console.error(error);
+                }
+            }, 100);
+        }
+    }
+
+    // SOLUCIÓN AL BUG: Se eliminó el bloqueo inicial para que la interfaz responda al instante
+    function changeFunction() {
+        const funcType = document.getElementById('funcSelect').value;
+        
+        if (ggbApplet) {
+            try {
+                ggbApplet.deleteObject("f");
+                if (funcType === 'sin') {
+                    ggbApplet.evalCommand("f(x) = a * sin(b * x + c) + d");
+                } else if (funcType === 'cos') {
+                    ggbApplet.evalCommand("f(x) = a * cos(b * x + c) + d");
+                } else if (funcType === 'tan') {
+                    ggbApplet.evalCommand("f(x) = a * tan(b * x + c) + d");
+                }
+                ggbApplet.setColor("f", 79, 70, 229);
+                ggbApplet.setThickness("f", 5);
+            } catch (e) {
+                console.warn("Aviso: El motor gráfico se está sincronizando.");
+            }
+        }
+        // Se ejecuta fuera del bloqueo para actualizar el texto azul de inmediato
+        updateAll();
+    }
+
+    // FÓRMULA DINÁMICA DE TEXTO AZUL Y PASOS PROCEDIMENTALES
+    function updateAll() {
+        const func = document.getElementById('funcSelect').value;
+        const a = parseFloat(document.getElementById('paramA').value);
+        const b = parseFloat(document.getElementById('paramB').value);
+        const c = parseFloat(document.getElementById('paramC').value);
+        const d = parseFloat(document.getElementById('paramD').value);
+
+        document.getElementById('valA').innerText = a.toFixed(1);
+        document.getElementById('valB').innerText = b.toFixed(1);
+        document.getElementById('valC').innerHTML = translateToPiLabel(c, true);
+        document.getElementById('valD').innerText = d.toFixed(1);
+
+        const nameMap = { 'sin': 'sen', 'cos': 'cos', 'tan': 'tan' };
+        
+        let cHTML = translateToPiLabel(c, true);
+        let signCHTML = c >= 0 ? `+ ${cHTML}` : `- ${translateToPiLabel(Math.abs(c), true)}`;
+        let signD = d >= 0 ? `+ ${d.toFixed(1)}` : `- ${Math.abs(d).toFixed(1)}`;
+        
+        let eqnTextHTML = `y = ${a.toFixed(1)} ${nameMap[func]}(${b.toFixed(1)}x ${signCHTML}) ${signD}`;
+        document.getElementById('currentFormula').innerHTML = eqnTextHTML;
+
+        // ENVÍO DE DATOS SEGURO A GEOGEBRA
+        try {
+            if (ggbApplet && ggbApplet.setValue) {
+                ggbApplet.setValue('a', a);
+                ggbApplet.setValue('b', b);
+                ggbApplet.setValue('c', c);
+                ggbApplet.setValue('d', d);
+            }
+        } catch (e) {}
+
+        // --- PASO 0: Extracción ---
+        document.getElementById('paramExtraction').innerHTML = `
+            Ecuación: <span>${eqnTextHTML}</span> <br> 
+            Parámetros: a = <span>${a}</span>, b = <span>${b}</span>, c = <span>${cHTML}</span>, d = <span>${d}</span>
+        `;
+
+        // --- PASO 1: Amplitud ---
+        let ampVal = Math.abs(a);
+        let stepAmpHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> | a |</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> | ${a} |</div>
+        `;
+        if (func === 'tan') {
+            stepAmpHTML += `<div class="math-line result-line">Amplitud = No definida (la gráfica se extiende a infinito)</div>`;
+        } else {
+            stepAmpHTML += `<div class="math-line result-line">Amplitud = ${ampVal} unidades</div>`;
+        }
+        document.getElementById('stepAmp').innerHTML = stepAmpHTML;
+
+        // --- PASO 2: Periodo ---
+        let formPer = func === 'tan' ? `<span class="frac"><span class="num">π</span><span class="den">| b |</span></span>` : `<span class="frac"><span class="num">2π</span><span class="den">| b |</span></span>`;
+        let numSust = func === 'tan' ? "π" : "2π";
+        let realTVal = (func === 'tan' ? Math.PI : 2*Math.PI) / Math.abs(b);
+        let fractPer = getPiFractionFromDecimal(realTVal, true);
+
+        document.getElementById('stepPer').innerHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> T = ${formPer}</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> T = <span class="frac"><span class="num">${numSust}</span><span class="den">| ${b} |</span></span></div>
+            <div class="math-line result-line">Periodo (T) = ${fractPer}</div>
+        `;
+
+        // --- PASO 3: Desfase ---
+        let desfaseVal = -c / b;
+        let txtFase = getPiFractionFromDecimal(desfaseVal, true);
+        let dirFase = desfaseVal > 0 ? "hacia la derecha ➡️" : (desfaseVal < 0 ? "hacia la izquierda ⬅️" : "centrado 🟡");
+        let cSubst = c < 0 ? `(${cHTML})` : cHTML;
+
+        document.getElementById('stepFase').innerHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> x = <span class="frac"><span class="num">-c</span><span class="den">b</span></span></div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> x = <span class="frac"><span class="num">-${cSubst}</span><span class="den">${b}</span></span></div>
+            <div class="math-line result-line">Desfase = ${txtFase} (${dirFase})</div>
+        `;
+
+        // --- PASO 4: Ciclo Principal ---
+        let ineqStr = func === 'tan' ? `<span class="frac"><span class="num">-π</span><span class="den">2</span></span> < bx + c < <span class="frac"><span class="num">π</span><span class="den">2</span></span>` : `0 ≤ bx + c ≤ 2π`;
+        let ineqSust = func === 'tan' ? `<span class="frac"><span class="num">-π</span><span class="den">2</span></span> < ${b}x ${signCHTML} < <span class="frac"><span class="num">π</span><span class="den">2</span></span>` : `0 ≤ ${b}x ${signCHTML} ≤ 2π`;
+        
+        let piInitDec = func === 'tan' ? (-Math.PI/2 - c)/b : (0 - c)/b;
+        let piEndDec = func === 'tan' ? (Math.PI/2 - c)/b : (2*Math.PI - c)/b;
+        
+        let txtInit = getPiFractionFromDecimal(piInitDec, true);
+        let txtEnd = getPiFractionFromDecimal(piEndDec, true);
+        let ineqSign = func === 'tan' ? '<' : '≤';
+
+        document.getElementById('stepCiclo').innerHTML = `
+            <div class="math-line"><span class="math-label">Condición:</span> ${ineqStr}</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> ${ineqSust}</div>
+            <div class="math-line"><span class="math-label">Despeje (÷${b}):</span> ${txtInit} ${ineqSign} x ${ineqSign} ${txtEnd}</div>
+            <div class="math-line result-line">El ciclo principal transcurre en el intervalo: [ ${txtInit} , ${txtEnd} ]</div>
+        `;
+
+        // --- PASO 5: Desplazamiento Vertical ---
+        document.getElementById('stepVert').innerHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> y = d</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> y = ${d}</div>
+            <div class="math-line result-line">Recta central (Equilibrio): y = ${d}</div>
+        `;
+    }
+
+    // ALGORITMOS DE FRACCIONES CON SOPORTE HTML
+    function translateToPiLabel(val, asHTML = true) {
+        if (Math.abs(val) < 0.01) return "0";
+        return getPiFractionFromDecimal(val, asHTML);
+    }
+
+    function getPiFractionFromDecimal(val, asHTML = true) {
+        if (Math.abs(val) < 0.01) return "0";
+        let fr = val / Math.PI;
+        
+        for(let d = 1; d <= 12; d++) {
+            let n = Math.round(fr * d);
+            if (Math.abs(fr - n/d) < 0.01) {
+                if (n === 0) return "0";
+                let sign = n < 0 ? "-" : "";
+                let absN = Math.abs(n);
+                
+                let numStr = absN === 1 ? "π" : `${absN}π`; 
+                
+                if (d === 1) return `${sign}${numStr}`;
+                
+                if (asHTML) {
+                    return `${sign}<span class="frac"><span class="num">${numStr}</span><span class="den">${d}</span></span>`;
+                } else {
+                    return `${sign}${numStr} / ${d}`;
+                }
+            }
+        }
+        return `${(val/Math.PI).toFixed(2)}π`;
+    }
+</script>
+
+</body>
+</html>
