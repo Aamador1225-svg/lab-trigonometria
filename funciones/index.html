@@ -372,15 +372,53 @@
         let eqnTextHTML = `y = ${a.toFixed(1)} ${nameMap[func]}(${b.toFixed(1)}x ${signCHTML}) ${signD}`;
         document.getElementById('currentFormula').innerHTML = eqnTextHTML;
 
-        // ENVÍO DE DATOS SEGURO A GEOGEBRA
+        // ENVÍO DE DATOS A GEOGEBRA (Ejecutado al final, protegido)
         try {
             if (ggbApplet && ggbApplet.setValue) {
+                // 1. Enviamos los parámetros a los deslizadores de GeoGebra
                 ggbApplet.setValue('a', a);
                 ggbApplet.setValue('b', b);
                 ggbApplet.setValue('c', c);
                 ggbApplet.setValue('d', d);
+
+                // --- NUEVO: DIBUJO DINÁMICO DE LOS 5 PUNTOS CLAVE ---
+                
+                // Asegúrate de que este ID corresponda al <select> de tu función principal
+                let func = document.getElementById('funcSelect').value; 
+
+                if (func === 'sin') {
+                    ggbApplet.evalCommand("P1 = (-c/b, d)");
+                    ggbApplet.evalCommand("P2 = (-c/b + pi/(2*b), d + a)");
+                    ggbApplet.evalCommand("P3 = (-c/b + pi/b, d)");
+                    ggbApplet.evalCommand("P4 = (-c/b + 3*pi/(2*b), d - a)");
+                    ggbApplet.evalCommand("P5 = (-c/b + 2*pi/b, d)");
+                } 
+                else if (func === 'cos') {
+                    ggbApplet.evalCommand("P1 = (-c/b, d + a)");
+                    ggbApplet.evalCommand("P2 = (-c/b + pi/(2*b), d)");
+                    ggbApplet.evalCommand("P3 = (-c/b + pi/b, d - a)");
+                    ggbApplet.evalCommand("P4 = (-c/b + 3*pi/(2*b), d)");
+                    ggbApplet.evalCommand("P5 = (-c/b + 2*pi/b, d + a)");
+                } 
+                else if (func === 'tan') {
+                    // La tangente se grafica diferente por sus asíntotas. Usamos 3 puntos clave.
+                    ggbApplet.evalCommand("P1 = (-c/b - pi/(4*b), d - a)");
+                    ggbApplet.evalCommand("P2 = (-c/b, d)");
+                    ggbApplet.evalCommand("P3 = (-c/b + pi/(4*b), d + a)");
+                    // Ocultamos P4 y P5 ya que no aplican al ciclo de la tangente
+                    ggbApplet.evalCommand("P4 = (?, ?)");
+                    ggbApplet.evalCommand("P5 = (?, ?)");
+                }
+
+                // 3. Le damos estilo a los puntos (Color rojo y tamaño grande para que destaquen)
+                for(let i=1; i<=5; i++) {
+                    ggbApplet.evalCommand("SetColor(P" + i + ", \"Red\")");
+                    ggbApplet.evalCommand("SetPointSize(P" + i + ", 5)");
+                }
             }
-        } catch (e) {}
+        } catch (e) {
+            console.warn("Aviso: Esperando a que el motor GeoGebra termine de conectarse con los sliders.");
+        }
 
         // --- PASO 0: Extracción ---
         document.getElementById('paramExtraction').innerHTML = `
