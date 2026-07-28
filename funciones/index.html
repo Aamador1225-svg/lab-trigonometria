@@ -224,6 +224,10 @@
                         <div class="step-title">Paso 5: Eje de Equilibrio (Desplazamiento Vertical)</div>
                         <div id="stepVert"></div>
                     </div>
+<div class="step-box">
+    <div class="step-title">Paso 6: Los 5 Puntos Clave</div>
+    <div id="stepPuntos"></div>
+</div>
 
                 </div>
             </div>
@@ -488,6 +492,64 @@
             <div class="math-line result-line">Recta central (Equilibrio): y = ${d}</div>
         `;
     }
+// --- PASO 6: Los 5 Puntos Clave (Análisis Intuitivo) ---
+        // 1. Cálculo de abscisas (Eje X) por mitades
+        let x1 = piInitDec;
+        let x5 = piEndDec;
+        let x3 = (x1 + x5) / 2;
+        let x2 = (x1 + x3) / 2;
+        let x4 = (x3 + x5) / 2;
+
+        let txtX1 = getPiFractionFromDecimal(x1, true);
+        let txtX2 = getPiFractionFromDecimal(x2, true);
+        let txtX3 = getPiFractionFromDecimal(x3, true);
+        let txtX4 = getPiFractionFromDecimal(x4, true);
+        let txtX5 = getPiFractionFromDecimal(x5, true);
+
+        // 2. Análisis intuitivo de ordenadas (Eje Y)
+        let y1, y2, y3, y4, y5, textoIntuitivo;
+
+        if (func === 'sin') {
+            y1 = d; y3 = d; y5 = d; // Cortes en línea de equilibrio
+            y2 = d + a;             // Extremo 1
+            y4 = d - a;             // Extremo 2
+            
+            let comportamiento = a > 0 ? `sube a su valor máximo (${y2})` : `se refleja y baja a su mínimo (${y2})`;
+            textoIntuitivo = `<strong>Análisis Intuitivo (Seno):</strong> Inicia, cruza a la mitad y termina su ciclo en la línea de equilibrio (y = ${d}). Como la amplitud 'a' es ${a}, la onda primero ${comportamiento} en P2, y luego va al extremo opuesto (${y4}) en P4.`;
+            
+        } else if (func === 'cos') {
+            y2 = d; y4 = d;         // Cortes en línea de equilibrio
+            y1 = d + a; y5 = d + a; // Extremos inicial/final
+            y3 = d - a;             // Extremo central
+            
+            let inicioTxt = a > 0 ? `inicia arriba en su máximo (${y1})` : `inicia desde abajo en su mínimo (${y1})`;
+            textoIntuitivo = `<strong>Análisis Intuitivo (Coseno):</strong> Empieza y termina en un extremo. Como 'a' = ${a}, la gráfica ${inicioTxt}. El punto medio (P3) se va al extremo opuesto (${y3}). Los puntos intermedios (P2 y P4) cruzan la línea de equilibrio (y = ${d}).`;
+            
+        } else {
+            // Tangente (Añadido para evitar errores si el usuario selecciona esta función)
+            y1 = "Asíntota"; y5 = "Asíntota";
+            y3 = d;
+            y2 = d - a; y4 = d + a;
+            textoIntuitivo = `<strong>Análisis Intuitivo (Tangente):</strong> P1 y P5 delimitan el ciclo principal y representan asíntotas verticales. El punto central (P3) cruza el equilibrio (y = ${d}).`;
+        }
+
+        // 3. Inyección en el HTML
+        let stepPuntosHTML = `
+            <div class="math-line" style="margin-bottom: 12px; font-style: italic; color: var(--primary-dark);">
+                ${textoIntuitivo}
+            </div>
+            <div class="math-line"><span class="math-label">P1 (Inicio):</span> ( ${txtX1} , ${y1} )</div>
+            <div class="math-line"><span class="math-label">P2 (Cuarto):</span> ( ${txtX2} , ${y2} )</div>
+            <div class="math-line"><span class="math-label">P3 (Mitad):</span> ( ${txtX3} , ${y3} )</div>
+            <div class="math-line"><span class="math-label">P4 (Tres cuartos):</span> ( ${txtX4} , ${y4} )</div>
+            <div class="math-line result-line"><span class="math-label">P5 (Fin):</span> ( ${txtX5} , ${y5} )</div>
+        `;
+        
+        // Inyecta el resultado (Asegúrate de agregar <div id="stepPuntos"></div> en tu HTML donde quieras que aparezca)
+        let contPuntos = document.getElementById('stepPuntos');
+        if(contPuntos) {
+            contPuntos.innerHTML = stepPuntosHTML;
+        }
 
     // ALGORITMOS DE FRACCIONES CON SOPORTE HTML
     function translateToPiLabel(val, asHTML = true) {
