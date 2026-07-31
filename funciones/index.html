@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio: Gráficas de Funciones Trigonométricas</title>
+    <title>Laboratorio Pro: Gráficas Trigonométricas</title>
     
+    <!-- API oficial de GeoGebra para integración Web -->
     <script src="https://www.geogebra.org/apps/deployggb.js"></script>
     
     <style>
@@ -75,6 +76,12 @@
         .math-label { font-family: 'Segoe UI', sans-serif; font-weight: bold; font-size: 13px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; width: 110px; display: inline-block;}
         .result-line { background: #e0e7ff; padding: 8px 12px; border-radius: 6px; margin-top: 5px; font-weight: bold; color: #1e3a8a; border: 1px dashed #818cf8; font-size: 18px;}
         
+        /* Explicaciones lógicas */
+        .logic-panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-top: 10px; font-size: 14.5px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .logic-panel h4 { color: #4f46e5; margin-bottom: 10px; font-size: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;}
+        .logic-panel ul { margin-left: 20px; margin-bottom: 10px; }
+        .logic-panel li { margin-bottom: 5px; }
+
         /* NATIVO: Clase para Fracciones Matemáticas Reales */
         .frac {
             display: inline-flex;
@@ -101,7 +108,7 @@
 
 <div class="container">
     <header>
-        <h1>🔬 Laboratorio: Gráficas de Funciones Trigonométricas</h1>
+        <h1>🔬 Laboratorio Pro: Gráficas de Funciones Trigonométricas</h1>
         <p>Análisis interactivo y procedimental de Amplitud, Periodo, Desfase y Ciclos</p>
     </header>
 
@@ -110,6 +117,7 @@
         <button class="tab-btn" onclick="openTab('explorador', this)">🎛️ Explorador Interactivo</button>
     </div>
 
+    <!-- Pestaña 1: Marco Teórico -->
     <div id="teoria" class="tab-content active">
         <div class="card">
             <h2 class="card-title">Análisis de la Ecuación General</h2>
@@ -131,18 +139,34 @@
                 <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.</p>
             </div>
             <div class="theory-box">
-                <h3>Análisis del Ciclo Principal y Desfase (bx + c)</h3>
-                <p id="theoryCycleDesc">Para encontrar dónde inicia y dónde termina un ciclo completo de la onda, se evalúa el argumento <b>bx + c</b> dentro del periodo fundamental de la función. Para esta función, el ciclo principal ocurre en el intervalo:</p>
-                <div style="text-align: center; margin: 15px 0; font-size: 18px; font-weight: bold; color: #1e40af;" id="theoryInequality">
-                    0 &le; bx + c &le; 2&pi;
-                </div>
-                <p>Al despejar <b>x</b> en esta desigualdad, obtenemos los puntos de inicio y fin del ciclo en el eje horizontal:</p>
-                <div style="background: white; border: 1px dashed #94a3b8; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 15px;" id="theorySolve">
-                    -c &le; bx &le; 2&pi; - c<br><br>
-                    <span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>
-                </div>
-                <p style="margin-top: 10px; font-size: 14px;"><i>Nota: El límite inferior correspondiente a la evaluación del lado izquierdo, representa exactamente el desplazamiento de fase (desfase) de la gráfica.</i></p>
-            </div>
+    <h3>Análisis del Ciclo Principal y Desfase (bx + c)</h3>
+    
+    <!-- NOTA DE PREPROCESAMIENTO PARA b < 0 -->
+    <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; border-radius: 6px; font-size: 14px; color: #166534; margin-bottom: 15px;">
+        📌 <b>Ajuste de Paridad Obligatorio:</b> <br>
+        Este simulador opera con frecuencias positivas (<b>b &gt; 0</b>). Si tu función original tiene un valor negativo en <i>b</i>, debes aplicar las identidades de paridad para transformar el argumento antes de analizar el ciclo:
+        <ul style="margin: 5px 0 0 15px; padding: 0;">
+            <li><b>Seno (Impar):</b> <i>a · sen(-bx + c) + d = -a · sen(bx - c) + d</i> (Cambia el signo de la amplitud y de <i>c</i>).</li>
+            <li style="margin-bottom: 5px;"><b>Tangente (Impar):</b> <i>a · tan(-bx + c) + d = -a · tan(bx - c)</i> (Cambia el signo de la amplitud y de <i>c</i>).</li>
+            <li><b>Coseno (Par):</b> <i>a · cos(-bx + c) + d = a · cos(bx - c) + d</i> (Solo cambia el signo de <i>c</i>).</li>
+        </ul>
+    </div>
+
+    <p id="theoryCycleDesc">Una vez transformada la función para que <b>b</b> sea positivo, se evalúa el nuevo argumento transformado dentro del periodo fundamental de la función. El ciclo principal ocurre en el intervalo:</p>
+    
+    <div style="text-align: center; margin: 15px 0; font-size: 18px; font-weight: bold; color: #1e40af;" id="theoryInequality">
+        0 &le; bx + c &le; 2&pi;
+    </div>
+
+    <p>Al despejar <b>x</b> (con el valor de <b>b</b> ya positivo), obtenemos los puntos de inicio y fin del ciclo en el eje horizontal:</p>
+    
+    <div style="background: white; border: 1px dashed #94a3b8; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 15px;" id="theorySolve">
+        -c &le; bx &le; 2&pi; - c<br><br>
+        <span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>
+    </div>
+    
+    <p style="margin-top: 10px; font-size: 14px;"><i>Nota: El límite inferior correspondiente a la evaluación del lado izquierdo representa exactamente el desplazamiento de fase (desfase) de la gráfica.</i></p>
+</div>
             <div class="theory-box">
                 <h3>Parámetro 'd' (Desplazamiento Vertical)</h3>
                 <p>Mueve la función completa de manera vertical, redefiniendo la recta base o "eje central" (y = d) sobre la cual oscila la onda.</p>
@@ -150,9 +174,11 @@
         </div>
     </div>
 
+    <!-- Pestaña 2: Explorador Interactivo -->
     <div id="explorador" class="tab-content">
         <div class="grid-layout">
             
+            <!-- Panel Izquierdo: Controles -->
             <div class="card">
                 <h2 class="card-title">Panel de Parámetros</h2>
 
@@ -174,7 +200,7 @@
                 
                 <div class="input-group">
                     <label>Desfase de Entrada (c): <span id="valC">0.00</span></label>
-                    <input type="range" id="paramC" min="-6.2832" max="6.2832" step="0.7854" value="0" oninput="updateAll()">
+                    <input type="range" id="paramC" min="-3.1416" max="3.1416" step="0.7854" value="0" oninput="updateAll()">
                     <small style="color: #64748b; font-size: 11px;">Nota: Control configurado en múltiplos exactos de <span class="frac" style="font-size: 0.9em;"><span class="num">π</span><span class="den">4</span></span></small>
                 </div>
 
@@ -184,6 +210,7 @@
                 </div>
             </div>
 
+            <!-- Panel Derecho: GeoGebra Gráfico -->
             <div class="card">
                 <h2 class="card-title">Visualización en GeoGebra</h2>
                 <span class="math-formula" id="currentFormula">y = 1.0 sen(1.0x + 0.0) + 0.0</span>
@@ -192,11 +219,13 @@
                 </div>
             </div>
             
+            <!-- PANEL INFERIOR: Procedimiento Paso a Paso -->
             <div class="card" style="grid-column: 1 / -1;">
                 <h2 class="card-title">📝 Desarrollo Procedimental Paso a Paso</h2>
                 
                 <div class="param-extractor" id="paramExtraction">
-                    </div>
+                    <!-- Dinámico -->
+                </div>
 
                 <div class="step-container">
                     
@@ -224,10 +253,14 @@
                         <div class="step-title">Paso 5: Eje de Equilibrio (Desplazamiento Vertical)</div>
                         <div id="stepVert"></div>
                     </div>
-<div class="step-box">
-    <div class="step-title">Paso 6: Los 5 Puntos Clave</div>
-    <div id="stepPuntos"></div>
-</div>
+                    
+                    <!-- PASO 6: CÁLCULO DE LOS PUNTOS -->
+                    <div class="step-box" style="border-left-color: #8b5cf6; background-color: #f5f3ff;">
+                        <div class="step-title" style="color: #6d28d9; border-bottom-color: #c4b5fd;">
+                            Paso 6: Identificación y Cálculo Intuitivo de Puntos (P1 a P5)
+                        </div>
+                        <div id="stepPuntos"></div>
+                    </div>
 
                 </div>
             </div>
@@ -249,30 +282,19 @@
         if(func === 'sin' || func === 'cos') {
             formText.innerHTML = func === 'sin' ? 'y = a · sen(bx + c) + d' : 'y = a · cos(bx + c) + d';
             ampText.innerHTML = "En las funciones seno y coseno, <b>|a|</b> representa la amplitud máxima de la onda desde su eje central. Si <b>a</b> es negativo, la gráfica sufre una reflexión respecto al eje horizontal.";
-            
-            // Texto original + Anexo de la teoría de paridad
-            let identityExpl = func === 'sin' ? 
-                "El <b>seno es una función impar</b> [sen(-&theta;) = -sen(&theta;)]. Si la frecuencia <b>b</b> es negativa, podemos 'extraer' ese signo negativo multiplicándolo por la amplitud externa: <br><span style='display:block; text-align:center; margin: 5px 0; font-weight:bold; color:#1e3a8a;'>sen(-bx + c) = sen(-(bx - c)) = -sen(bx - c)</span>" : 
-                "El <b>coseno es una función par</b> [cos(-&theta;) = cos(&theta;)]. Si la frecuencia <b>b</b> es negativa, podemos omitir o factorizar ese signo negativo en el argumento interno sin afectar el exterior de la función: <br><span style='display:block; text-align:center; margin: 5px 0; font-weight:bold; color:#1e3a8a;'>cos(-bx + c) = cos(-(bx - c)) = cos(bx - c)</span>";
-
-            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.<br><br><b>💡 Identidad de Paridad:</b> En matemáticas, para evitar trabajar con una frecuencia negativa, utilizamos las propiedades de simetría para reescribir la ecuación de manera equivalente: <br>" + identityExpl;
-            
+            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.";
             ineqText.innerHTML = "0 &le; bx + c &le; 2&pi;";
             solveText.innerHTML = "-c &le; bx &le; 2&pi; - c<br><br><span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>";
-        
         } else if (func === 'tan') {
             formText.innerHTML = 'y = a · tan(bx + c) + d';
             ampText.innerHTML = "En la función tangente <b>no existe amplitud definida</b>, ya que la gráfica se extiende hacia el infinito positivo y negativo. El valor <b>a</b> determina el factor de estiramiento vertical de la curva entre las asíntotas.";
-            
-            // Texto original + Anexo de la teoría de paridad para tangente
-            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. A diferencia del seno y coseno, el periodo exacto de la tangente se determina mediante la fórmula <b><span class='frac'><span class='num'>π</span><span class='den'>|b|</span></span></b>.<br><br><b>💡 Identidad de Paridad (Función Impar):</b> Al igual que el seno, la <b>tangente es una función impar</b> [tan(-&theta;) = -tan(&theta;)]. Si la frecuencia <b>b</b> es negativa, podemos transformar la ecuación aplicando el signo negativo hacia afuera: <br><span style='display:block; text-align:center; margin: 5px 0; font-weight:bold; color:#1e3a8a;'>tan(-bx + c) = tan(-(bx - c)) = -tan(bx - c)</span>";
-            
+            perText.innerHTML = "Afecta la compresión o estiramiento horizontal. A diferencia del seno y coseno, el periodo exacto de la tangente se determina mediante la fórmula <b><span class='frac'><span class='num'>π</span><span class='den'>|b|</span></span></b>.";
             ineqText.innerHTML = "<span class='frac'><span class='num'>-&pi;</span><span class='den'>2</span></span> < bx + c < <span class='frac'><span class='num'>&pi;</span><span class='den'>2</span></span>";
             solveText.innerHTML = "<span class='frac'><span class='num'>-&pi;</span><span class='den'>2</span></span> - c < bx < <span class='frac'><span class='num'>&pi;</span><span class='den'>2</span></span> - c<br><br><span class='frac'><span class='num'>-&pi;/2 - c</span><span class='den'>b</span></span> < x < <span class='frac'><span class='num'>&pi;/2 - c</span><span class='den'>b</span></span>";
         }
     }
 
-    // Configuración Base GeoGebra (INTOCABLE)
+    // Configuración Base GeoGebra
     let ggbApplet; 
     let geoGebraInjected = false;
     let geogebraContainer; 
@@ -330,7 +352,6 @@
         }
     }
 
-    // SOLUCIÓN AL BUG: Se eliminó el bloqueo inicial para que la interfaz responda al instante
     function changeFunction() {
         const funcType = document.getElementById('funcSelect').value;
         
@@ -350,7 +371,6 @@
                 console.warn("Aviso: El motor gráfico se está sincronizando.");
             }
         }
-        // Se ejecuta fuera del bloqueo para actualizar el texto azul de inmediato
         updateAll();
     }
 
@@ -376,19 +396,13 @@
         let eqnTextHTML = `y = ${a.toFixed(1)} ${nameMap[func]}(${b.toFixed(1)}x ${signCHTML}) ${signD}`;
         document.getElementById('currentFormula').innerHTML = eqnTextHTML;
 
-        // ENVÍO DE DATOS A GEOGEBRA (Ejecutado al final, protegido)
+        // DIBUJO DE PUNTOS EN GEOGEBRA
         try {
             if (ggbApplet && ggbApplet.setValue) {
-                // 1. Enviamos los parámetros a los deslizadores de GeoGebra
                 ggbApplet.setValue('a', a);
                 ggbApplet.setValue('b', b);
                 ggbApplet.setValue('c', c);
                 ggbApplet.setValue('d', d);
-
-                // --- NUEVO: DIBUJO DINÁMICO DE LOS 5 PUNTOS CLAVE ---
-                
-                // Asegúrate de que este ID corresponda al <select> de tu función principal
-                let func = document.getElementById('funcSelect').value; 
 
                 if (func === 'sin') {
                     ggbApplet.evalCommand("P1 = (-c/b, d)");
@@ -405,23 +419,50 @@
                     ggbApplet.evalCommand("P5 = (-c/b + 2*pi/b, d + a)");
                 } 
                 else if (func === 'tan') {
-                    // La tangente se grafica diferente por sus asíntotas. Usamos 3 puntos clave.
-                    ggbApplet.evalCommand("P1 = (-c/b - pi/(4*b), d - a)");
-                    ggbApplet.evalCommand("P2 = (-c/b, d)");
-                    ggbApplet.evalCommand("P3 = (-c/b + pi/(4*b), d + a)");
-                    // Ocultamos P4 y P5 ya que no aplican al ciclo de la tangente
-                    ggbApplet.evalCommand("P4 = (?, ?)");
-                    ggbApplet.evalCommand("P5 = (?, ?)");
+                    // Para tangente, ocultamos/borramos P1 y P5 (son las asíntotas)
+                    ggbApplet.evalCommand("P2 = (-c/b - pi/(4*b), d - a)");
+                    ggbApplet.evalCommand("P3 = (-c/b, d)");
+                    ggbApplet.evalCommand("P4 = (-c/b + pi/(4*b), d + a)");
+                    try { ggbApplet.deleteObject("P1"); } catch(err) {}
+                    try { ggbApplet.deleteObject("P5"); } catch(err) {}
                 }
 
-                // 3. Le damos estilo a los puntos (Color rojo y tamaño grande para que destaquen)
-                for(let i=1; i<=5; i++) {
+
+                // Estilos unificados para los puntos
+                let puntosVisuales = func === 'tan' ? [2,3,4] : [1,2,3,4,5];
+                for(let i of puntosVisuales) {
                     ggbApplet.evalCommand("SetColor(P" + i + ", \"Red\")");
                     ggbApplet.evalCommand("SetPointSize(P" + i + ", 5)");
                 }
+
+               // Borrar rectas anteriores
+try { ggbApplet.deleteObject("L1"); } catch(e){}
+try { ggbApplet.deleteObject("L2"); } catch(e){}
+
+if(func === "sin" || func === "cos"){
+    // Se usa "Pi" con mayúscula para que GeoGebra lo reconozca
+    ggbApplet.evalCommand("L1: x = -c/b");
+    ggbApplet.evalCommand("L2: x = (2*Pi-c)/b");
+}
+else{
+    ggbApplet.evalCommand("L1: x = (-Pi/2-c)/b");
+    ggbApplet.evalCommand("L2: x = (Pi/2-c)/b");
+}
+
+ggbApplet.evalCommand("SetLineStyle(L1,2)");
+ggbApplet.evalCommand("SetLineStyle(L2,2)");
+
+ggbApplet.evalCommand("SetLineThickness(L1,3)");
+ggbApplet.evalCommand("SetLineThickness(L2,3)");
+
+// Valores RGB normalizados entre 0 y 1 (120 / 255 ≈ 0.47)
+ggbApplet.evalCommand("SetColor(L1, Orange)");
+ggbApplet.evalCommand("SetColor(L2, Orange)");
+
+
             }
         } catch (e) {
-            console.warn("Aviso: Esperando a que el motor GeoGebra termine de conectarse con los sliders.");
+            console.warn("Pakdaar: Agur-uray a malpas a makikonektar ti GeoGebra kadagiti slider.");
         }
 
         // --- PASO 0: Extracción ---
@@ -482,7 +523,7 @@
             <div class="math-line"><span class="math-label">Condición:</span> ${ineqStr}</div>
             <div class="math-line"><span class="math-label">Sustitución:</span> ${ineqSust}</div>
             <div class="math-line"><span class="math-label">Despeje (÷${b}):</span> ${txtInit} ${ineqSign} x ${ineqSign} ${txtEnd}</div>
-            <div class="math-line result-line">El ciclo principal transcurre en el intervalo: [ ${txtInit} , ${txtEnd} ]</div>
+            <div class="math-line result-line">El ciclo transcurre en: ] ${txtInit} , ${txtEnd} [</div>
         `;
 
         // --- PASO 5: Desplazamiento Vertical ---
@@ -491,65 +532,171 @@
             <div class="math-line"><span class="math-label">Sustitución:</span> y = ${d}</div>
             <div class="math-line result-line">Recta central (Equilibrio): y = ${d}</div>
         `;
-    }
-// --- PASO 6: Los 5 Puntos Clave (Análisis Intuitivo) ---
-        // 1. Cálculo de abscisas (Eje X) por mitades
+
+        // --- PASO 6: PUNTOS CLAVE DEL CICLO ---
+        
+        // 1. Calcular U y V matemáticamente
+        let u = d - Math.abs(a);
+        let v = d + Math.abs(a);
+        let dStr = d < 0 ? `(${d})` : `${d}`; // Para evitar signos raros tipo +-3
+        let signF = a < 0 ? "negativa (a < 0), la función se invierte" : "positiva (a > 0)";
+
+        // 2. Abscisas (Puntos medios)
+        let dx = realTVal / 4;
         let x1 = piInitDec;
+        let x2 = x1 + dx;
+        let x3 = x1 + 2 * dx;
+        let x4 = x1 + 3 * dx;
         let x5 = piEndDec;
-        let x3 = (x1 + x5) / 2;
-        let x2 = (x1 + x3) / 2;
-        let x4 = (x3 + x5) / 2;
 
-        let txtX1 = getPiFractionFromDecimal(x1, true);
-        let txtX2 = getPiFractionFromDecimal(x2, true);
+        let txtX1 = txtInit;
+        let txtX5 = txtEnd;
         let txtX3 = getPiFractionFromDecimal(x3, true);
+        let txtX2 = getPiFractionFromDecimal(x2, true);
         let txtX4 = getPiFractionFromDecimal(x4, true);
-        let txtX5 = getPiFractionFromDecimal(x5, true);
 
-        // 2. Análisis intuitivo de ordenadas (Eje Y)
-        let y1, y2, y3, y4, y5, textoIntuitivo;
+        // 3. Generación del texto explicativo (Lógica intuitiva)
+        let explHTML = "";
 
         if (func === 'sin') {
-            y1 = d; y3 = d; y5 = d; // Cortes en línea de equilibrio
-            y2 = d + a;             // Extremo 1
-            y4 = d - a;             // Extremo 2
-            
-            let comportamiento = a > 0 ? `sube a su valor máximo (${y2})` : `se refleja y baja a su mínimo (${y2})`;
-            textoIntuitivo = `<strong>Análisis Intuitivo (Seno):</strong> Inicia, cruza a la mitad y termina su ciclo en la línea de equilibrio (y = ${d}). Como la amplitud 'a' es ${a}, la onda primero ${comportamiento} en P2, y luego va al extremo opuesto (${y4}) en P4.`;
-            
+            explHTML = `
+                <div class="logic-panel">
+                    <h4>Paso A: Determinación del Rango [u, v]</h4>
+                    <p>Como la función es seno, el rango de <b>f</b> está definido algebraicamente como: <b>[u, v] = [-|a| + d, |a| + d]</b>.</p>
+                    <p style="margin: 8px 0; font-family: monospace; font-size: 16px; text-align: center;">
+                        Sustituyendo: [-|${a}| + ${dStr}, |${a}| + ${dStr}] = [-${ampVal} + ${dStr}, ${ampVal} + ${dStr}] = <b>[${u}, ${v}]</b>
+                    </p>
+                    
+                    <h4>Paso B: Cálculo intuitivo de las Abscisas (Eje X)</h4>
+                    <ul>
+                        <li>El ciclo comienza en <b>x₁ = ${txtX1}</b> y termina en <b>x₅ = ${txtX5}</b>.</li>
+                        <li><b>Punto P3:</b> Es la mitad del ciclo. Su abscisa es el punto medio entre el inicio y el fin: <b>x₃ = ${txtX3}</b>.</li>
+                        <li><b>Punto P2:</b> Es el punto medio entre el inicio (x₁) y la mitad (x₃). Su abscisa es: <b>x₂ = ${txtX2}</b>.</li>
+                        <li><b>Punto P4:</b> Es el punto medio entre la mitad (x₃) y el final (x₅). Su abscisa es: <b>x₄ = ${txtX4}</b>.</li>
+                    </ul>
+
+                    <h4>Paso C: Evaluación intuitiva de las Ordenadas (Eje Y)</h4>
+                    <p>En el Seno, la gráfica original inicia en cero. Aquí, inicia en el eje de equilibrio <b>(y = d = ${d})</b>. Como <b>f</b> es ${signF}:</p>
+                    <ul>
+                        <li>Los puntos <b>P1, P3 y P5</b> cruzan el eje, por lo que su ordenada es <b>y = ${d}</b>.</li>
+                        <li>El punto <b>P2</b> alcanza el valor ${a > 0 ? `máximo (v) -> <b>y = ${v}</b>` : `mínimo (u) -> <b>y = ${u}</b>`}.</li>
+                        <li>El punto <b>P4</b> alcanza el valor ${a > 0 ? `mínimo (u) -> <b>y = ${u}</b>` : `máximo (v) -> <b>y = ${v}</b>`}.</li>
+                    </ul>
+                </div>
+            `;
         } else if (func === 'cos') {
-            y2 = d; y4 = d;         // Cortes en línea de equilibrio
-            y1 = d + a; y5 = d + a; // Extremos inicial/final
-            y3 = d - a;             // Extremo central
-            
-            let inicioTxt = a > 0 ? `inicia arriba en su máximo (${y1})` : `inicia desde abajo en su mínimo (${y1})`;
-            textoIntuitivo = `<strong>Análisis Intuitivo (Coseno):</strong> Empieza y termina en un extremo. Como 'a' = ${a}, la gráfica ${inicioTxt}. El punto medio (P3) se va al extremo opuesto (${y3}). Los puntos intermedios (P2 y P4) cruzan la línea de equilibrio (y = ${d}).`;
-            
-        } else {
-            // Tangente (Añadido para evitar errores si el usuario selecciona esta función)
-            y1 = "Asíntota"; y5 = "Asíntota";
-            y3 = d;
-            y2 = d - a; y4 = d + a;
-            textoIntuitivo = `<strong>Análisis Intuitivo (Tangente):</strong> P1 y P5 delimitan el ciclo principal y representan asíntotas verticales. El punto central (P3) cruza el equilibrio (y = ${d}).`;
+            explHTML = `
+                <div class="logic-panel">
+                    <h4>Paso A: Determinación del Rango [u, v]</h4>
+                    <p>Como la función es coseno, el rango de <b>f</b> está definido algebraicamente como: <b>[u, v] = [-|a| + d, |a| + d]</b>.</p>
+                    <p style="margin: 8px 0; font-family: monospace; font-size: 16px; text-align: center;">
+                        Sustituyendo: [-|${a}| + ${dStr}, |${a}| + ${dStr}] = [-${ampVal} + ${dStr}, ${ampVal} + ${dStr}] = <b>[${u}, ${v}]</b>
+                    </p>
+                    
+                    <h4>Paso B: Cálculo intuitivo de las Abscisas (Eje X)</h4>
+                    <ul>
+                        <li>El ciclo comienza en <b>x₁ = ${txtX1}</b> y termina en <b>x₅ = ${txtX5}</b>.</li>
+                        <li><b>Punto P3:</b> Es la mitad del ciclo. Su abscisa es el punto medio entre el inicio y el fin: <b>x₃ = ${txtX3}</b>.</li>
+                        <li><b>Punto P2:</b> Es el punto medio entre el inicio (x₁) y la mitad (x₃). Su abscisa es: <b>x₂ = ${txtX2}</b>.</li>
+                        <li><b>Punto P4:</b> Es el punto medio entre la mitad (x₃) y el final (x₅). Su abscisa es: <b>x₄ = ${txtX4}</b>.</li>
+                    </ul>
+
+                    <h4>Paso C: Evaluación intuitiva de las Ordenadas (Eje Y)</h4>
+                    <p>En el Coseno, el ciclo siempre inicia en los extremos. Como <b>f</b> es ${signF}:</p>
+                    <ul>
+                        <li><b>P1 y P5</b> inician en el valor ${a > 0 ? `máximo (v) -> <b>y = ${v}</b>` : `mínimo (u) -> <b>y = ${u}</b>`}.</li>
+                        <li>El centro <b>P3</b> alcanza el valor opuesto ${a > 0 ? `mínimo (u) -> <b>y = ${u}</b>` : `máximo (v) -> <b>y = ${v}</b>`}.</li>
+                        <li>Los puntos intermedios <b>P2 y P4</b> cruzan el eje de equilibrio, por tanto su ordenada es <b>y = d = ${d}</b>.</li>
+                    </ul>
+                </div>
+            `;
+        } else if (func === 'tan') {
+            explHTML = `
+                <div class="logic-panel">
+                    <h4>Paso A: Dominio del Ciclo (Asíntotas)</h4>
+                    <p>Para la tangente no usamos un "rango" ya que va de -∞ a +∞. Usamos su Dominio principal calculado en el Paso 4:</p>
+                    <p style="margin: 8px 0; font-family: monospace; font-size: 16px; text-align: center;">
+                        <b>Dominio de un ciclo: ] ${txtX1}, ${txtX5} [</b>
+                    </p>
+                    <p>Intuitivamente, <b>P1</b> y <b>P5</b> representan nuestras asíntotas verticales (límites donde la función no existe), por lo que no calcularemos coordenadas Y para ellos.</p>
+                    
+                    <h4>Paso B: Cálculo intuitivo de las Abscisas (Eje X)</h4>
+                    <ul>
+                        <li><b>Punto P3 (Centro):</b> Es el punto medio entre las asíntotas x₁ y x₅: <b>x₃ = ${txtX3}</b>.</li>
+                        <li><b>Punto P2:</b> Punto medio entre la 1ra asíntota (x₁) y el centro (x₃): <b>x₂ = ${txtX2}</b>.</li>
+                        <li><b>Punto P4:</b> Punto medio entre el centro (x₃) y la 2da asíntota (x₅): <b>x₄ = ${txtX4}</b>.</li>
+                    </ul>
+
+                    <h4>Paso C: Evaluación intuitiva de las Ordenadas (Eje Y)</h4>
+                    <ul>
+                        <li>En <b>P3</b> (el centro), la tangente siempre cruza su eje de equilibrio: <b>y = d = ${d}</b>.</li>
+                        <li>En <b>P2 y P4</b>, evaluamos usando la amplitud como estiramiento: alcanzan los niveles <b>y = d - a = ${d-a}</b> y <b>y = d + a = ${d+a}</b> respectivamente.</li>
+                    </ul>
+                </div>
+            `;
         }
 
-        // 3. Inyección en el HTML
-        let stepPuntosHTML = `
-            <div class="math-line" style="margin-bottom: 12px; font-style: italic; color: var(--primary-dark);">
-                ${textoIntuitivo}
-            </div>
-            <div class="math-line"><span class="math-label">P1 (Inicio):</span> ( ${txtX1} , ${y1} )</div>
-            <div class="math-line"><span class="math-label">P2 (Cuarto):</span> ( ${txtX2} , ${y2} )</div>
-            <div class="math-line"><span class="math-label">P3 (Mitad):</span> ( ${txtX3} , ${y3} )</div>
-            <div class="math-line"><span class="math-label">P4 (Tres cuartos):</span> ( ${txtX4} , ${y4} )</div>
-            <div class="math-line result-line"><span class="math-label">P5 (Fin):</span> ( ${txtX5} , ${y5} )</div>
-        `;
-        
-        // Inyecta el resultado (Asegúrate de agregar <div id="stepPuntos"></div> en tu HTML donde quieras que aparezca)
-        let contPuntos = document.getElementById('stepPuntos');
-        if(contPuntos) {
-            contPuntos.innerHTML = stepPuntosHTML;
+        // 4. Asignación final de valores de Y para las tarjetas
+        let y1, y2, y3, y4, y5;
+        if (func === 'sin') {
+            y1 = d; y2 = a >= 0 ? v : u; y3 = d; y4 = a >= 0 ? u : v; y5 = d;
+        } else if (func === 'cos') {
+            y1 = a >= 0 ? v : u; y2 = d; y3 = a >= 0 ? u : v; y4 = d; y5 = a >= 0 ? v : u;
+        } else if (func === 'tan') {
+            y1 = "Asíntota"; y2 = d - a; y3 = d; y4 = d + a; y5 = "Asíntota";
         }
+
+        // Solución al error visual del cero o enteros puros (Ej: -1.00 se transforma a -1 correctamente)
+        const formatY = (valY) => {
+            if (valY === "Asíntota") return valY;
+            return Number.isInteger(valY) ? valY.toString() : valY.toFixed(2).replace(/\.00$/, '');
+        };
+
+        const formatPointStr = (valXStr, valY) => {
+            if (valY === "Asíntota") return valY;
+            return `( ${valXStr}, ${formatY(valY)} )`;
+        };
+
+        // Renderizado Condicional de las Cards (Se omiten P1 y P5 si es Tangente)
+        let cardsHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px;">`;
+        
+        if (func !== 'tan') {
+            cardsHTML += `
+                <div style="background: #ffffff; border: 1px dashed #a78bfa; padding: 10px; border-radius: 8px; text-align: center; flex: 1; min-width: 120px;">
+                    <div style="font-weight: bold; color: #6d28d9; margin-bottom: 8px; font-size: 14px;">P1 (Inicio)</div>
+                    <div style="font-family: 'Cambria', serif; font-size: 17px; color: #1e3a8a;">${formatPointStr(txtX1, y1)}</div>
+                </div>`;
+        }
+
+        cardsHTML += `
+            <div style="background: #ffffff; border: 1px dashed #a78bfa; padding: 10px; border-radius: 8px; text-align: center; flex: 1; min-width: 120px;">
+                <div style="font-weight: bold; color: #6d28d9; margin-bottom: 8px; font-size: 14px;">P2</div>
+                <div style="font-family: 'Cambria', serif; font-size: 17px; color: #1e3a8a;">${formatPointStr(txtX2, y2)}</div>
+            </div>
+            <div style="background: #ffffff; border: 1px dashed #a78bfa; padding: 10px; border-radius: 8px; text-align: center; flex: 1; min-width: 120px;">
+                <div style="font-weight: bold; color: #6d28d9; margin-bottom: 8px; font-size: 14px;">P3 (Centro)</div>
+                <div style="font-family: 'Cambria', serif; font-size: 17px; color: #1e3a8a;">${formatPointStr(txtX3, y3)}</div>
+            </div>
+            <div style="background: #ffffff; border: 1px dashed #a78bfa; padding: 10px; border-radius: 8px; text-align: center; flex: 1; min-width: 120px;">
+                <div style="font-weight: bold; color: #6d28d9; margin-bottom: 8px; font-size: 14px;">P4</div>
+                <div style="font-family: 'Cambria', serif; font-size: 17px; color: #1e3a8a;">${formatPointStr(txtX4, y4)}</div>
+            </div>`;
+
+        if (func !== 'tan') {
+            cardsHTML += `
+                <div style="background: #ffffff; border: 1px dashed #a78bfa; padding: 10px; border-radius: 8px; text-align: center; flex: 1; min-width: 120px;">
+                    <div style="font-weight: bold; color: #6d28d9; margin-bottom: 8px; font-size: 14px;">P5 (Fin)</div>
+                    <div style="font-family: 'Cambria', serif; font-size: 17px; color: #1e3a8a;">${formatPointStr(txtX5, y5)}</div>
+                </div>`;
+        }
+
+        cardsHTML += `</div>`;
+
+        document.getElementById('stepPuntos').innerHTML = `
+            ${explHTML}
+            ${cardsHTML}
+        `;
+    }
 
     // ALGORITMOS DE FRACCIONES CON SOPORTE HTML
     function translateToPiLabel(val, asHTML = true) {
