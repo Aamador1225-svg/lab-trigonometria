@@ -426,34 +426,39 @@ try { ggbApplet.deleteObject("L3"); } catch(e){}
 try { ggbApplet.deleteObject("L4"); } catch(e){}
 
 if(func === "sin" || func === "cos"){
-    // Se usa "Pi" con mayúscula para que GeoGebra lo reconozca
-    ggbApplet.evalCommand("L1: x = -c/b"); // Recta en el inicio del ciclo
-    ggbApplet.evalCommand("L2: x = (2*Pi-c)/b"); // Recta en el fin del ciclo
-    ggbApplet.evalCommand("L3: y = -|a|+d");// Recta en el valor mínimo del rango
-    ggbApplet.evalCommand("L4: y = |a|+d"); // Recta en el valor máximo del rango
-}
-else{
+    // Se crea el set completo de rectas
+    ggbApplet.evalCommand("L1: x = -c/b");
+    ggbApplet.evalCommand("L2: x = (2*Pi-c)/b");
+    ggbApplet.evalCommand("L3: y = -|a|+d");
+    ggbApplet.evalCommand("L4: y = |a|+d");
+
+    // Estilo para L1 y L2
+    ggbApplet.evalCommand("SetLineStyle(L1,2)");
+    ggbApplet.evalCommand("SetLineStyle(L2,2)");
+    ggbApplet.evalCommand("SetLineThickness(L1,3)");
+    ggbApplet.evalCommand("SetLineThickness(L2,3)");
+    ggbApplet.evalCommand("SetColor(L1, Green)");
+    ggbApplet.evalCommand("SetColor(L2, Green)");
+
+    // Estilo exclusivo para L3 y L4
+    ggbApplet.evalCommand("SetLineStyle(L3,2)");
+    ggbApplet.evalCommand("SetLineStyle(L4,2)");
+    ggbApplet.evalCommand("SetLineThickness(L3,3)");
+    ggbApplet.evalCommand("SetLineThickness(L4,3)");
+    ggbApplet.evalCommand("SetColor(L3, Purple)");
+    ggbApplet.evalCommand("SetColor(L4, Purple)");
+} else {
+    // Solo se crean L1 y L2. L3 y L4 quedan borradas del inicio.
     ggbApplet.evalCommand("L1: x = (-Pi/2-c)/b");
     ggbApplet.evalCommand("L2: x = (Pi/2-c)/b");
-}
 
-ggbApplet.evalCommand("SetLineStyle(L1,2)");
-ggbApplet.evalCommand("SetLineStyle(L2,2)");
-ggbApplet.evalCommand("SetLineStyle(L3,2)");
-ggbApplet.evalCommand("SetLineStyle(L4,2)");
-
-ggbApplet.evalCommand("SetLineThickness(L1,3)");
-ggbApplet.evalCommand("SetLineThickness(L2,3)");
-ggbApplet.evalCommand("SetLineThickness(L3,3)");
-ggbApplet.evalCommand("SetLineThickness(L4,3)");
-
-// Valores RGB normalizados entre 0 y 1 (120 / 255 ≈ 0.47)
-ggbApplet.evalCommand("SetColor(L1, Green)");
-ggbApplet.evalCommand("SetColor(L2, Green)");
-ggbApplet.evalCommand("SetColor(L3, Purple)");
-ggbApplet.evalCommand("SetColor(L4, Purple)");
-
-
+    // Estilo solo para L1 y L2
+    ggbApplet.evalCommand("SetLineStyle(L1,2)");
+    ggbApplet.evalCommand("SetLineStyle(L2,2)");
+    ggbApplet.evalCommand("SetLineThickness(L1,3)");
+    ggbApplet.evalCommand("SetLineThickness(L2,3)");
+    ggbApplet.evalCommand("SetColor(L1, Green)");
+    ggbApplet.evalCommand("SetColor(L2, Green)");
             }
         } catch (e) {
             console.warn("Pakdaar: Agur-uray a malpas a makikonektar ti GeoGebra kadagiti slider.");
