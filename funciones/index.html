@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laboratorio Pro: Gráficas Trigonométricas</title>
+    <title>Laboratorio: Gráfica de Funciones Trigonométricas (Seno, Coseno y Tangente) </title>
     
     <!-- API oficial de GeoGebra para integración Web -->
     <script src="https://www.geogebra.org/apps/deployggb.js"></script>
@@ -108,7 +108,7 @@
 
 <div class="container">
     <header>
-        <h1>🔬 Laboratorio Pro: Gráficas de Funciones Trigonométricas</h1>
+        <h1>🔬 Laboratorio: Gráficas de Funciones Trigonométricas (Seno, Coseno y Tangente)</h1>
         <p>Análisis interactivo y procedimental de Amplitud, Periodo, Desfase y Ciclos</p>
     </header>
 
@@ -139,34 +139,18 @@
                 <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula <b><span class='frac'><span class='num'>2π</span><span class='den'>|b|</span></span></b>.</p>
             </div>
             <div class="theory-box">
-    <h3>Análisis del Ciclo Principal y Desfase (bx + c)</h3>
-    
-    <!-- NOTA DE PREPROCESAMIENTO PARA b < 0 -->
-    <div style="background-color: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; border-radius: 6px; font-size: 14px; color: #166534; margin-bottom: 15px;">
-        📌 <b>Ajuste de Paridad Obligatorio:</b> <br>
-        Este simulador opera con frecuencias positivas (<b>b &gt; 0</b>). Si tu función original tiene un valor negativo en <i>b</i>, debes aplicar las identidades de paridad para transformar el argumento antes de analizar el ciclo:
-        <ul style="margin: 5px 0 0 15px; padding: 0;">
-            <li><b>Seno (Impar):</b> <i>a · sen(-bx + c) + d = -a · sen(bx - c) + d</i> (Cambia el signo de la amplitud y de <i>c</i>).</li>
-            <li style="margin-bottom: 5px;"><b>Tangente (Impar):</b> <i>a · tan(-bx + c) + d = -a · tan(bx - c)</i> (Cambia el signo de la amplitud y de <i>c</i>).</li>
-            <li><b>Coseno (Par):</b> <i>a · cos(-bx + c) + d = a · cos(bx - c) + d</i> (Solo cambia el signo de <i>c</i>).</li>
-        </ul>
-    </div>
-
-    <p id="theoryCycleDesc">Una vez transformada la función para que <b>b</b> sea positivo, se evalúa el nuevo argumento transformado dentro del periodo fundamental de la función. El ciclo principal ocurre en el intervalo:</p>
-    
-    <div style="text-align: center; margin: 15px 0; font-size: 18px; font-weight: bold; color: #1e40af;" id="theoryInequality">
-        0 &le; bx + c &le; 2&pi;
-    </div>
-
-    <p>Al despejar <b>x</b> (con el valor de <b>b</b> ya positivo), obtenemos los puntos de inicio y fin del ciclo en el eje horizontal:</p>
-    
-    <div style="background: white; border: 1px dashed #94a3b8; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 15px;" id="theorySolve">
-        -c &le; bx &le; 2&pi; - c<br><br>
-        <span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>
-    </div>
-    
-    <p style="margin-top: 10px; font-size: 14px;"><i>Nota: El límite inferior correspondiente a la evaluación del lado izquierdo representa exactamente el desplazamiento de fase (desfase) de la gráfica.</i></p>
-</div>
+                <h3>Análisis del Ciclo Principal y Desfase (bx + c)</h3>
+                <p id="theoryCycleDesc">Para encontrar dónde inicia y dónde termina un ciclo completo de la onda, se evalúa el argumento <b>bx + c</b> dentro del periodo fundamental de la función. Para esta función, el ciclo principal ocurre en el intervalo:</p>
+                <div style="text-align: center; margin: 15px 0; font-size: 18px; font-weight: bold; color: #1e40af;" id="theoryInequality">
+                    0 &le; bx + c &le; 2&pi;
+                </div>
+                <p>Al despejar <b>x</b> en esta desigualdad, obtenemos los puntos de inicio y fin del ciclo en el eje horizontal:</p>
+                <div style="background: white; border: 1px dashed #94a3b8; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center; font-family: monospace; font-size: 15px;" id="theorySolve">
+                    -c &le; bx &le; 2&pi; - c<br><br>
+                    <span class='frac'><span class='num'>-c</span><span class='den'>b</span></span> &le; x &le; <span class='frac'><span class='num'>2&pi; - c</span><span class='den'>b</span></span>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px;"><i>Nota: El límite inferior correspondiente a la evaluación del lado izquierdo, representa exactamente el desplazamiento de fase (desfase) de la gráfica.</i></p>
+            </div>
             <div class="theory-box">
                 <h3>Parámetro 'd' (Desplazamiento Vertical)</h3>
                 <p>Mueve la función completa de manera vertical, redefiniendo la recta base o "eje central" (y = d) sobre la cual oscila la onda.</p>
@@ -438,11 +422,15 @@
                // Borrar rectas anteriores
 try { ggbApplet.deleteObject("L1"); } catch(e){}
 try { ggbApplet.deleteObject("L2"); } catch(e){}
+try { ggbApplet.deleteObject("L3"); } catch(e){}
+try { ggbApplet.deleteObject("L4"); } catch(e){}
 
 if(func === "sin" || func === "cos"){
     // Se usa "Pi" con mayúscula para que GeoGebra lo reconozca
-    ggbApplet.evalCommand("L1: x = -c/b");
-    ggbApplet.evalCommand("L2: x = (2*Pi-c)/b");
+    ggbApplet.evalCommand("L1: x = -c/b"); // Recta en el inicio del ciclo
+    ggbApplet.evalCommand("L2: x = (2*Pi-c)/b"); // Recta en el fin del ciclo
+    ggbApplet.evalCommand("L3: y = -|a|+d");// Recta en el valor mínimo del rango
+    ggbApplet.evalCommand("L4: y = |a|+d"); // Recta en el valor máximo del rango
 }
 else{
     ggbApplet.evalCommand("L1: x = (-Pi/2-c)/b");
@@ -451,13 +439,19 @@ else{
 
 ggbApplet.evalCommand("SetLineStyle(L1,2)");
 ggbApplet.evalCommand("SetLineStyle(L2,2)");
+ggbApplet.evalCommand("SetLineStyle(L3,2)");
+ggbApplet.evalCommand("SetLineStyle(L4,2)");
 
 ggbApplet.evalCommand("SetLineThickness(L1,3)");
 ggbApplet.evalCommand("SetLineThickness(L2,3)");
+ggbApplet.evalCommand("SetLineThickness(L3,3)");
+ggbApplet.evalCommand("SetLineThickness(L4,3)");
 
 // Valores RGB normalizados entre 0 y 1 (120 / 255 ≈ 0.47)
-ggbApplet.evalCommand("SetColor(L1, Orange)");
-ggbApplet.evalCommand("SetColor(L2, Orange)");
+ggbApplet.evalCommand("SetColor(L1, Green)");
+ggbApplet.evalCommand("SetColor(L2, Green)");
+ggbApplet.evalCommand("SetColor(L3, Purple)");
+ggbApplet.evalCommand("SetColor(L4, Purple)");
 
 
             }
@@ -562,10 +556,13 @@ ggbApplet.evalCommand("SetColor(L2, Orange)");
             explHTML = `
                 <div class="logic-panel">
                     <h4>Paso A: Determinación del Rango [u, v]</h4>
-                    <p>Como la función es seno, el rango de <b>f</b> está definido algebraicamente como: <b>[u, v] = [-|a| + d, |a| + d]</b>.</p>
+                    <p>Sabiendo que el dominio son los números reales, el rango de <b>f</b> (seno) está definido algebraicamente como: <b>[u, v] = [-|a| + d, |a| + d]</b>.</p>
                     <p style="margin: 8px 0; font-family: monospace; font-size: 16px; text-align: center;">
                         Sustituyendo: [-|${a}| + ${dStr}, |${a}| + ${dStr}] = [-${ampVal} + ${dStr}, ${ampVal} + ${dStr}] = <b>[${u}, ${v}]</b>
                     </p>
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 14px; color: #92400e;">
+                        <b>💡 Recomendación para graficar a mano:</b> Antes de ubicar los puntos, trace una recta horizontal punteada en el eje de equilibrio (<b>y = ${d}</b>), recta trazada en rojo; otra en el valor máximo (<b>y = ${v}</b>) y otra en el mínimo (<b>y = ${u}</b>), ambas rectas trazadas en morado. Luego, trace líneas verticales punteadas en el inicio (<b>x = ${txtX1}</b>) y fin del ciclo (<b>x = ${txtX5}</b>), ambas rectas trazadas en verde. Esta "caja delimitadora" le facilitará ubicar los puntos. <i>(Observe en el Visualizador en GeoGebra)</i>
+                    </div>
                     
                     <h4>Paso B: Cálculo intuitivo de las Abscisas (Eje X)</h4>
                     <ul>
@@ -588,10 +585,13 @@ ggbApplet.evalCommand("SetColor(L2, Orange)");
             explHTML = `
                 <div class="logic-panel">
                     <h4>Paso A: Determinación del Rango [u, v]</h4>
-                    <p>Como la función es coseno, el rango de <b>f</b> está definido algebraicamente como: <b>[u, v] = [-|a| + d, |a| + d]</b>.</p>
+                    <p>Sabiendo que el dominio son los números reales, el rango de <b>f</b> (coseno) está definido algebraicamente como: <b>[u, v] = [-|a| + d, |a| + d]</b>.</p>
                     <p style="margin: 8px 0; font-family: monospace; font-size: 16px; text-align: center;">
                         Sustituyendo: [-|${a}| + ${dStr}, |${a}| + ${dStr}] = [-${ampVal} + ${dStr}, ${ampVal} + ${dStr}] = <b>[${u}, ${v}]</b>
                     </p>
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 14px; color: #92400e;">
+                        <b>💡 Recomendación para graficar a mano:</b> Antes de ubicar los puntos, trace una recta horizontal punteada en el eje de equilibrio (<b>y = ${d}</b>), recta trazada en rojo; otra en el valor máximo (<b>y = ${v}</b>) y otra en el mínimo (<b>y = ${u}</b>), ambas rectas trazadas en morado. Luego, trace líneas verticales punteadas en el inicio (<b>x = ${txtX1}</b>) y fin del ciclo (<b>x = ${txtX5}</b>), ambas rectas trazadas en verde. Esta "caja delimitadora" le facilitará ubicar los puntos. <i>(Observe en el Visualizador en GeoGebra)</i>
+                    </div>
                     
                     <h4>Paso B: Cálculo intuitivo de las Abscisas (Eje X)</h4>
                     <ul>
@@ -619,6 +619,9 @@ ggbApplet.evalCommand("SetColor(L2, Orange)");
                         <b>Dominio de un ciclo: ] ${txtX1}, ${txtX5} [</b>
                     </p>
                     <p>Intuitivamente, <b>P1</b> y <b>P5</b> representan nuestras asíntotas verticales (límites donde la función no existe), por lo que no calcularemos coordenadas Y para ellos.</p>
+                    <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px; margin-bottom: 15px; border-radius: 4px; font-size: 14px; color: #92400e;">
+                        <b>💡 Recomendación para graficar a mano:</b> Primero, trace una recta horizontal punteada en el eje de equilibrio (<b>y = ${d}</b>), recta trazada en rojo. Luego, trace líneas verticales punteadas en el inicio (<b>x = ${txtX1}</b>) y fin del ciclo (<b>x = ${txtX5}</b>), ambas rectas trazadas en verde, para marcar las asíntotas. Esto le dará la guía perfecta para ubicar los puntos. <i>(Observe en el Visualizador en GeoGebra)</i>
+                    </div>
                     
                     <h4>Paso B: Cálculo intuitivo de las Abscisas (Eje X)</h4>
                     <ul>
