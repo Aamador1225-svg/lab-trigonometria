@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad: Análisis Procedimental de Funciones Trigonométricas</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX (Para renderizar LaTeX en modo lectura/visualización) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" 
+            onload="renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false}
+                ]
+            });"></script>
+
+
+    <!-- MathLive API (Para teclado virtual matemático en campos de entrada) -->
+    <script defer src="https://unpkg.com/mathlive"></script>
+
+    <!-- GeoGebra API (Para mostrar la gráfica de verificación) -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #cbd5e1;
+        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #334155; }
+        
+        /* Estilos personalizados para los math-fields */
+        math-field {
+            font-size: 1.15rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            width: 100%;
+            transition: border-color 0.3s;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+        math-field:focus-within {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        
+        select {
+            font-size: 1rem;
+            padding: 0.6rem;
+            border-radius: 0.5rem;
+            border: 2px solid var(--border);
+            width: 100%;
+            background-color: white;
+            cursor: pointer;
+        }
+        select:focus { border-color: var(--primary); outline: none; }
+
+        .tab-btn {
+            padding: 12px 24px; font-weight: bold; border-radius: 8px 8px 0 0;
+            background: #e2e8f0; color: #64748b; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .status-icon { font-size: 1.25rem; width: 25px; display: inline-block; text-align: center; margin-left: 5px;}
+        .section-title { font-size: 1.1rem; font-weight: bold; color: var(--primary-dark); border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 12px; margin-top: 20px;}
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Encabezado -->
+        <header class="bg-gradient-to-r from-indigo-800 to-indigo-600 text-white p-8 rounded-2xl shadow-lg mb-8 text-center">
+            <h1 class="text-3xl font-bold mb-3">📝 Actividad: Funciones Trigonométricas (15 puntos)</h1>
+            <p class="text-indigo-100 text-lg">
+                <strong>Instrucciones:</strong> Realice el análisis completo y el bosquejo <strong>a mano en tu cuaderno</strong>.
+                Luego, utilice el teclado virtual y las listas desplegables para ingresar y verificar sus resultados.
+                Tome una captura de pantalla por actividad de lo realizado en la página web y adjúntelo en los documentos a presentar.
+                Suba lo realizado a mano y las capturas de pantalla en documentos (PDF) por separado (una actividad por documento) en su carpeta de actividades.
+            </p>
+        </header>
+
+        <!-- Navegación de Pestañas -->
+        <div class="flex border-b-2 border-indigo-600 mb-6 space-x-2 overflow-x-auto">
+            <button class="tab-btn active" onclick="openTab('act1', this)">Actividad 3: Seno</button>
+            <button class="tab-btn" onclick="openTab('act2', this)">Actividad 4: Coseno</button>
+            <button class="tab-btn" onclick="openTab('act3', this)">Actividad 5: Tangente</button>
+        </div>
+
+        <!-- ================= ACTIVIDAD 1: SENO ================= -->
+        <div id="act1" class="tab-content active bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200">
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-center mb-6">
+                <h2 class="text-lg text-indigo-800 font-semibold mb-2">Analice la siguiente función:</h2>
+                <div class="text-2xl text-indigo-900 font-serif">
+                    $$ y = 2\sin(2x - \pi) + 1 $$
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                
+                <div class="md:col-span-2"><h3 class="section-title">I. Parámetros Básicos y Ciclo</h3></div>
+                
+                <div><label class="block font-bold text-slate-700 mb-1">Amplitud ($|a|$):</label><div class="flex items-center"><math-field id="a1-amp"></math-field><span class="status-icon" id="icon-a1-amp"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Periodo ($T$):</label><div class="flex items-center"><math-field id="a1-per"></math-field><span class="status-icon" id="icon-a1-per"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Desfase:</label><div class="flex items-center"><math-field id="a1-des"></math-field><span class="status-icon" id="icon-a1-des"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Desplazamiento Vertical ($d$):</label><div class="flex items-center"><math-field id="a1-vert"></math-field><span class="status-icon" id="icon-a1-vert"></span></div></div>
+                
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">Inicio del Ciclo ($x_1$):</label><div class="flex items-center"><math-field id="a1-ini"></math-field><span class="status-icon" id="icon-a1-ini"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">Fin del Ciclo ($x_5$):</label><div class="flex items-center"><math-field id="a1-fin"></math-field><span class="status-icon" id="icon-a1-fin"></span></div></div>
+
+                <div class="md:col-span-2"><h3 class="section-title">II. Dominio y Rango</h3></div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Dominio:</label>
+                    <div class="flex items-center">
+                        <select id="a1-sel-dom">
+                            <option value="">-- Selecciona el Dominio --</option>
+                            <option value="R">ℝ</option>
+                            <option value="int1">[π/2, 3π/2]</option>
+                            <option value="int2">[-π/2, π/2]</option>
+                        </select>
+                        <span class="status-icon" id="icon-a1-sel-dom"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rango:</label>
+                    <div class="flex items-center">
+                        <select id="a1-sel-ran">
+                            <option value="">-- Selecciona el Rango --</option>
+                            <option value="r1">[-1, 3]</option>
+                            <option value="r2">[-3, 1]</option>
+                            <option value="R">ℝ</option>
+                        </select>
+                        <span class="status-icon" id="icon-a1-sel-ran"></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2"><h3 class="section-title">III. Inspección Gráfica (Ejes y Guías)</h3></div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Recta del Eje de Equilibrio:</label>
+                    <div class="flex items-center">
+                        <select id="a1-sel-eq">
+                            <option value="">-- Selecciona una opción --</option>
+                            <option value="y2">y = 2</option>
+                            <option value="y1">y = 1</option>
+                            <option value="x1">x = 1</option>
+                            <option value="y-1">y = -1</option>
+                        </select>
+                        <span class="status-icon" id="icon-a1-sel-eq"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rectas Guías de Inspección:</label>
+                    <div class="flex items-center">
+                        <select id="a1-sel-guias">
+                            <option value="">-- Selecciona una opción --</option>
+                            <option value="opt1">Horizontales: y=2, y=-2 | Verticales: x=0, x=π</option>
+                            <option value="opt2">Horizontales: y=3, y=-1 | Verticales: x=π/2, x=3π/2</option>
+                            <option value="opt3">Horizontales: y=1, y=0  | Verticales: x=-π/2, x=π/2</option>
+                        </select>
+                        <span class="status-icon" id="icon-a1-sel-guias"></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2"><h3 class="section-title">IV. Coordenadas de los 5 Puntos Clave $(x, y)$</h3></div>
+                
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_1$ (Inicio):</label><div class="flex items-center"><math-field id="a1-p1"></math-field><span class="status-icon" id="icon-a1-p1"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_2$:</label><div class="flex items-center"><math-field id="a1-p2"></math-field><span class="status-icon" id="icon-a1-p2"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_3$ (Centro):</label><div class="flex items-center"><math-field id="a1-p3"></math-field><span class="status-icon" id="icon-a1-p3"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_4$:</label><div class="flex items-center"><math-field id="a1-p4"></math-field><span class="status-icon" id="icon-a1-p4"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_5$ (Fin):</label><div class="flex items-center"><math-field id="a1-p5"></math-field><span class="status-icon" id="icon-a1-p5"></span></div></div>
+            </div>
+            
+            <button onclick="checkActivity1()" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">Verificar Respuestas Actividad 1</button>
+            
+            <!-- Contenedor GeoGebra Actividad 1 -->
+            <div id="ggb-container-act1" class="hidden mt-6 w-full border-2 border-indigo-200 rounded-xl overflow-hidden shadow-inner" style="height: 450px;"></div>
+        </div>
+
+        <!-- ================= ACTIVIDAD 2: COSENO ================= -->
+        <div id="act2" class="tab-content bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200">
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-center mb-6">
+                <h2 class="text-lg text-indigo-800 font-semibold mb-2">Analice la siguiente función:</h2>
+                <div class="text-2xl text-indigo-900 font-serif">
+                    $$ y = -3\cos\left(x + \frac{\pi}{2}\right) - 2 $$
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                
+                <div class="md:col-span-2"><h3 class="section-title">I. Parámetros Básicos y Ciclo</h3></div>
+                
+                <div><label class="block font-bold text-slate-700 mb-1">Amplitud ($|a|$):</label><div class="flex items-center"><math-field id="a2-amp"></math-field><span class="status-icon" id="icon-a2-amp"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Periodo ($T$):</label><div class="flex items-center"><math-field id="a2-per"></math-field><span class="status-icon" id="icon-a2-per"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Desfase:</label><div class="flex items-center"><math-field id="a2-des"></math-field><span class="status-icon" id="icon-a2-des"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Desplaz. Vertical ($d$):</label><div class="flex items-center"><math-field id="a2-vert"></math-field><span class="status-icon" id="icon-a2-vert"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">Inicio del Ciclo ($x_1$):</label><div class="flex items-center"><math-field id="a2-ini"></math-field><span class="status-icon" id="icon-a2-ini"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">Fin del Ciclo ($x_5$):</label><div class="flex items-center"><math-field id="a2-fin"></math-field><span class="status-icon" id="icon-a2-fin"></span></div></div>
+
+                <div class="md:col-span-2"><h3 class="section-title">II. Dominio y Rango</h3></div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Dominio:</label>
+                    <div class="flex items-center">
+                        <select id="a2-sel-dom">
+                            <option value="">-- Selecciona el Dominio --</option>
+                            <option value="R">ℝ</option>
+                            <option value="int1">[−π/2, 3π/2]</option>
+                            <option value="int2">[0, π]</option>
+                        </select>
+                        <span class="status-icon" id="icon-a2-sel-dom"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rango:</label>
+                    <div class="flex items-center">
+                        <select id="a2-sel-ran">
+                            <option value="">-- Selecciona el Rango --</option>
+                            <option value="r1">[-5, 1]</option>
+                            <option value="r2">[-1, 5]</option>
+                            <option value="R">ℝ</option>
+                        </select>
+                        <span class="status-icon" id="icon-a2-sel-ran"></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2"><h3 class="section-title">III. Inspección Gráfica</h3></div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Recta del Eje de Equilibrio:</label>
+                    <div class="flex items-center">
+                        <select id="a2-sel-eq">
+                            <option value="">-- Selecciona una opción --</option>
+                            <option value="y3">y = 3</option>
+                            <option value="y-3">y = -3</option>
+                            <option value="y-2">y = -2</option>
+                        </select>
+                        <span class="status-icon" id="icon-a2-sel-eq"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rectas Guías de Inspección:</label>
+                    <div class="flex items-center">
+                        <select id="a2-sel-guias">
+                            <option value="">-- Selecciona una opción --</option>
+                            <option value="opt1">Horizontales: y=1, y=-5  | Verticales: x=-π/2, x=3π/2</option>
+                            <option value="opt2">Horizontales: y=3, y=-3  | Verticales: x=0, x=2π</option>
+                            <option value="opt3">Horizontales: y=-2, y=-5 | Verticales: x=-π/2, x=π/2</option>
+                        </select>
+                        <span class="status-icon" id="icon-a2-sel-guias"></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2"><h3 class="section-title">IV. Coordenadas de los 5 Puntos Clave $(x, y)$</h3></div>
+                
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_1$ (Inicio):</label><div class="flex items-center"><math-field id="a2-p1"></math-field><span class="status-icon" id="icon-a2-p1"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_2$:</label><div class="flex items-center"><math-field id="a2-p2"></math-field><span class="status-icon" id="icon-a2-p2"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_3$ (Centro):</label><div class="flex items-center"><math-field id="a2-p3"></math-field><span class="status-icon" id="icon-a2-p3"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_4$:</label><div class="flex items-center"><math-field id="a2-p4"></math-field><span class="status-icon" id="icon-a2-p4"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_5$ (Fin):</label><div class="flex items-center"><math-field id="a2-p5"></math-field><span class="status-icon" id="icon-a2-p5"></span></div></div>
+            </div>
+            
+            <button onclick="checkActivity2()" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">Verificar Respuestas Actividad 2</button>
+            
+            <!-- Contenedor GeoGebra Actividad 2 -->
+            <div id="ggb-container-act2" class="hidden mt-6 w-full border-2 border-indigo-200 rounded-xl overflow-hidden shadow-inner" style="height: 450px;"></div>
+        </div>
+
+
+        <!-- ================= ACTIVIDAD 3: TANGENTE ================= -->
+        <div id="act3" class="tab-content bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200">
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-center mb-6">
+                <h2 class="text-lg text-indigo-800 font-semibold mb-2">Analice la siguiente función:</h2>
+                <div class="text-2xl text-indigo-900 font-serif">
+                    $$ y = \tan\left(x - \frac{\pi}{4}\right) + 3 $$
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                
+                <div class="md:col-span-2"><h3 class="section-title">I. Parámetros Básicos y Asíntotas</h3></div>
+                
+                <div><label class="block font-bold text-slate-700 mb-1">Factor de Estiramiento ($|a|$):</label><div class="flex items-center"><math-field id="a3-amp"></math-field><span class="status-icon" id="icon-a3-amp"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Periodo ($T$):</label><div class="flex items-center"><math-field id="a3-per"></math-field><span class="status-icon" id="icon-a3-per"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Desfase:</label><div class="flex items-center"><math-field id="a3-des"></math-field><span class="status-icon" id="icon-a3-des"></span></div></div>
+                <div><label class="block font-bold text-slate-700 mb-1">Desplaz. Vertical ($d$):</label><div class="flex items-center"><math-field id="a3-vert"></math-field><span class="status-icon" id="icon-a3-vert"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">Asíntota Izq ($x_1$):</label><div class="flex items-center"><math-field id="a3-ini"></math-field><span class="status-icon" id="icon-a3-ini"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">Asíntota Der ($x_5$):</label><div class="flex items-center"><math-field id="a3-fin"></math-field><span class="status-icon" id="icon-a3-fin"></span></div></div>
+
+                <div class="md:col-span-2"><h3 class="section-title">II. Dominio y Rango del Ciclo Principal</h3></div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Dominio (Ciclo Principal):</label>
+                    <div class="flex items-center">
+                        <select id="a3-sel-dom" class="bg-white border border-gray-300 rounded px-3 py-2">
+                            <option value="">-- Selecciona el Dominio --</option>
+            <!-- Usando caracteres Unicode reales para π -->
+                            <option value="int1">]−π/4, 3π/4[</option>
+                            <option value="int2">]−π/2, 2π/2[</option>
+            <!-- Usando el carácter Unicode de conjunto de números reales (ℝ) -->
+                            <option value="R">ℝ</option>
+                        </select>
+                        <span class="status-icon" id="icon-a3-sel-dom"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rango:</label>
+                    <div class="flex items-center">
+                        <select id="a3-sel-ran">
+                            <option value="">-- Selecciona el Rango --</option>
+                            <option value="R">ℝ</option>
+                            <option value="int1">[-1, 1]</option>
+                            <option value="int2">[0, 3]</option>
+                        </select>
+                        <span class="status-icon" id="icon-a3-sel-ran"></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2"><h3 class="section-title">III. Inspección Gráfica</h3></div>
+                
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Recta del Eje de Equilibrio:</label>
+                    <div class="flex items-center">
+                        <select id="a3-sel-eq">
+                            <option value="">-- Selecciona una opción --</option>
+                            <option value="y1">y = 1</option>
+                            <option value="y3">y = 3</option>
+                            <option value="y-3">y = -3</option>
+                        </select>
+                        <span class="status-icon" id="icon-a3-sel-eq"></span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Rectas Guías de Inspección:</label>
+                    <div class="flex items-center">
+                        <select id="a3-sel-guias">
+                            <option value="">-- Selecciona una opción --</option>
+                            <option value="opt1">Horizontales: y=3, y=-3 | Verticales: x=0, x=π</option>
+                            <option value="opt2">Horizontales: y=4, y=2  | Verticales (Asíntotas): x=-π/4, x=3π/4</option>
+                            <option value="opt3">Horizontales: Ninguna   | Verticales: x=-π/2, x=π/2</option>
+                        </select>
+                        <span class="status-icon" id="icon-a3-sel-guias"></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2"><h3 class="section-title">IV. Coordenadas de los Puntos Clave (Ingresa "x=..." para asíntotas)</h3></div>
+                
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_1$ (Asíntota Izq):</label><div class="flex items-center"><math-field id="a3-p1"></math-field><span class="status-icon" id="icon-a3-p1"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_2$:</label><div class="flex items-center"><math-field id="a3-p2"></math-field><span class="status-icon" id="icon-a3-p2"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_3$ (Centro):</label><div class="flex items-center"><math-field id="a3-p3"></math-field><span class="status-icon" id="icon-a3-p3"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_4$:</label><div class="flex items-center"><math-field id="a3-p4"></math-field><span class="status-icon" id="icon-a3-p4"></span></div></div>
+                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_5$ (Asíntota Der):</label><div class="flex items-center"><math-field id="a3-p5"></math-field><span class="status-icon" id="icon-a3-p5"></span></div></div>
+            </div>
+            
+            <button onclick="checkActivity3()" class="mt-8 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">Verificar Respuestas Actividad 3</button>
+            
+            <!-- Contenedor GeoGebra Actividad 3 -->
+            <div id="ggb-container-act3" class="hidden mt-6 w-full border-2 border-indigo-200 rounded-xl overflow-hidden shadow-inner" style="height: 450px;"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // Manejo de Pestañas
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Función para normalizar LaTeX (elimina espacios, unifica paréntesis grandes con normales)
+        function normalizeLatex(latexStr) {
+            return latexStr
+                .replace(/\s/g, '')
+                .replace(/\\left\(/g, '(').replace(/\\right\)/g, ')')
+                .replace(/\\left\[/g, '[').replace(/\\right\]/g, ']');
+        }
+
+        // Evaluar campo MathLive
+        function verifyField(inputId, correctAnswersLatex) {
+            const mf = document.getElementById(inputId);
+            let val = normalizeLatex(mf.getValue('latex'));
+            const icon = document.getElementById(`icon-${inputId}`);
+
+            let isCorrect = correctAnswersLatex.some(ans => val === normalizeLatex(ans));
+
+            if (isCorrect) {
+                mf.style.borderColor = '#22c55e'; mf.style.backgroundColor = '#f0fdf4'; icon.innerHTML = '✅';
+            } else {
+                mf.style.borderColor = '#ef4444'; mf.style.backgroundColor = '#fef2f2'; icon.innerHTML = '❌';
+            }
+            
+            return isCorrect;
+        }
+
+        // Evaluar campo Select
+        function verifySelect(inputId, correctValue) {
+            const sel = document.getElementById(inputId);
+            const icon = document.getElementById(`icon-${inputId}`);
+            
+            let isCorrect = (sel.value === correctValue);
+            
+            if (isCorrect) {
+                sel.style.borderColor = '#22c55e'; sel.style.backgroundColor = '#f0fdf4'; icon.innerHTML = '✅';
+            } else {
+                sel.style.borderColor = '#ef4444'; sel.style.backgroundColor = '#fef2f2'; icon.innerHTML = '❌';
+            }
+            
+            return isCorrect;
+        }
+
+        const ggbLoaded = { act1: false, act2: false, act3: false };
+
+        function showGraph(containerId, funcType, a, b, c, d, xMin, xMax, yMin, yMax) {
+            const container = document.getElementById(`ggb-container-${containerId}`);
+            container.classList.remove('hidden'); // Mostrar el contenedor
+
+            if (ggbLoaded[containerId]) return; // Si ya cargó, no volver a inyectar
+
+            // Calcular inicio y fin del ciclo para las fronteras
+            let pInit, pEnd;
+            if (funcType === 'tan') {
+                pInit = (-Math.PI/2 - c) / b;
+                pEnd = (Math.PI/2 - c) / b;
+            } else {
+                pInit = -c / b;
+                pEnd = (2*Math.PI - c) / b;
+            }
+
+            let params = {
+                "material_id": "fxrtq97y", // Usar tu material base con eje en radianes
+                "width": container.clientWidth || 800,
+                "height": 450,
+                "showToolBar": false, // Habilitado para que hagan zoom/scroll
+                "showAlgebraInput": false,
+                "showMenuBar": false,
+                "useBrowserForJS": true,
+                "allowStyleBar": false,
+                "showResetIcon": false,
+                "enableLabelDrags": false,
+                "language": "es",
+                "appletOnLoad": function(api) {
+                    // 1. Limpieza de cualquier elemento residual guardado en el material
+                    try { 
+                        api.deleteObject("f"); 
+                        api.deleteObject("L1"); api.deleteObject("L2");
+                        api.deleteObject("L3"); api.deleteObject("L4");
+                        for(let i=1; i<=5; i++) api.deleteObject("P"+i);
+                    } catch(e){}
+
+                    // 2. Ajuste automático de la ventana de visualización
+                    api.setCoordSystem(xMin, xMax, yMin, yMax);
+                    
+                    // Función principal
+                    api.evalCommand(`f(x) = ${a}*${funcType}(${b}*x + (${c})) + ${d}`);
+                    api.evalCommand(`SetColor(f, "#4f46e5")`); 
+                    api.evalCommand(`SetLineThickness(f, 4)`);
+
+                    // Eje de equilibrio
+                    api.evalCommand(`eq: y = ${d}`);
+                    api.evalCommand(`SetColor(eq, "#FF0000")`); 
+                    api.evalCommand(`SetLineStyle(eq, 2)`);
+
+                    // Fronteras (Guías verticales)
+                    api.evalCommand(`L1: x = ${pInit}`);
+                    api.evalCommand(`L2: x = ${pEnd}`);
+                    let colorBound = funcType === 'tan' ? '"#ef4444"' : '"Green"';
+                    let styleBound = 2; // Ambas punteadas
+                    api.evalCommand(`SetColor(L1, ${colorBound})`);
+                    api.evalCommand(`SetColor(L2, ${colorBound})`);
+                    api.evalCommand(`SetLineStyle(L1, ${styleBound})`);
+                    api.evalCommand(`SetLineStyle(L2, ${styleBound})`);
+                    api.evalCommand(`SetLineThickness(L1, 3)`);
+                    api.evalCommand(`SetLineThickness(L2, 3)`);
+
+                    // Guías Horizontales (Solo Seno y Coseno)
+                    if (funcType === "sin" || funcType === "cos") {
+                        let absA = Math.abs(a);
+                        api.evalCommand(`L3: y = ${d - absA}`);
+                        api.evalCommand(`L4: y = ${d + absA}`);
+                        api.evalCommand(`SetColor(L3, "Purple")`); 
+                        api.evalCommand(`SetColor(L4, "Purple")`); 
+                        api.evalCommand(`SetLineStyle(L3, 2)`);     
+                        api.evalCommand(`SetLineStyle(L4, 2)`);
+                        api.evalCommand(`SetLineThickness(L3, 3)`);
+                        api.evalCommand(`SetLineThickness(L4, 3)`);
+                    }
+
+                    // Puntos Clave
+                    let deltaX = (pEnd - pInit) / 4;
+                    for(let i=0; i<5; i++) {
+                        let xVal = pInit + i*deltaX;
+                        let yVal = 0;
+                        
+                        if (funcType === "sin") {
+                            if (i === 0 || i === 2 || i === 4) yVal = d;
+                            else if (i === 1) yVal = d + a;
+                            else if (i === 3) yVal = d - a;
+                        } else if (funcType === "cos") {
+                            if (i === 0 || i === 4) yVal = d + a;
+                            else if (i === 2) yVal = d - a;
+                            else yVal = d;
+                        } else if (funcType === "tan") {
+                            if (i === 1) yVal = d - a;
+                            else if (i === 2) yVal = d;
+                            else if (i === 3) yVal = d + a;
+                        }
+
+                        // Saltar asíntotas en tangente para no dibujar puntos al infinito
+                        if (funcType === 'tan' && (i === 0 || i === 4)) continue; 
+
+                        api.evalCommand(`P_${i+1} = (${xVal}, ${yVal})`);
+                        api.evalCommand(`SetColor(P_${i+1}, "Red")`);
+                        api.evalCommand(`SetPointSize(P_${i+1}, 5)`);
+                    }
+                }
+            };
+
+            let applet = new GGBApplet(params, true);
+            applet.inject(`ggb-container-${containerId}`);
+            ggbLoaded[containerId] = true;
+        }
+
+        function checkActivity1() {
+            let res = [];
+            // y = 2sin(2x - pi) + 1
+            res.push(verifyField('a1-amp', ["2"]));
+            res.push(verifyField('a1-per', ["\\pi", "1\\pi"]));
+            res.push(verifyField('a1-des', ["\\frac{\\pi}{2}", "\\frac{1}{2}\\pi"]));
+            res.push(verifyField('a1-vert', ["1", "+1"]));
+            res.push(verifyField('a1-ini', ["\\frac{\\pi}{2}", "\\frac{1}{2}\\pi"]));
+            res.push(verifyField('a1-fin', ["\\frac{3\\pi}{2}", "\\frac{3}{2}\\pi"]));
+            
+            // Selects Dominio y Rango
+            res.push(verifySelect('a1-sel-dom', 'R'));
+            res.push(verifySelect('a1-sel-ran', 'r1'));
+
+            // Selects Inspección
+            res.push(verifySelect('a1-sel-eq', 'y1'));
+            res.push(verifySelect('a1-sel-guias', 'opt2'));
+
+            // Puntos Clave
+            res.push(verifyField('a1-p1', ["(\\frac{\\pi}{2},1)", "(\\frac{1}{2}\\pi,1)"]));
+            res.push(verifyField('a1-p2', ["(\\frac{3\\pi}{4},3)", "(\\frac{3}{4}\\pi,3)"]));
+            res.push(verifyField('a1-p3', ["(\\pi,1)", "(1\\pi,1)"]));
+            res.push(verifyField('a1-p4', ["(\\frac{5\\pi}{4},-1)", "(\\frac{5}{4}\\pi,-1)"]));
+            res.push(verifyField('a1-p5', ["(\\frac{3\\pi}{2},1)", "(\\frac{3}{2}\\pi,1)"]));
+            
+            // Verificar si todas las respuestas en 'res' son verdaderas
+            if (res.every(r => r === true)) {
+                showGraph('act1', 'sin', 2, 2, -Math.PI, 1, -1, 6, -2, 4);
+            } else {
+                document.getElementById('ggb-container-act1').classList.add('hidden');
+            }
+        }
+
+        function checkActivity2() {
+            let res = [];
+            // y = -3cos(x + pi/2) - 2
+            res.push(verifyField('a2-amp', ["3", "|-3|"]));
+            res.push(verifyField('a2-per', ["2\\pi"]));
+            res.push(verifyField('a2-des', ["-\\frac{\\pi}{2}", "-\\frac{1}{2}\\pi"]));
+            res.push(verifyField('a2-vert', ["-2"]));
+            res.push(verifyField('a2-ini', ["-\\frac{\\pi}{2}", "-\\frac{1}{2}\\pi"]));
+            res.push(verifyField('a2-fin', ["\\frac{3\\pi}{2}", "\\frac{3}{2}\\pi"]));
+            
+            // Selects Dominio y Rango
+            res.push(verifySelect('a2-sel-dom', 'R'));
+            res.push(verifySelect('a2-sel-ran', 'r1'));
+
+            // Selects Inspección
+            res.push(verifySelect('a2-sel-eq', 'y-2'));
+            res.push(verifySelect('a2-sel-guias', 'opt1'));
+
+            // Puntos Clave
+            res.push(verifyField('a2-p1', ["(-\\frac{\\pi}{2},-5)", "(-\\frac{1}{2}\\pi,-5)"]));
+            res.push(verifyField('a2-p2', ["(0,-2)"]));
+            res.push(verifyField('a2-p3', ["(\\frac{\\pi}{2},1)", "(\\frac{1}{2}\\pi,1)"]));
+            res.push(verifyField('a2-p4', ["(\\pi,-2)", "(1\\pi,-2)"]));
+            res.push(verifyField('a2-p5', ["(\\frac{3\\pi}{2},-5)", "(\\frac{3}{2}\\pi,-5)"]));
+
+            if (res.every(r => r === true)) {
+                showGraph('act2', 'cos', -3, 1, Math.PI/2, -2, -3, 6, -6, 2);
+            } else {
+                document.getElementById('ggb-container-act2').classList.add('hidden');
+            }
+        }
+
+        function checkActivity3() {
+            let res = [];
+            // y = tan(x - pi/4) + 3
+            res.push(verifyField('a3-amp', ["1", "+1"])); 
+            res.push(verifyField('a3-per', ["\\pi", "1\\pi"]));
+            res.push(verifyField('a3-des', ["\\frac{\\pi}{4}", "\\frac{1}{4}\\pi"]));
+            res.push(verifyField('a3-vert', ["3", "+3"]));
+            res.push(verifyField('a3-ini', ["-\\frac{\\pi}{4}", "-\\frac{1}{4}\\pi"]));
+            res.push(verifyField('a3-fin', ["\\frac{3\\pi}{4}", "\\frac{3}{4}\\pi"]));
+            
+            // Selects Dominio y Rango
+            res.push(verifySelect('a3-sel-dom', 'int1'));
+            res.push(verifySelect('a3-sel-ran', 'R'));
+
+            // Selects Inspección
+            res.push(verifySelect('a3-sel-eq', 'y3'));
+            res.push(verifySelect('a3-sel-guias', 'opt2'));
+
+            // Puntos Clave
+            res.push(verifyField('a3-p1', ["x=-\\frac{\\pi}{4}", "x=-\\frac{1}{4}\\pi", "asintota"]));
+            res.push(verifyField('a3-p2', ["(0,2)"]));
+            res.push(verifyField('a3-p3', ["(\\frac{\\pi}{4},3)", "(\\frac{1}{4}\\pi,3)"]));
+            res.push(verifyField('a3-p4', ["(\\frac{\\pi}{2},4)", "(\\frac{1}{2}\\pi,4)"]));
+            res.push(verifyField('a3-p5', ["x=\\frac{3\\pi}{4}", "x=\\frac{3}{4}\\pi", "asintota"]));
+
+            if (res.every(r => r === true)) {
+                showGraph('act3', 'tan', 1, 1, -Math.PI/4, 3, -3, 4, -1, 7);
+            } else {
+                document.getElementById('ggb-container-act3').classList.add('hidden');
+            }
+        }
+
+        // Configuración de Teclado Virtual e Inicialización de KaTeX
+        window.addEventListener("DOMContentLoaded", () => {
+
+    if (window.mathVirtualKeyboard) {
+
+        mathVirtualKeyboard.layouts = "default";
+
+        mathVirtualKeyboard.visible = false;
+
+    }
+
+    renderMathInElement(document.body,{
+        delimiters:[
+            {left:"$$",right:"$$",display:true},
+            {left:"$",right:"$",display:false}
+        ]
+    });
+
+});
+    </script>
+</body>
+</html>
