@@ -484,10 +484,16 @@
                     ggbApplet.evalCommand('SetColor(L4, "Purple")');
                     ggbApplet.evalCommand('SetLineStyle(L7, 3)');
                     ggbApplet.evalCommand('SetColor(L7, "Black")');
-                } else {
-      		// SI ES COTANGENTE (O CUALQUIER OTRA), SE OCULTAN EXPLÍCITAMENTE
-		    ggbApplet.setVisible('L3', false);
-		    ggbApplet.setVisible('L4', false);
+		    ggbApplet.setVisible('L5', false);
+                } 
+			   if(func === 'cot'){
+		         ggbApplet.setVisible('L3', false);
+		         ggbApplet.setVisible('L4', false);
+		         ggbApplet.setVisible('L7', false);
+			ggbApplet.evalCommand(`L5: y = ${d}`);
+		        ggbApplet.setVisible('L5', true);
+                        ggbApplet.evalCommand('SetLineStyle(L5, 3)');
+			ggbApplet.evalCommand('SetColor(L5, "Black")');
 		}
 		    ggbApplet.refreshViews();
             }
