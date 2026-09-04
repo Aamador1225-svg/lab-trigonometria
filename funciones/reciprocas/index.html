@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio: Gráficas de Funciones Trigonométricas Recíprocas</title>
+    
+    <!-- API oficial de GeoGebra para integración Web y control de API -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+    
+    <!-- Librerías de Renderizado Matemático (KaTeX) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- MathLive para el teclado virtual y Math.js para evaluar expresiones -->
+    <script defer src="https://unpkg.com/mathlive"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5; 
+            --primary-dark: #3730a3;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #334155;
+            --border: #cbd5e1;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --info: #0ea5e9;
+            --step-bg: #f1f5f9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white; padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* Tabs System */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            flex: 1; min-width: 150px; padding: 15px; border: none; border-radius: 8px;
+            background-color: #e2e8f0; color: #475569; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn:hover { background-color: #cbd5e1; }
+        .tab-btn.active { background-color: var(--primary); color: white; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
+        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Grid Layout */
+        .grid-layout { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
+        @media(max-width: 900px) { .grid-layout { grid-template-columns: 1fr; } }
+        
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .card-title { color: var(--primary-dark); font-size: 18px; font-weight: bold; margin-bottom: 15px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        
+        .theory-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .theory-box h3 { color: #1e3a8a; margin-bottom: 10px; font-size: 16px; }
+        .math-formula { font-size: 22px; text-align: center; display: block; margin: 15px 0; color: var(--primary-dark);}
+        
+        .selector { width: 100%; padding: 10px; border-radius: 6px; border: 2px solid var(--primary); margin-bottom: 15px; font-weight: bold; background: #eef2ff; color: var(--primary-dark); font-size: 15px; cursor: pointer;}
+        .input-group { margin-bottom: 15px; }
+        label { font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; }
+        
+        /* Teclado Matemático */
+        math-field { width: 100%; margin-top: 5px; font-size: 18px; padding: 8px; border-radius: 6px; border: 2px solid var(--primary); background: #ffffff; color: var(--primary-dark); outline: none; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); }
+        math-field::part(virtual-keyboard-toggle) { color: var(--primary); }
+
+        .geogebra-container { width: 100%; height: 600px; border: 1px solid #e4e4e4; border-radius: 4px; overflow: hidden; background: #f8fafc; display: flex; align-items: center; justify-content: center; text-align: center;}
+        
+        .param-extractor { background: #1e293b; color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-size: 16px; font-family: monospace; letter-spacing: 0.5px;}
+        .param-extractor span { color: #38bdf8; font-weight: bold; }
+        
+        .step-container { display: flex; flex-direction: column; gap: 15px; }
+        .step-box { background: var(--step-bg); border-left: 5px solid var(--primary); border-radius: 6px; padding: 15px 20px; display: flex; flex-direction: column; gap: 8px; }
+        .step-title { font-weight: 700; color: var(--primary-dark); font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 5px; margin-bottom: 5px; display: flex; align-items: center; gap: 8px;}
+        .math-line { font-size: 17px; color: #334155; }
+        .math-label { font-family: 'Segoe UI', sans-serif; font-weight: bold; font-size: 13px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; width: 130px; display: inline-block;}
+        .result-line { background: #e0e7ff; padding: 8px 12px; border-radius: 6px; margin-top: 5px; font-weight: bold; color: #1e3a8a; border: 1px dashed #818cf8; font-size: 18px;}
+        
+        .logic-panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-top: 10px; font-size: 14.5px; color: #334155; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .logic-panel h4 { color: #4f46e5; margin-bottom: 10px; font-size: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;}
+        .logic-panel ul { margin-left: 20px; margin-bottom: 10px; }
+        .logic-panel li { margin-bottom: 5px; }
+        
+        .katex { font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🔬 Laboratorio: Gráficas de Funciones Trigonométricas Recíprocas</h1>
+        <p>Análisis de Asíntotas, Periodo, Desfase y Ciclos en Cosecante, Secante y Cotangente</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('teoria', this)">📚 Marco Teórico</button>
+        <button class="tab-btn" onclick="openTab('explorador', this)">🎛️ Explorador Interactivo</button>
+    </div>
+
+    <!-- Pestaña 1: Marco Teórico -->
+    <div id="teoria" class="tab-content active">
+        <div class="card">
+            <h2 class="card-title">Análisis de la Ecuación General Recíproca</h2>
+            
+            <select id="theoryFuncSelect" class="selector" onchange="updateTheorySection()">
+                <option value="csc">Análisis de la Función Cosecante: y = a · csc(bx + c) + d</option>
+                <option value="sec">Análisis de la Función Secante: y = a · sec(bx + c) + d</option>
+                <option value="cot">Análisis de la Función Cotangente: y = a · cot(bx + c) + d</option>
+            </select>
+
+            <span class="math-formula" id="theoryFormulaText">\[ y = a \cdot \csc(bx + c) + d \]</span>
+            
+            <div class="theory-box">
+                <h3>Parámetro \(a\) (Factor de Estiramiento)</h3>
+                <p id="theoryAmpText">En las funciones secante y cosecante, no existe amplitud ya que tienden al infinito. Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas. El rango excluye el intervalo abierto entre estos vértices.</p>
+            </div>
+            <div class="theory-box">
+                <h3>Parámetro \(b\) (Frecuencia Angular y Periodo)</h3>
+                <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula \( T = \frac{2\pi}{|b|} \).</p>
+            </div>
+            <div class="theory-box">
+                <h3>Análisis del Ciclo Principal, Desfase y Asíntotas</h3>
+                <p id="theoryCycleDesc">El ciclo se define evaluando el argumento \(bx + c\) dentro de las fronteras de su función base. Para encontrar dónde ocurre el patrón principal:</p>
+                <div style="text-align: center; margin: 15px 0; color: #1e40af;" id="theoryInequality">
+                    \[ 0 \le bx + c \le 2\pi \]
+                </div>
+                <p>Al despejar \(x\), obtenemos los límites del ciclo. Dentro de este intervalo ocurrirán <b>asíntotas verticales</b> en los puntos donde el denominador se hace cero:</p>
+                <div style="background: white; border: 1px dashed #94a3b8; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center;" id="theorySolve">
+                    \[ -c \le bx \le 2\pi - c \]
+                    \[ \frac{-c}{b} \le x \le \frac{2\pi - c}{b} \]
+                </div>
+                <p style="margin-top: 10px; font-size: 14px;"><i>Nota: El límite izquierdo representa el desplazamiento de fase (desfase) de la gráfica.</i></p>
+            </div>
+            <div class="theory-box">
+                <h3>Parámetro \(d\) (Desplazamiento Vertical)</h3>
+                <p>Mueve la función completa de manera vertical, redefiniendo la recta de equilibrio (\(y = d\)) sobre la cual se separan las ramas parabólicas o donde la cotangente muestra su inflexión.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pestaña 2: Explorador Interactivo -->
+    <div id="explorador" class="tab-content">
+        <div class="grid-layout">
+            
+            <!-- Panel Izquierdo: Controles -->
+            <div class="card">
+                <h2 class="card-title">Panel de Parámetros</h2>
+
+                <select id="funcSelect" class="selector" onchange="changeFunction()">
+                    <option value="csc">y = a · csc(bx + c) + d</option>
+                    <option value="sec">y = a · sec(bx + c) + d</option>
+                    <option value="cot">y = a · cot(bx + c) + d</option>
+                </select>
+
+                <div class="input-group">
+                    <label>Factor de Estiramiento a: <span id="valA">1.0</span></label>
+                    <math-field id="paramA" oninput="updateAll()">1</math-field>
+                </div>
+                
+                <div class="input-group">
+                    <label>Frecuencia b: <span id="valB">1.0</span></label>
+                    <math-field id="paramB" oninput="updateAll()">1</math-field>
+                </div>
+                
+                <div class="input-group">
+                    <label>Desfase de Entrada c: <span id="valC">0.00</span></label>
+                    <math-field id="paramC" oninput="updateAll()">0</math-field>
+                    <small style="color: #64748b; font-size: 11px;">Nota: Puedes ingresar fracciones con \(\pi\) (ej. \(\frac{\pi}{4}\))</small>
+                </div>
+
+                <div class="input-group">
+                    <label>Desplazamiento Vertical d: <span id="valD">0.0</span></label>
+                    <math-field id="paramD" oninput="updateAll()">0</math-field>
+                </div>
+            </div>
+
+            <!-- Panel Derecho: GeoGebra Gráfico -->
+            <div class="card">
+                <h2 class="card-title">Visualización en GeoGebra</h2>
+                <span class="math-formula" id="currentFormula">\[ y = 1.0 \csc(1.0x + 0.0) + 0.0 \]</span>
+                
+                <!-- Contenedor API de GeoGebra -->
+                <div class="geogebra-container" id="ggb-element">
+                    <span style="color: #94a3b8; font-size: 16px;">Cargando entorno desde la nube (Proyecto: bdpemtxc)...</span>
+                </div>
+            </div>
+            
+            <!-- PANEL INFERIOR: Procedimiento Paso a Paso -->
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2 class="card-title">📝 Desarrollo Procedimental Paso a Paso</h2>
+                
+                <div class="param-extractor" id="paramExtraction">
+                    <!-- Dinámico -->
+                </div>
+
+                <div class="step-container">
+                    <div class="step-box">
+                        <div class="step-title">Paso 1: Análisis del Rango (Caja Excluida)</div>
+                        <div id="stepAmp"></div>
+                    </div>
+
+                    <div class="step-box">
+                        <div class="step-title">Paso 2: Cálculo del Periodo</div>
+                        <div id="stepPer"></div>
+                    </div>
+
+                    <div class="step-box">
+                        <div class="step-title">Paso 3: Desfase (Desplazamiento Horizontal)</div>
+                        <div id="stepFase"></div>
+                    </div>
+
+                    <div class="step-box">
+                        <div class="step-title">Paso 4: Análisis del Ciclo Principal</div>
+                        <div id="stepCiclo"></div>
+                    </div>
+
+                    <div class="step-box" style="border-left-color: #0ea5e9;">
+                        <div class="step-title">Paso 5: Eje de Equilibrio (Desplazamiento Vertical)</div>
+                        <div id="stepVert"></div>
+                    </div>
+                    
+                    <div class="step-box" style="border-left-color: #8b5cf6; background-color: #f5f3ff;">
+                        <div class="step-title" style="color: #6d28d9; border-bottom-color: #c4b5fd;">
+                            Paso 6: Identificación de Asíntotas y Vértices (P1 a P5)
+                        </div>
+                        <div id="stepPuntos"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función central para ejecutar KaTeX en todo el documento o en un bloque específico
+    function renderMath() {
+        if (typeof renderMathInElement !== 'undefined') {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: "\\[", right: "\\]", display: true},
+                    {left: "$$", right: "$$", display: true},
+                    {left: "\\(", right: "\\)", display: false},
+                    {left: "$", right: "$", display: false}
+                ],
+                throwOnError: false
+            });
+        }
+    }
+
+    // Lógica del Marco Teórico
+    function updateTheorySection() {
+        const func = document.getElementById('theoryFuncSelect').value;
+        const formText = document.getElementById('theoryFormulaText');
+        const ampText = document.getElementById('theoryAmpText');
+        const perText = document.getElementById('theoryPerText');
+        const ineqText = document.getElementById('theoryInequality');
+        const solveText = document.getElementById('theorySolve');
+
+        if(func === 'csc' || func === 'sec') {
+            formText.innerHTML = func === 'csc' ? '\\[ y = a \\cdot \\csc(bx + c) + d \\]' : '\\[ y = a \\cdot \\sec(bx + c) + d \\]';
+            ampText.innerHTML = "En las funciones secante y cosecante, <b>no existe amplitud</b> (van al infinito). Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas. La franja entre \\( d - |a| \\) y \\( d + |a| \\) es la zona donde la gráfica no existe.";
+            perText.innerHTML = "Al ser recíprocas de seno y coseno, su periodo exacto se determina mediante la fórmula \\( T = \\frac{2\\pi}{|b|} \\).";
+            ineqText.innerHTML = "\\[ 0 \\le bx + c \\le 2\\pi \\]";
+            solveText.innerHTML = "\\[ -c \\le bx \\le 2\\pi - c \\] \\[ \\frac{-c}{b} \\le x \\le \\frac{2\\pi - c}{b} \\]";
+        } else if (func === 'cot') {
+            formText.innerHTML = '\\[ y = a \\cdot \\cot(bx + c) + d \\]';
+            ampText.innerHTML = "En la función cotangente <b>no existe amplitud definida</b>. El valor <b>a</b> determina el factor de estiramiento vertical de la curva entre las asíntotas, afectando su pendiente y la ubicación de sus puntos intermedios.";
+            perText.innerHTML = "Al igual que la tangente, el periodo exacto de la cotangente se determina mediante la fórmula \\( T = \\frac{\\pi}{|b|} \\).";
+            ineqText.innerHTML = "\\[ 0 < bx + c < \\pi \\]";
+            solveText.innerHTML = "\\[ -c < bx < \\pi - c \\] \\[ \\frac{-c}{b} < x < \\frac{\\pi - c}{b} \\]";
+        }
+        
+        renderMath(); 
+    }
+
+    let ggbApplet; 
+    let geoGebraInjected = false;
+    let geogebraContainer; 
+
+    // Usamos el material_id indicado para enlazar con el entorno en la nube
+    const params = {
+        "material_id": "bdpemtxc", 
+        "width": 800,
+        "height": 600,
+        "showToolBar": false,
+        "showMenuBar": false,
+        "showAlgebraInput": false,
+        "allowStyleBar": false,
+        "showResetIcon": false,
+        "enableLabelDrags": false,
+        "enableShiftDragZoom": true,
+        "enableRightClick": false,
+        "language": "es", 
+        "scaleContainerClass": "geogebra-container",
+        "appletOnLoad": function(api) {
+            ggbApplet = api;
+            try {
+                ggbApplet.evalCommand('SetColor(f, "#4f46e5")'); 
+                ggbApplet.evalCommand('SetLineThickness(f, 5)'); 
+            } catch(e){}
+            updateAll(); 
+        }
+    };
+
+    window.onload = function() {
+        updateTheorySection();
+        updateAll();
+        setTimeout(renderMath, 150);
+    };
+
+    function openTab(tabId, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        if (tabId === 'explorador' && !geoGebraInjected) {
+            const containerBox = document.getElementById('ggb-element');
+            containerBox.innerHTML = '<span style="color: #4f46e5; font-weight: bold;">Cargando tu archivo desde la nube de GeoGebra...</span>';
+            
+            setTimeout(() => {
+                try {
+                    if (typeof GGBApplet === 'undefined') return;
+                    geogebraContainer = new GGBApplet(params, true);
+                    geogebraContainer.inject('ggb-element');
+                    geoGebraInjected = true;
+                } catch (error) {
+                    console.error(error);
+                }
+            }, 100);
+        }
+    }
+
+    function changeFunction() {
+        const funcType = document.getElementById('funcSelect').value;
+        
+        if (ggbApplet) {
+            try {
+                ggbApplet.evalCommand('Delete(f)');
+               // ggbApplet.evalCommand('Delete(g)');
+                if (funcType === 'csc') {
+                    ggbApplet.evalCommand("f(x) = a * csc(b * x + c) + d");
+                    ggbApplet.evalCommand("g(x) = a * sin(b * x + c) + d");
+		    ggbApplet.setVisible('g(x)', true);
+                } else if (funcType === 'sec') {
+                    ggbApplet.evalCommand("f(x) = a * sec(b * x + c) + d");
+                    ggbApplet.evalCommand("g(x) = a * cos(b * x + c) + d");
+                } else if (funcType === 'cot') {
+                    ggbApplet.evalCommand("f(x) = a * cot(b * x + c) + d");
+                    ggbApplet.evalCommand("g(x) = a * tan(b * x + c) + d");
+                }
+                ggbApplet.evalCommand('SetColor(f, "#4f46e5")');
+                ggbApplet.evalCommand('SetLineThickness(f, 5)');
+                ggbApplet.evalCommand('SetColor(g, "#ff781f")');
+                ggbApplet.evalCommand('SetLineStyle(g, 2)');
+
+            } catch (e) {
+                console.warn("Aviso: El motor gráfico se está sincronizando.");
+            }
+        }
+        updateAll();
+    }
+
+    function updateAll() {
+        const func = document.getElementById('funcSelect').value;
+        
+        // Función para leer de MathLive y evaluar matemáticamente con Math.js
+        const getMathVal = (id, defaultVal) => {
+            try {
+                const mf = document.getElementById(id);
+                // Extraer el valor matemático. MathLive soporta getValue('ascii-math')
+                let expr = mf.getValue('ascii-math');
+                if (!expr) {
+                    expr = mf.value.replace(/\\pi/g, 'pi').replace(/\\frac{([^}]*)}{([^}]*)}/g, '($1)/($2)').replace(/[{}]/g, '').replace(/\\/g, '');
+                }
+                if (!expr || expr.trim() === '') return defaultVal;
+                
+                expr = expr.replace(/π/g, 'pi'); 
+                let val = math.evaluate(expr);
+                return (typeof val === 'number' && !isNaN(val)) ? val : defaultVal;
+            } catch (e) {
+                return defaultVal; 
+            }
+        };
+
+        let a = getMathVal('paramA', 1);
+        if (a === 0) a = 0.5; // Prevenir linea recta plana absoluta para propósitos didácticos
+        let rawB = getMathVal('paramB', 1);
+        const b = rawB === 0 ? 0.0001 : rawB; 
+        const c = getMathVal('paramC', 0);
+        const d = getMathVal('paramD', 0);
+
+        document.getElementById('valA').innerHTML = `\\(${a.toFixed(1)}\\)`;
+        document.getElementById('valB').innerHTML = `\\(${b.toFixed(1)}\\)`;
+        document.getElementById('valC').innerHTML = `\\(${getPiFractionFromDecimal(c)}\\)`;
+        document.getElementById('valD').innerHTML = `\\(${d.toFixed(1)}\\)`;
+        
+        let cLatex = getPiFractionFromDecimal(c);
+        let signCLatex = c >= 0 ? `+ ${cLatex}` : `- ${getPiFractionFromDecimal(Math.abs(c))}`;
+        let signD = d >= 0 ? `+ ${d.toFixed(1)}` : `- ${Math.abs(d).toFixed(1)}`;
+        
+        let eqnTextLatex = `\\[ y = ${a.toFixed(1)} \\${func}(${b.toFixed(1)}x ${signCLatex}) ${signD} \\]`;
+        document.getElementById('currentFormula').innerHTML = eqnTextLatex;
+
+        // VALORES MATEMÁTICOS DEL CICLO
+        let realTVal = (func === 'cot' ? Math.PI : 2*Math.PI) / Math.abs(b);
+        let piInitDec = -c / b;
+        let piEndDec = piInitDec + realTVal;
+        
+        let dx = realTVal / 4;
+        let x1 = piInitDec;
+        let x2 = x1 + dx;
+        let x3 = x1 + 2 * dx;
+        let x4 = x1 + 3 * dx;
+        let x5 = piEndDec;
+
+        let u = d - Math.abs(a);
+        let v = d + Math.abs(a);
+
+        let y1, y2, y3, y4, y5;
+        if (func === 'csc') {
+            y1 = "Asíntota"; y2 = a > 0 ? v : u; y3 = "Asíntota"; y4 = a > 0 ? u : v; y5 = "Asíntota";
+        } else if (func === 'sec') {
+            y1 = a > 0 ? v : u; y2 = "Asíntota"; y3 = a > 0 ? u : v; y4 = "Asíntota"; y5 = a > 0 ? v : u;
+        } else if (func === 'cot') {
+            y1 = "Asíntota"; y2 = a > 0 ? v : u; y3 = d; y4 = a > 0 ? u : v; y5 = "Asíntota";
+        }
+
+        // COMANDOS A GEOGEBRA (CUIDANDO USO DE COMILLAS)
+        try {
+            if (ggbApplet && ggbApplet.setValue) {
+                ggbApplet.setValue('a', a);
+                ggbApplet.setValue('b', b);
+                ggbApplet.setValue('c', c);
+                ggbApplet.setValue('d', d);
+
+                // Limpieza de objetos
+                for(let i=1; i<=5; i++) {
+                    ggbApplet.evalCommand('Delete(P' + i + ')');
+                    ggbApplet.evalCommand('Delete(Asintota' + i + ')');
+                }
+                ggbApplet.evalCommand('Delete(L3)');
+                ggbApplet.evalCommand('Delete(L4)');
+				ggbApplet.evalCommand('Delete(L7)');
+
+                const drawElement = (index, xVal, yVal) => {
+                    if (yVal === "Asíntota") {
+                        ggbApplet.evalCommand(`Asintota${index}: x = ${xVal}`);
+                        ggbApplet.evalCommand(`SetLineStyle(Asintota${index}, 2)`);
+                        ggbApplet.evalCommand(`SetColor(Asintota${index}, "Red")`);
+                    } else {
+                        ggbApplet.evalCommand(`P${index} = (${xVal}, ${yVal})`);
+                        ggbApplet.evalCommand(`SetColor(P${index}, "Green")`);
+                        ggbApplet.evalCommand(`SetPointSize(P${index}, 5)`);
+                    }
+                };
+
+                drawElement(1, x1, y1);
+                drawElement(2, x2, y2);
+                drawElement(3, x3, y3);
+                drawElement(4, x4, y4);
+                drawElement(5, x5, y5);
+
+                if(func === 'csc' || func === 'sec') {
+                    ggbApplet.evalCommand(`L3: y = ${u}`);
+		    ggbApplet.setVisible('L3', true);
+                    ggbApplet.evalCommand(`L4: y = ${v}`);
+		    ggbApplet.setVisible('L4', true);
+                    ggbApplet.evalCommand(`L7: y = ${d}`);
+		    ggbApplet.setVisible('L7', true);
+                    ggbApplet.evalCommand('SetLineStyle(L3, 2)');
+                    ggbApplet.evalCommand('SetColor(L3, "Purple")');
+                    ggbApplet.evalCommand('SetLineStyle(L4, 2)');
+                    ggbApplet.evalCommand('SetColor(L4, "Purple")');
+                    ggbApplet.evalCommand('SetLineStyle(L7, 3)');
+                    ggbApplet.evalCommand('SetColor(L7, "Black")');
+		    ggbApplet.setVisible('L5', false);
+                } 
+			   if(func === 'cot'){
+		         ggbApplet.setVisible('L3', false);
+		         ggbApplet.setVisible('L4', false);
+		         ggbApplet.setVisible('L7', false);
+			ggbApplet.evalCommand(`L5: y = ${d}`);
+		        ggbApplet.setVisible('L5', true);
+                        ggbApplet.evalCommand('SetLineStyle(L5, 3)');
+			ggbApplet.evalCommand('SetColor(L5, "Black")');
+		}
+		    ggbApplet.refreshViews();
+            }
+        } catch (e) {
+            console.warn("GeoGebra sincronizando variables locales...");
+        }
+
+        document.getElementById('paramExtraction').innerHTML = `
+            Ecuación: <span>${eqnTextLatex}</span> <br> 
+            Parámetros: \\(a = ${a}\\), \\(b = ${b}\\), \\(c = ${cLatex}\\), \\(d = ${d}\\)
+        `;
+
+        let ampVal = Math.abs(a);
+        let stepAmpHTML = `
+            <div class="math-line"><span class="math-label">Factor (Estir.):</span> \\( |a| = |${a}| = ${ampVal} \\)</div>
+        `;
+        if (func === 'cot') {
+            stepAmpHTML += `<div class="math-line result-line">Rango = \\( (-\\infty, \\infty) \\). (Sin restricción vertical)</div>`;
+        } else {
+            stepAmpHTML += `
+            <div class="math-line"><span class="math-label">Cálculo 'u':</span> \\( u = d - |a| = ${d} - ${ampVal} = ${u} \\)</div>
+            <div class="math-line"><span class="math-label">Cálculo 'v':</span> \\( v = d + |a| = ${d} + ${ampVal} = ${v} \\)</div>
+            <div class="math-line result-line">Rango = \\( (-\\infty, ${u}] \\cup [${v}, +\\infty) \\)</div>`;
+        }
+        document.getElementById('stepAmp').innerHTML = stepAmpHTML;
+
+        let formPer = func === 'cot' ? `\\frac{\\pi}{|b|}` : `\\frac{2\\pi}{|b|}`;
+        let numSust = func === 'cot' ? "\\pi" : "2\\pi";
+        let fractPer = getPiFractionFromDecimal(realTVal);
+
+        document.getElementById('stepPer').innerHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> \\( T = ${formPer} \\)</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> \\( T = \\frac{${numSust}}{|${b}|} \\)</div>
+            <div class="math-line result-line">Periodo (T) = \\( ${fractPer} \\)</div>
+        `;
+
+        let desfaseVal = -c / b;
+        let txtFase = getPiFractionFromDecimal(desfaseVal);
+        let dirFase = desfaseVal > 0 ? "hacia la derecha ➡️" : (desfaseVal < 0 ? "hacia la izquierda ⬅️" : "centrado 🟡");
+        let cSubst = c < 0 ? `(${cLatex})` : cLatex;
+
+        document.getElementById('stepFase').innerHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> \\( x = \\frac{-c}{b} \\)</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> \\( x = \\frac{-${cSubst}}{${b}} \\)</div>
+            <div class="math-line result-line">Desfase = \\( ${txtFase} \\) (${dirFase})</div>
+        `;
+
+        let ineqStr = func === 'cot' ? `0 < bx + c < \\pi` : `0 \\le bx + c \\le 2\\pi`;
+        let ineqSust = func === 'cot' ? `0 < ${b}x ${signCLatex} < \\pi` : `0 \\le ${b}x ${signCLatex} \\le 2\\pi`;
+        let txtInit = getPiFractionFromDecimal(x1);
+        let txtEnd = getPiFractionFromDecimal(x5);
+        let ineqSign = func === 'cot' ? '<' : '\\le';
+
+        document.getElementById('stepCiclo').innerHTML = `
+            <div class="math-line"><span class="math-label">Condición:</span> \\( ${ineqStr} \\)</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> \\( ${ineqSust} \\)</div>
+            <div class="math-line"><span class="math-label">Despeje (÷${b}):</span> \\( ${txtInit} ${ineqSign} x ${ineqSign} ${txtEnd} \\)</div>
+            <div class="math-line result-line">El ciclo transcurre en: \\( ( ${txtInit} , ${txtEnd} ) \\)</div>
+        `;
+
+        document.getElementById('stepVert').innerHTML = `
+            <div class="math-line"><span class="math-label">Fórmula:</span> \\( y = d \\)</div>
+            <div class="math-line"><span class="math-label">Sustitución:</span> \\( y = ${d} \\)</div>
+            <div class="math-line result-line">Recta central (Equilibrio): \\( y = ${d} \\)</div>
+        `;
+
+        let txtX1 = txtInit;
+        let txtX5 = txtEnd;
+        let txtX3 = getPiFractionFromDecimal(x3);
+        let txtX2 = getPiFractionFromDecimal(x2);
+        let txtX4 = getPiFractionFromDecimal(x4);
+
+        let explHTML = "";
+        if (func === 'csc') {
+            explHTML = `
+                <div class="logic-panel">
+                    <h4>Paso A: Función Base (Seno)</h4>
+                    <p>La cosecante se relaciona con el <b>Seno</b>. Donde el seno vale cero, la cosecante es indefinida. Las <b>asíntotas verticales</b> ocurren en <b>P1, P3 y P5</b>.</p>
+                    <h4>Paso B: Cálculo de Abscisas (Eje X)</h4>
+                    <ul>
+                        <li><b>P1, P3, P5 (Asíntotas):</b> Ubicadas en \\( x_1 = ${txtX1} \\), \\( x_3 = ${txtX3} \\), y \\( x_5 = ${txtX5} \\).</li>
+                        <li><b>P2 y P4 (Vértices locales):</b> Ubicados en \\( x_2 = ${txtX2} \\) y \\( x_4 = ${txtX4} \\).</li>
+                    </ul>
+                    <h4>Paso C: Evaluación de Ordenadas (Eje Y)</h4>
+                    <ul>
+                        <li><b>P2</b> alcanza el valor ${a>0?'máximo superior (v)':'mínimo inferior (u)'} <b>\\( y = ${y2} \\)</b>.</li>
+                        <li><b>P4</b> alcanza el valor opuesto <b>\\( y = ${y4} \\)</b>.</li>
+                    </ul>
+                </div>
+            `;
+        } else if (func === 'sec') {
+            explHTML = `
+                <div class="logic-panel">
+                    <h4>Paso A: Función Base (Coseno)</h4>
+                    <p>La secante se relaciona con el <b>Coseno</b>. Donde el coseno vale cero, las <b>asíntotas verticales</b> ocurren en <b>P2 y P4</b>.</p>
+                    <h4>Paso B: Cálculo de Abscisas (Eje X)</h4>
+                    <ul>
+                        <li><b>P2 y P4 (Asíntotas):</b> Ubicadas en \\( x_2 = ${txtX2} \\) y \\( x_4 = ${txtX4} \\).</li>
+                        <li><b>P1, P3, P5 (Vértices locales):</b> Ubicados en \\( x_1 = ${txtX1} \\), \\( x_3 = ${txtX3} \\) y \\( x_5 = ${txtX5} \\).</li>
+                    </ul>
+                    <h4>Paso C: Evaluación de Ordenadas (Eje Y)</h4>
+                    <ul>
+                        <li><b>P1 y P5</b> inician/terminan en <b>\\( y = ${y1} \\)</b>.</li>
+                        <li><b>P3</b> (el vértice central) toma el valor opuesto <b>\\( y = ${y3} \\)</b>.</li>
+                    </ul>
+                </div>
+            `;
+        } else if (func === 'cot') {
+            explHTML = `
+                <div class="logic-panel">
+                    <h4>Paso A: Dominio del Ciclo (Asíntotas)</h4>
+                    <p>La cotangente (cos/sen) es indefinida donde el seno vale cero. <b>P1 y P5</b> representan <b>asíntotas verticales</b>.</p>
+                    <h4>Paso B: Cálculo de Abscisas (Eje X)</h4>
+                    <ul>
+                        <li><b>P3 (Centro):</b> Medio del ciclo en \\( x_3 = ${txtX3} \\).</li>
+                        <li><b>P2 y P4:</b> Cuartos de ciclo en \\( x_2 = ${txtX2} \\) y \\( x_4 = ${txtX4} \\).</li>
+                    </ul>
+                    <h4>Paso C: Evaluación de Ordenadas (Eje Y)</h4>
+                    <ul>
+                        <li>En <b>P3</b>, cruza su eje de equilibrio: <b>\\( y = ${d} \\)</b>.</li>
+                        <li>En <b>P2</b> y <b>P4</b>, alcanza <b>\\( y = ${d+a} \\)</b> y <b>\\( y = ${d-a} \\)</b> respectivamente.</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        const formatY = (valY) => valY === "Asíntota" ? valY : (Number.isInteger(valY) ? valY.toString() : valY.toFixed(2).replace(/\.00$/, ''));
+        const formatPointStr = (valXStr, valY) => valY === "Asíntota" ? `<span style="color:#ef4444; font-weight:bold;">Asíntota Vertical</span>` : `\\( ( ${valXStr}, ${formatY(valY)} ) \\)`;
+
+        let cardsHTML = `<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 15px;">`;
+        const buildCard = (title, xStr, yVal) => `
+            <div style="background: ${yVal==='Asíntota'?'#fef2f2':'#ffffff'}; border: 1px dashed ${yVal==='Asíntota'?'#ef4444':'#a78bfa'}; padding: 10px; border-radius: 8px; text-align: center; flex: 1; min-width: 120px;">
+                <div style="font-weight: bold; color: ${yVal==='Asíntota'?'#b91c1c':'#6d28d9'}; margin-bottom: 8px; font-size: 14px;">${title}</div>
+                <div style="font-size: 17px; color: #1e3a8a;">${formatPointStr(xStr, yVal)}</div>
+            </div>`;
+
+        cardsHTML += buildCard("P1 (Inicio)", txtX1, y1);
+        cardsHTML += buildCard("P2", txtX2, y2);
+        cardsHTML += buildCard("P3 (Centro)", txtX3, y3);
+        cardsHTML += buildCard("P4", txtX4, y4);
+        cardsHTML += buildCard("P5 (Fin)", txtX5, y5);
+        cardsHTML += `</div>`;
+
+        document.getElementById('stepPuntos').innerHTML = explHTML + cardsHTML;
+        
+        renderMath();
+    }
+
+    // Funciones Helper de Fracciones compatibles con KaTeX
+    function getPiFractionFromDecimal(val) {
+        if (Math.abs(val) < 0.01) return "0";
+        let fr = val / Math.PI;
+        for(let d = 1; d <= 12; d++) {
+            let n = Math.round(fr * d);
+            if (Math.abs(fr - n/d) < 0.01) {
+                if (n === 0) return "0";
+                let sign = n < 0 ? "-" : "";
+                let absN = Math.abs(n);
+                let numStr = absN === 1 ? "\\pi" : `${absN}\\pi`; 
+                if (d === 1) return `${sign}${numStr}`;
+                return `${sign}\\frac{${numStr}}{${d}}`;
+            }
+        }
+        return `${(val/Math.PI).toFixed(2)}\\pi`;
+    }
+</script>
+
+</body>
+</html>
