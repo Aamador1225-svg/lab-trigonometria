@@ -120,11 +120,14 @@
             
             <div class="theory-box">
                 <h3>Parámetro \(a\) (Factor de Estiramiento)</h3>
-                <p id="theoryAmpText">En las funciones secante y cosecante, no existe amplitud ya que tienden al infinito. Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas. El rango excluye el intervalo abierto entre estos vértices.</p>
+                <p id="theoryAmpText">En las funciones secante y cosecante, no existe amplitud ya que tienden al infinito. Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas en U.<br><br>El <b>rango</b> de estas funciones es el complemento del rango de su función base (seno o coseno), excluyendo los valores entre \(u = d - |a| \) y \( v= d + |a| \).<br><br>El <b>dominio</b> excluye los puntos donde la función base se hace cero (donde se forman las asíntotas).</p>
             </div>
             <div class="theory-box">
                 <h3>Parámetro \(b\) (Frecuencia Angular y Periodo)</h3>
-                <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula \( T = \frac{2\pi}{|b|} \).</p>
+                <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula:</p>
+                <div style="text-align: center; margin: 15px 0; color: #1e40af;" id="theoryPerForm">
+                    \[ T = \dfrac{2\pi}{|b|} \]
+                </div>
             </div>
             <div class="theory-box">
                 <h3>Análisis del Ciclo Principal, Desfase y Asíntotas</h3>
@@ -203,8 +206,8 @@
 
                 <div class="step-container">
                     <div class="step-box">
-                        <div class="step-title">Paso 1: Análisis del Rango (Caja Excluida)</div>
-                        <div id="stepAmp"></div>
+                        <div class="step-title">Paso 1: Eje de Equilibrio y Rango</div>
+                        <div id="stepEqRango"></div>
                     </div>
 
                     <div class="step-box">
@@ -223,8 +226,8 @@
                     </div>
 
                     <div class="step-box" style="border-left-color: #0ea5e9;">
-                        <div class="step-title">Paso 5: Eje de Equilibrio (Desplazamiento Vertical)</div>
-                        <div id="stepVert"></div>
+                        <div class="step-title">Paso 5: Determinación del Dominio</div>
+                        <div id="stepDominio"></div>
                     </div>
                     
                     <div class="step-box" style="border-left-color: #8b5cf6; background-color: #f5f3ff;">
@@ -267,13 +270,12 @@
 
         if(func === 'csc' || func === 'sec') {
             formText.innerHTML = func === 'csc' ? '\\[ y = a \\cdot \\csc(bx + c) + d \\]' : '\\[ y = a \\cdot \\sec(bx + c) + d \\]';
-            ampText.innerHTML = "En las funciones secante y cosecante, <b>no existe amplitud</b> (van al infinito). Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas. La franja entre \\( d - |a| \\) y \\( d + |a| \\) es la zona donde la gráfica no existe.";
-            perText.innerHTML = "Al ser recíprocas de seno y coseno, su periodo exacto se determina mediante la fórmula \\( T = \\frac{2\\pi}{|b|} \\).";
+            ampText.innerHTML = "En las funciones secante y cosecante, <b>no existe amplitud</b> (tienden al infinito). Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas en U.<br><br>El <b>rango</b> de estas funciones es el complemento del rango de su función base (seno o coseno), excluyendo los valores entre \\(u = d - |a| \\) y \\( v= d + |a| \\).<br><br>El <b>dominio</b> excluye los puntos donde la función base se hace cero (donde se forman las asíntotas).";
             ineqText.innerHTML = "\\[ 0 \\le bx + c \\le 2\\pi \\]";
             solveText.innerHTML = "\\[ -c \\le bx \\le 2\\pi - c \\] \\[ \\frac{-c}{b} \\le x \\le \\frac{2\\pi - c}{b} \\]";
         } else if (func === 'cot') {
             formText.innerHTML = '\\[ y = a \\cdot \\cot(bx + c) + d \\]';
-            ampText.innerHTML = "En la función cotangente <b>no existe amplitud definida</b>. El valor <b>a</b> determina el factor de estiramiento vertical de la curva entre las asíntotas, afectando su pendiente y la ubicación de sus puntos intermedios.";
+            ampText.innerHTML = "En la función cotangente <b>no existe amplitud definida</b>. El valor <b>a</b> determina el factor de estiramiento vertical de la curva. Su <b>rango</b> abarca todos los números reales \\( (-\\infty, \\infty) \\). Su <b>dominio</b> excluye los valores donde la tangente es cero (las asíntotas verticales de la cotangente).";
             perText.innerHTML = "Al igual que la tangente, el periodo exacto de la cotangente se determina mediante la fórmula \\( T = \\frac{\\pi}{|b|} \\).";
             ineqText.innerHTML = "\\[ 0 < bx + c < \\pi \\]";
             solveText.innerHTML = "\\[ -c < bx < \\pi - c \\] \\[ \\frac{-c}{b} < x < \\frac{\\pi - c}{b} \\]";
@@ -347,11 +349,10 @@
         if (ggbApplet) {
             try {
                 ggbApplet.evalCommand('Delete(f)');
-               // ggbApplet.evalCommand('Delete(g)');
+                ggbApplet.evalCommand('Delete(g)');
                 if (funcType === 'csc') {
                     ggbApplet.evalCommand("f(x) = a * csc(b * x + c) + d");
                     ggbApplet.evalCommand("g(x) = a * sin(b * x + c) + d");
-		    ggbApplet.setVisible('g(x)', true);
                 } else if (funcType === 'sec') {
                     ggbApplet.evalCommand("f(x) = a * sec(b * x + c) + d");
                     ggbApplet.evalCommand("g(x) = a * cos(b * x + c) + d");
@@ -374,11 +375,10 @@
     function updateAll() {
         const func = document.getElementById('funcSelect').value;
         
-        // Función para leer de MathLive y evaluar matemáticamente con Math.js
+        // 1. LECTURA Y EVALUACIÓN DE TECLADO MATHLIVE
         const getMathVal = (id, defaultVal) => {
             try {
                 const mf = document.getElementById(id);
-                // Extraer el valor matemático. MathLive soporta getValue('ascii-math')
                 let expr = mf.getValue('ascii-math');
                 if (!expr) {
                     expr = mf.value.replace(/\\pi/g, 'pi').replace(/\\frac{([^}]*)}{([^}]*)}/g, '($1)/($2)').replace(/[{}]/g, '').replace(/\\/g, '');
@@ -394,25 +394,25 @@
         };
 
         let a = getMathVal('paramA', 1);
-        if (a === 0) a = 0.5; // Prevenir linea recta plana absoluta para propósitos didácticos
+        if (a === 0) a = 0.5; 
         let rawB = getMathVal('paramB', 1);
         const b = rawB === 0 ? 0.0001 : rawB; 
         const c = getMathVal('paramC', 0);
         const d = getMathVal('paramD', 0);
 
+        // Actualizar UI etiquetas pequeñas
         document.getElementById('valA').innerHTML = `\\(${a.toFixed(1)}\\)`;
         document.getElementById('valB').innerHTML = `\\(${b.toFixed(1)}\\)`;
         document.getElementById('valC').innerHTML = `\\(${getPiFractionFromDecimal(c)}\\)`;
         document.getElementById('valD').innerHTML = `\\(${d.toFixed(1)}\\)`;
         
+        // 2. CÁLCULOS MATEMÁTICOS PRINCIPALES
         let cLatex = getPiFractionFromDecimal(c);
         let signCLatex = c >= 0 ? `+ ${cLatex}` : `- ${getPiFractionFromDecimal(Math.abs(c))}`;
         let signD = d >= 0 ? `+ ${d.toFixed(1)}` : `- ${Math.abs(d).toFixed(1)}`;
-        
         let eqnTextLatex = `\\[ y = ${a.toFixed(1)} \\${func}(${b.toFixed(1)}x ${signCLatex}) ${signD} \\]`;
         document.getElementById('currentFormula').innerHTML = eqnTextLatex;
 
-        // VALORES MATEMÁTICOS DEL CICLO
         let realTVal = (func === 'cot' ? Math.PI : 2*Math.PI) / Math.abs(b);
         let piInitDec = -c / b;
         let piEndDec = piInitDec + realTVal;
@@ -424,19 +424,30 @@
         let x4 = x1 + 3 * dx;
         let x5 = piEndDec;
 
-        let u = d - Math.abs(a);
-        let v = d + Math.abs(a);
+        // Cadenas de texto en Fracciones Pi (KaTeX)
+        let txtInit = getPiFractionFromDecimal(x1);
+        let txtEnd = getPiFractionFromDecimal(x5);
+        let txtX1 = txtInit;
+        let txtX2 = getPiFractionFromDecimal(x2);
+        let txtX3 = getPiFractionFromDecimal(x3);
+        let txtX4 = getPiFractionFromDecimal(x4);
+        let txtX5 = txtEnd;
 
+        let ampVal = Math.abs(a);
+        let u = d - ampVal;
+        let v = d + ampVal;
+
+        // Determinar "y" para cada punto
         let y1, y2, y3, y4, y5;
         if (func === 'csc') {
             y1 = "Asíntota"; y2 = a > 0 ? v : u; y3 = "Asíntota"; y4 = a > 0 ? u : v; y5 = "Asíntota";
         } else if (func === 'sec') {
             y1 = a > 0 ? v : u; y2 = "Asíntota"; y3 = a > 0 ? u : v; y4 = "Asíntota"; y5 = a > 0 ? v : u;
         } else if (func === 'cot') {
-            y1 = "Asíntota"; y2 = a > 0 ? v : u; y3 = d; y4 = a > 0 ? u : v; y5 = "Asíntota";
+            y1 = "Asíntota"; y2 = a > 0 ? (d + ampVal) : (d - ampVal); y3 = d; y4 = a > 0 ? (d - ampVal) : (d + ampVal); y5 = "Asíntota";
         }
 
-        // COMANDOS A GEOGEBRA (CUIDANDO USO DE COMILLAS)
+        // 3. COMANDOS A GEOGEBRA
         try {
             if (ggbApplet && ggbApplet.setValue) {
                 ggbApplet.setValue('a', a);
@@ -451,7 +462,6 @@
                 }
                 ggbApplet.evalCommand('Delete(L3)');
                 ggbApplet.evalCommand('Delete(L4)');
-				ggbApplet.evalCommand('Delete(L7)');
 
                 const drawElement = (index, xVal, yVal) => {
                     if (yVal === "Asíntota") {
@@ -471,153 +481,216 @@
                 drawElement(4, x4, y4);
                 drawElement(5, x5, y5);
 
-                if(func === 'csc' || func === 'sec') {
+                if(func === 'csc') {
                     ggbApplet.evalCommand(`L3: y = ${u}`);
-		    ggbApplet.setVisible('L3', true);
-                    ggbApplet.evalCommand(`L4: y = ${v}`);
-		    ggbApplet.setVisible('L4', true);
-                    ggbApplet.evalCommand(`L7: y = ${d}`);
-		    ggbApplet.setVisible('L7', true);
                     ggbApplet.evalCommand('SetLineStyle(L3, 2)');
                     ggbApplet.evalCommand('SetColor(L3, "Purple")');
+                    ggbApplet.setVisible('L3', true);
+                    ggbApplet.evalCommand(`L4: y = ${v}`);
                     ggbApplet.evalCommand('SetLineStyle(L4, 2)');
                     ggbApplet.evalCommand('SetColor(L4, "Purple")');
+                    ggbApplet.setVisible('L4', true);
+                    ggbApplet.evalCommand(`L7: y = ${d}`);
                     ggbApplet.evalCommand('SetLineStyle(L7, 3)');
                     ggbApplet.evalCommand('SetColor(L7, "Black")');
-		    ggbApplet.setVisible('L5', false);
-                } 
-			   if(func === 'cot'){
-		         ggbApplet.setVisible('L3', false);
-		         ggbApplet.setVisible('L4', false);
-		         ggbApplet.setVisible('L7', false);
-			ggbApplet.evalCommand(`L5: y = ${d}`);
-		        ggbApplet.setVisible('L5', true);
-                        ggbApplet.evalCommand('SetLineStyle(L5, 3)');
-			ggbApplet.evalCommand('SetColor(L5, "Black")');
-		}
-		    ggbApplet.refreshViews();
+                    ggbApplet.setVisible('L7', true);
+                    ggbApplet.setVisible('L6', true);
+                    ggbApplet.setVisible('L5', false);
+                    ggbApplet.setVisible('L8', false);
+                }
+                if(func === 'sec') {
+                    ggbApplet.evalCommand(`L3: y = ${u}`);
+                    ggbApplet.evalCommand('SetLineStyle(L3, 2)');
+                    ggbApplet.evalCommand('SetColor(L3, "Purple")');
+                    ggbApplet.setVisible('L3', true);
+                    ggbApplet.evalCommand(`L4: y = ${v}`);
+                    ggbApplet.evalCommand('SetLineStyle(L4, 2)');
+                    ggbApplet.evalCommand('SetColor(L4, "Purple")');
+                    ggbApplet.setVisible('L4', true);
+                    ggbApplet.evalCommand(`L7: y = ${d}`);
+                    ggbApplet.evalCommand('SetLineStyle(L7, 3)');
+                    ggbApplet.evalCommand('SetColor(L7, "Black")');
+                    ggbApplet.setVisible('L7', true);
+                    ggbApplet.setVisible('L6', false);
+                    ggbApplet.setVisible('L5', false);
+                    ggbApplet.setVisible('L8', true);
+                }
+                if(func === 'cot'){
+                    ggbApplet.setVisible('L3', false);
+                    ggbApplet.setVisible('L4', false);
+                    ggbApplet.setVisible('L7', false);
+                    ggbApplet.setVisible('L8', false);
+                    ggbApplet.evalCommand(`L5: y = ${d}`);
+                    ggbApplet.setVisible('L5', true);
+                    ggbApplet.evalCommand('SetLineStyle(L5, 3)');
+                    ggbApplet.evalCommand('SetColor(L5, "Black")');
+                    ggbApplet.setVisible('L6', true);
+                }
+                ggbApplet.refreshViews();
             }
         } catch (e) {
-            console.warn("GeoGebra sincronizando variables locales...");
+            console.warn("GeoGebra sincronizando variables...");
         }
 
+        // 4. ACTUALIZACIÓN DEL TEXTO PROCEDIMENTAL (HTML)
         document.getElementById('paramExtraction').innerHTML = `
             Ecuación: <span>${eqnTextLatex}</span> <br> 
             Parámetros: \\(a = ${a}\\), \\(b = ${b}\\), \\(c = ${cLatex}\\), \\(d = ${d}\\)
         `;
 
-        let ampVal = Math.abs(a);
-        let stepAmpHTML = `
-            <div class="math-line"><span class="math-label">Factor (Estir.):</span> \\( |a| = |${a}| = ${ampVal} \\)</div>
+        // Paso 1: Eje de Equilibrio y Rango
+        let stepEqRangoHTML = `
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Equilibrio:</span> \\( y = d = ${d} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Factor (a):</span> \\( |a| = |${a}| = ${ampVal} \\)</div>
         `;
-        if (func === 'cot') {
-            stepAmpHTML += `<div class="math-line result-line">Rango = \\( (-\\infty, \\infty) \\). (Sin restricción vertical)</div>`;
-        } else {
-            stepAmpHTML += `
-            <div class="math-line"><span class="math-label">Cálculo 'u':</span> \\( u = d - |a| = ${d} - ${ampVal} = ${u} \\)</div>
-            <div class="math-line"><span class="math-label">Cálculo 'v':</span> \\( v = d + |a| = ${d} + ${ampVal} = ${v} \\)</div>
-            <div class="math-line result-line">Rango = \\( (-\\infty, ${u}] \\cup [${v}, +\\infty) \\)</div>`;
-        }
-        document.getElementById('stepAmp').innerHTML = stepAmpHTML;
 
+        if (func === 'cot') {
+            stepEqRangoHTML += `
+            <div class="math-line result-line">Rango = \\( (-\\infty, \\infty) \\) (Todos los reales)</div>`;
+        } else {
+            stepEqRangoHTML += `
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Cálculo 'u':</span> \\( u = d - |a| = ${d} - ${ampVal} = ${u} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Cálculo 'v':</span> \\( v = d + |a| = ${d} + ${ampVal} = ${v} \\)</div>
+            <div class="math-line result-line">Rango = \\( (-\\infty, ${u}] \\cup [${v}, \\infty) \\)</div>`;
+        }
+        document.getElementById('stepEqRango').innerHTML = stepEqRangoHTML;
+
+        // Paso 2: Periodo
         let formPer = func === 'cot' ? `\\frac{\\pi}{|b|}` : `\\frac{2\\pi}{|b|}`;
         let numSust = func === 'cot' ? "\\pi" : "2\\pi";
         let fractPer = getPiFractionFromDecimal(realTVal);
 
         document.getElementById('stepPer').innerHTML = `
-            <div class="math-line"><span class="math-label">Fórmula:</span> \\( T = ${formPer} \\)</div>
-            <div class="math-line"><span class="math-label">Sustitución:</span> \\( T = \\frac{${numSust}}{|${b}|} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Fórmula:</span> \\( T = \\Large ${formPer} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Sustitución:</span> \\( T = \\Large \\frac{${numSust}}{|${b}|} \\)</div>
             <div class="math-line result-line">Periodo (T) = \\( ${fractPer} \\)</div>
         `;
 
+        // Paso 3: Desfase
         let desfaseVal = -c / b;
         let txtFase = getPiFractionFromDecimal(desfaseVal);
         let dirFase = desfaseVal > 0 ? "hacia la derecha ➡️" : (desfaseVal < 0 ? "hacia la izquierda ⬅️" : "centrado 🟡");
         let cSubst = c < 0 ? `(${cLatex})` : cLatex;
 
         document.getElementById('stepFase').innerHTML = `
-            <div class="math-line"><span class="math-label">Fórmula:</span> \\( x = \\frac{-c}{b} \\)</div>
-            <div class="math-line"><span class="math-label">Sustitución:</span> \\( x = \\frac{-${cSubst}}{${b}} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Fórmula:</span> \\( x = \\Large \\frac{-c}{b} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Sustitución:</span> \\( x = \\Large \\frac{-${cSubst}}{${b}} \\)</div>
             <div class="math-line result-line">Desfase = \\( ${txtFase} \\) (${dirFase})</div>
         `;
 
+        // Paso 4: Ciclo
         let ineqStr = func === 'cot' ? `0 < bx + c < \\pi` : `0 \\le bx + c \\le 2\\pi`;
         let ineqSust = func === 'cot' ? `0 < ${b}x ${signCLatex} < \\pi` : `0 \\le ${b}x ${signCLatex} \\le 2\\pi`;
-        let txtInit = getPiFractionFromDecimal(x1);
-        let txtEnd = getPiFractionFromDecimal(x5);
         let ineqSign = func === 'cot' ? '<' : '\\le';
 
         document.getElementById('stepCiclo').innerHTML = `
-            <div class="math-line"><span class="math-label">Condición:</span> \\( ${ineqStr} \\)</div>
-            <div class="math-line"><span class="math-label">Sustitución:</span> \\( ${ineqSust} \\)</div>
-            <div class="math-line"><span class="math-label">Despeje (÷${b}):</span> \\( ${txtInit} ${ineqSign} x ${ineqSign} ${txtEnd} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Condición:</span> \\( ${ineqStr} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Sustitución:</span> \\( ${ineqSust} \\)</div>
+            <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Despeje (÷${b}):</span> \\( ${txtInit} ${ineqSign} x ${ineqSign} ${txtEnd} \\)</div>
             <div class="math-line result-line">El ciclo transcurre en: \\( ( ${txtInit} , ${txtEnd} ) \\)</div>
         `;
 
-        document.getElementById('stepVert').innerHTML = `
-            <div class="math-line"><span class="math-label">Fórmula:</span> \\( y = d \\)</div>
-            <div class="math-line"><span class="math-label">Sustitución:</span> \\( y = ${d} \\)</div>
-            <div class="math-line result-line">Recta central (Equilibrio): \\( y = ${d} \\)</div>
-        `;
+        // Paso 5: Dominio
+        let distAsintotas = getPiFractionFromDecimal(Math.PI / Math.abs(b));
+        let stepDominioHTML = "";
 
-        let txtX1 = txtInit;
-        let txtX5 = txtEnd;
-        let txtX3 = getPiFractionFromDecimal(x3);
-        let txtX2 = getPiFractionFromDecimal(x2);
-        let txtX4 = getPiFractionFromDecimal(x4);
+        if (func === 'csc') {
+            stepDominioHTML = `
+                <div class="math-line" style="margin-bottom: 15px;">Luego de encontrar el ciclo, determinamos el dominio. En la cosecante, el dominio son los números reales menos la suma del desfase (inicio del ciclo) con los múltiplos \\(n\\) de la mitad del periodo (distancia entre asíntotas).</div>
+                <div class="math-line" style="margin-bottom: 10px;"><span class="math-label">Inicio del ciclo:</span> \\( x = ${txtInit} \\)</div>
+                <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Mitad del periodo:</span> \\( \\frac{T}{2} = ${distAsintotas} \\)</div>
+                <div class="math-line result-line">Dominio: \\( \\mathbb{R} - \\{x \\mid x = ${txtInit} + n(${distAsintotas}), n \\in \\mathbb{Z}\\} \\)</div>
+            `;
+        } else if (func === 'sec') {
+            stepDominioHTML = `
+                <div class="math-line" style="margin-bottom: 15px;">Luego de encontrar el ciclo, determinamos el dominio. En la secante, el dominio son los números reales menos la suma del valor a la mitad de la mitad del ciclo (1/4 del ciclo) con los múltiplos \\(n\\) de la mitad del periodo (distancia entre asíntotas).</div>
+                <div class="math-line" style="margin-bottom: 10px;"><span class="math-label">Inicio del ciclo:</span> \\( x_1 = ${txtInit} \\)</div>
+                <div class="math-line" style="margin-bottom: 10px;"><span class="math-label">Fin del ciclo:</span> \\( x_5 = ${txtEnd} \\)</div>
+                <div class="math-line" style="margin-bottom: 10px;"><span class="math-label">Mitad del ciclo:</span> \\( x_3 = \\dfrac{x_1 + x_5}{2} = \\dfrac{${txtInit} + ${txtEnd}}{2} = ${txtX3} \\)</div>
+                <div class="math-line" style="margin-bottom: 10px;"><span class="math-label">1/4 del ciclo:</span> \\( x_2 = \\dfrac{x_1 + x_3}{2} = \\dfrac{${txtInit} + ${txtX3}}{2} = ${txtX2} \\)</div>
+                <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Mitad del periodo:</span> \\( \\frac{T}{2} = ${distAsintotas} \\)</div>
+                <div class="math-line result-line">Dominio: \\( \\mathbb{R} - \\{x \\mid x = ${txtX2} + n(${distAsintotas}), n \\in \\mathbb{Z}\\} \\)</div>
+            `;
+        } else if (func === 'cot') {
+            stepDominioHTML = `
+                <div class="math-line" style="margin-bottom: 15px;">Luego de encontrar el ciclo, determinamos el dominio. En la cotangente, el dominio son los números reales menos la suma del desfase (inicio del ciclo) con los múltiplos \\(n\\) del periodo.</div>
+                <div class="math-line" style="margin-bottom: 10px;"><span class="math-label">Inicio del ciclo:</span> \\( x = ${txtInit} \\)</div>
+                <div class="math-line" style="margin-bottom: 18px;"><span class="math-label">Periodo (T):</span> \\( ${distAsintotas} \\)</div>
+                <div class="math-line result-line">Dominio: \\( \\mathbb{R} - \\{x \\mid x = ${txtInit} + n(${distAsintotas}), n \\in \\mathbb{Z}\\} \\)</div>
+            `;
+        }
+        document.getElementById('stepDominio').innerHTML = stepDominioHTML;
 
+        // Paso 6: Lógica didáctica
         let explHTML = "";
         if (func === 'csc') {
             explHTML = `
                 <div class="logic-panel">
-                    <h4>Paso A: Función Base (Seno)</h4>
-                    <p>La cosecante se relaciona con el <b>Seno</b>. Donde el seno vale cero, la cosecante es indefinida. Las <b>asíntotas verticales</b> ocurren en <b>P1, P3 y P5</b>.</p>
-                    <h4>Paso B: Cálculo de Abscisas (Eje X)</h4>
-                    <ul>
-                        <li><b>P1, P3, P5 (Asíntotas):</b> Ubicadas en \\( x_1 = ${txtX1} \\), \\( x_3 = ${txtX3} \\), y \\( x_5 = ${txtX5} \\).</li>
-                        <li><b>P2 y P4 (Vértices locales):</b> Ubicados en \\( x_2 = ${txtX2} \\) y \\( x_4 = ${txtX4} \\).</li>
+                    <h4>Paso A: Relación con la Función Base (Seno)</h4>
+                    <p style="margin-bottom: 15px;">La cosecante ($\\csc x = 1/\\sin x$) hereda las características de la onda seno. Sabemos que el rango excluido es la franja entre $[u, v] = [${u}, ${v}]$. La cosecante dibujará sus "U" desde estos vértices hacia el infinito.</p>
+                    
+                    <h4>Paso B: Determinación de Asíntotas (P1, P3, P5)</h4>
+                    <p style="margin-bottom: 15px;">Donde la función base seno es cortada por el eje de equilibrio ($y = d = ${d}$), la cosecante es indefinida ($1/0$), creando <b>asíntotas verticales</b>. En un ciclo de seno, esto ocurre al inicio, mitad y fin:</p>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 18px;"><b>P1 (Inicio):</b> Asíntota en $ \\Large x_1 =  ${txtX1}$</li>
+                        <li style="margin-bottom: 18px;"><b>P3 (Mitad):</b> Asíntota en $ \\Large x_3 = ${txtX3}$</li>
+                        <li style="margin-bottom: 18px;"><b>P5 (Fin):</b> Asíntota en $\\Large x_5 =  ${txtX5}$</li>
                     </ul>
-                    <h4>Paso C: Evaluación de Ordenadas (Eje Y)</h4>
-                    <ul>
-                        <li><b>P2</b> alcanza el valor ${a>0?'máximo superior (v)':'mínimo inferior (u)'} <b>\\( y = ${y2} \\)</b>.</li>
-                        <li><b>P4</b> alcanza el valor opuesto <b>\\( y = ${y4} \\)</b>.</li>
+
+                    <h4>Paso C: Vértices de las Ramas (P2, P4)</h4>
+                    <p style="margin-bottom: 15px;">Los puntos intermedios $P_2$ y $P_4$ son los extremos máximos/mínimos, donde nacen las ramas de la cosecante. Como la amplitud ($a=${a}$) es ${a > 0 ? 'positiva' : 'negativa'}, la onda base primero ${a > 0 ? 'sube' : 'baja'}:</p>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 18px;"><b>P2 $\\Large \\left(x_2 = ${txtX2}\\right)$:</b> Alcanza el valor ${a > 0 ? `máximo $v = ${v}$. Se dibuja una U hacia arriba.` : `mínimo $u = ${u}$. Se dibuja una U hacia abajo.`}</li>
+                        <li style="margin-bottom: 18px;"><b>P4 $\\Large \\left(x_4 = ${txtX4}\\right)$:</b> Alcanza el valor opuesto ${a > 0 ? `mínimo $u = ${u}$. Se dibuja una U hacia abajo.` : `máximo $v = ${v}$. Se dibuja una U hacia arriba.`}</li>
                     </ul>
                 </div>
             `;
         } else if (func === 'sec') {
             explHTML = `
                 <div class="logic-panel">
-                    <h4>Paso A: Función Base (Coseno)</h4>
-                    <p>La secante se relaciona con el <b>Coseno</b>. Donde el coseno vale cero, las <b>asíntotas verticales</b> ocurren en <b>P2 y P4</b>.</p>
-                    <h4>Paso B: Cálculo de Abscisas (Eje X)</h4>
-                    <ul>
-                        <li><b>P2 y P4 (Asíntotas):</b> Ubicadas en \\( x_2 = ${txtX2} \\) y \\( x_4 = ${txtX4} \\).</li>
-                        <li><b>P1, P3, P5 (Vértices locales):</b> Ubicados en \\( x_1 = ${txtX1} \\), \\( x_3 = ${txtX3} \\) y \\( x_5 = ${txtX5} \\).</li>
+                    <h4>Paso A: Relación con la Función Base (Coseno)</h4>
+                    <p style="margin-bottom: 15px;">La secante ($\\sec x = 1/\\cos x$) se basa en la onda coseno. El rango excluido es $[u, v] = [${u}, ${v}]$. La secante existirá fuera de esta franja.</p>
+                    
+                    <h4>Paso B: Vértices de las Ramas (P1, P3, P5)</h4>
+                    <p style="margin-bottom: 15px;">A diferencia del seno, el coseno <b>inicia</b> en sus valores extremos (inicio, mitad y fin del ciclo). Ahí nacen las ramas de la secante. Como la amplitud ($a=${a}$) es ${a > 0 ? 'positiva' : 'negativa'}:</p>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 18px;"><b>P1 $ \\Large \\left(x_1 = ${txtX1}\\right)$ y P5 $ \\Large \\left(x_5 = ${txtX5}\\right)$:</b> Toman el valor ${a > 0 ? `máximo $v = ${v}$ (dibujan medias ramas hacia arriba).` : `mínimo $u = ${u}$ (dibujan medias ramas hacia abajo).`}</li>
+                        <li style="margin-bottom: 18px;"><b>P3: Mitad $ \\Large \\left(x_3 = ${txtX3}\\right)$:</b> Alcanza el valor opuesto ${a > 0 ? `mínimo $u = ${u}$ (U completa hacia abajo).` : `máximo $v = ${v}$ (U completa hacia arriba).`}</li>
                     </ul>
-                    <h4>Paso C: Evaluación de Ordenadas (Eje Y)</h4>
-                    <ul>
-                        <li><b>P1 y P5</b> inician/terminan en <b>\\( y = ${y1} \\)</b>.</li>
-                        <li><b>P3</b> (el vértice central) toma el valor opuesto <b>\\( y = ${y3} \\)</b>.</li>
+
+                    <h4>Paso C: Determinación de Asíntotas (P2, P4)</h4>
+                    <p style="margin-bottom: 15px;">Donde el coseno cruza su eje de equilibrio ($y = d = ${d}$), la secante sufre división por cero. Esto sucede en los cuartos intermedios del ciclo:</p>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 18px;"><b>P2:</b> Asíntota vertical en $ \\Large x_2 = ${txtX2}$</li>
+                        <li style="margin-bottom: 18px;"><b>P4:</b> Asíntota vertical en $ \\Large x_4 = ${txtX4}$</li>
                     </ul>
                 </div>
             `;
         } else if (func === 'cot') {
             explHTML = `
                 <div class="logic-panel">
-                    <h4>Paso A: Dominio del Ciclo (Asíntotas)</h4>
-                    <p>La cotangente (cos/sen) es indefinida donde el seno vale cero. <b>P1 y P5</b> representan <b>asíntotas verticales</b>.</p>
-                    <h4>Paso B: Cálculo de Abscisas (Eje X)</h4>
-                    <ul>
-                        <li><b>P3 (Centro):</b> Medio del ciclo en \\( x_3 = ${txtX3} \\).</li>
-                        <li><b>P2 y P4:</b> Cuartos de ciclo en \\( x_2 = ${txtX2} \\) y \\( x_4 = ${txtX4} \\).</li>
+                    <h4>Paso A: Dominio y Asíntotas (P1, P5)</h4>
+                    <p style="margin-bottom: 15px;">La cotangente ($\\cos x / \\sin x$) es indefinida cuando el seno es cero. Esto marca el inicio y fin exacto de su ciclo principal.</p>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 18px;"><b>P1 (Inicio):</b> Asíntota vertical en $ \\Large x_1 = ${txtX1}$</li>
+                        <li style="margin-bottom: 18px;"><b>P5 (Fin):</b> Asíntota vertical en $  \\Large x_5 = ${txtX5}$</li>
                     </ul>
-                    <h4>Paso C: Evaluación de Ordenadas (Eje Y)</h4>
-                    <ul>
-                        <li>En <b>P3</b>, cruza su eje de equilibrio: <b>\\( y = ${d} \\)</b>.</li>
-                        <li>En <b>P2</b> y <b>P4</b>, alcanza <b>\\( y = ${d+a} \\)</b> y <b>\\( y = ${d-a} \\)</b> respectivamente.</li>
+                    
+                    <h4>Paso B: Punto de Inflexión (P3)</h4>
+                    <p style="margin-bottom: 15px;">En el centro exacto del ciclo, la función cruza el eje de equilibrio $y = d = ${d}$.</p>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 18px;"><b>P3 (Centro):</b> Coordenada central en $y = ${d}$ (Punto: $ \\Large \\left(${txtX3}, ${d}\\right)$)</li>
                     </ul>
-                </div>
-            `;
+
+
+                    <h4>Paso C: Puntos de Estiramiento (P2, P4)</h4>
+                    <p style="margin-bottom: 15px;">A un cuarto y tres cuartos del ciclo, la función avanza según su factor de estiramiento $a = ${a}$. La curva es por naturaleza ${a > 0 ? 'decreciente' : 'creciente'}:</p>
+                    <ul style="padding-left: 20px;">
+                    <li style="margin-bottom: 18px;"><b>P2 $ \\Large \\left(x_2 = ${txtX2}\\right)$:</b> Alcanza el nivel $y = ${y2}$</li>
+                    <li style="margin-bottom: 18px;"><b>P4 ($ \\Large \\left(x_4 = ${txtX4}\\right)$:</b> Alcanza el nivel $y = ${y4}$</li>
+    </ul>
+`;
+
         }
 
         const formatY = (valY) => valY === "Asíntota" ? valY : (Number.isInteger(valY) ? valY.toString() : valY.toFixed(2).replace(/\.00$/, ''));
@@ -639,26 +712,28 @@
 
         document.getElementById('stepPuntos').innerHTML = explHTML + cardsHTML;
         
-        renderMath();
+        // 5. RENDERIZADO FINAL DE MATEMÁTICAS EN LA INTERFAZ
+        setTimeout(renderMath, 50);
     }
 
     // Funciones Helper de Fracciones compatibles con KaTeX
-    function getPiFractionFromDecimal(val) {
-        if (Math.abs(val) < 0.01) return "0";
-        let fr = val / Math.PI;
-        for(let d = 1; d <= 12; d++) {
-            let n = Math.round(fr * d);
-            if (Math.abs(fr - n/d) < 0.01) {
-                if (n === 0) return "0";
-                let sign = n < 0 ? "-" : "";
-                let absN = Math.abs(n);
-                let numStr = absN === 1 ? "\\pi" : `${absN}\\pi`; 
-                if (d === 1) return `${sign}${numStr}`;
-                return `${sign}\\frac{${numStr}}{${d}}`;
-            }
+function getPiFractionFromDecimal(val) {
+    if (Math.abs(val) < 0.0001) return "0"; // Mayor precisión en cero
+    let fr = val / Math.PI;
+    
+    for(let d = 1; d <= 12; d++) {
+        let n = Math.round(fr * d);
+        if (Math.abs(fr - n/d) < 0.00000001) { 
+            if (n === 0) return "0";
+            let sign = n < 0 ? "-" : "";
+            let absN = Math.abs(n);
+            let numStr = absN === 1 ? "\\pi" : `${absN}\\pi`; 
+            if (d === 1) return `${sign}${numStr}`;
+            return `${sign}\\frac{${numStr}}{${d}}`;
         }
-        return `${(val/Math.PI).toFixed(2)}\\pi`;
     }
+    return `${(val/Math.PI).toFixed(2)}\\pi`;
+}
 </script>
 
 </body>
