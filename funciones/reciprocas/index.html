@@ -125,7 +125,7 @@
             <div class="theory-box">
                 <h3>Parámetro \(b\) (Frecuencia Angular y Periodo)</h3>
                 <p id="theoryPerText">Afecta la compresión o estiramiento horizontal. El periodo exacto (longitud de un ciclo) se determina mediante la fórmula:</p>
-                <div style="text-align: center; margin: 15px 0; color: #1e40af;" id="theoryPerForm">
+                <div style="text-align: center; margin: 15px 0; color: #1e40af;" id="theoryPText">
                     \[ T = \dfrac{2\pi}{|b|} \]
                 </div>
             </div>
@@ -265,18 +265,21 @@
         const formText = document.getElementById('theoryFormulaText');
         const ampText = document.getElementById('theoryAmpText');
         const perText = document.getElementById('theoryPerText');
+        const PText = document.getElementById('theoryPText');
         const ineqText = document.getElementById('theoryInequality');
         const solveText = document.getElementById('theorySolve');
 
         if(func === 'csc' || func === 'sec') {
             formText.innerHTML = func === 'csc' ? '\\[ y = a \\cdot \\csc(bx + c) + d \\]' : '\\[ y = a \\cdot \\sec(bx + c) + d \\]';
             ampText.innerHTML = "En las funciones secante y cosecante, <b>no existe amplitud</b> (tienden al infinito). Sin embargo, <b>|a|</b> determina la distancia desde el eje central hasta los vértices de las parábolas en U.<br><br>El <b>rango</b> de estas funciones es el complemento del rango de su función base (seno o coseno), excluyendo los valores entre \\(u = d - |a| \\) y \\( v= d + |a| \\).<br><br>El <b>dominio</b> excluye los puntos donde la función base se hace cero (donde se forman las asíntotas).";
+            PText.innerHTML = "\\[ T = \\dfrac{2\\pi}{|b|} \\]";
             ineqText.innerHTML = "\\[ 0 \\le bx + c \\le 2\\pi \\]";
             solveText.innerHTML = "\\[ -c \\le bx \\le 2\\pi - c \\] \\[ \\frac{-c}{b} \\le x \\le \\frac{2\\pi - c}{b} \\]";
         } else if (func === 'cot') {
             formText.innerHTML = '\\[ y = a \\cdot \\cot(bx + c) + d \\]';
             ampText.innerHTML = "En la función cotangente <b>no existe amplitud definida</b>. El valor <b>a</b> determina el factor de estiramiento vertical de la curva. Su <b>rango</b> abarca todos los números reales \\( (-\\infty, \\infty) \\). Su <b>dominio</b> excluye los valores donde la tangente es cero (las asíntotas verticales de la cotangente).";
-            perText.innerHTML = "Al igual que la tangente, el periodo exacto de la cotangente se determina mediante la fórmula \\( T = \\frac{\\pi}{|b|} \\).";
+            perText.innerHTML = "Al igual que la tangente, el periodo exacto de la cotangente se determina mediante la fórmula:";
+            PText.innerHTML = "\\[ T = \\dfrac{\\pi}{|b|} \\]";
             ineqText.innerHTML = "\\[ 0 < bx + c < \\pi \\]";
             solveText.innerHTML = "\\[ -c < bx < \\pi - c \\] \\[ \\frac{-c}{b} < x < \\frac{\\pi - c}{b} \\]";
         }
