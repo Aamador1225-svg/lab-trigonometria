@@ -3,744 +3,1009 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Actividad: Gráfica de Funciones Trigonométricas Inversas</title>
+    <title>Laboratorio Gemelo: Funciones Inversas Exactas</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- KaTeX -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" 
-        onload="renderMathInElement(document.body, {
-            delimiters: [
-                {left: '$$', right: '$$', display: true},
-                {left: '\\[', right: '\\]', display: true},
-                {left: '$', right: '$', display: false},
-                {left: '\\(', right: '\\)', display: false}
-            ]
-        });"></script>
-
-    <!-- MathLive API -->
-    <script defer src="https://unpkg.com/mathlive"></script>
-
-    <!-- Math.js (Para evaluación matemática rigurosa) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 
     <!-- GeoGebra API -->
     <script src="https://www.geogebra.org/apps/deployggb.js"></script>
-
+    
+    <!-- KaTeX para renderizado matemático -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- MathLive y Math.js -->
+    <script defer src="https://unpkg.com/mathlive"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+    
     <style>
         :root {
-            --primary: #047857; /* Emerald 700 */
-            --primary-dark: #064e3b;
-            --secondary: #4338ca; /* Indigo 700 */
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --border: #cbd5e1;
+            --primary: #4f46e5; 
+            --primary-dark: #3730a3;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: #334155; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: #f1f5f9; }
         
-        math-field {
-            font-size: 1.15rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            border: 2px solid var(--border);
-            background: var(--surface);
-            width: 100%;
-            transition: border-color 0.3s;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        math-field { 
+            font-size: 1.1rem; padding: 0.4rem; outline: none; background: white; 
+            border: 2px solid #cbd5e1; border-radius: 0.375rem; width: 100%; transition: all 0.2s;
         }
-        math-field:focus-within {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.2);
-        }
+        math-field:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px #e0e7ff; }
+        math-field::part(virtual-keyboard-toggle) { color: var(--primary); }
         
-        select {
-            font-size: 1rem;
-            padding: 0.6rem;
-            border-radius: 0.5rem;
-            border: 2px solid var(--border);
-            width: 100%;
-            background-color: white;
-            cursor: pointer;
-        }
-        select:focus { border-color: var(--primary); outline: none; }
-
-        .tab-btn {
-            padding: 12px 24px; font-weight: bold; border-radius: 8px 8px 0 0;
-            background: #e2e8f0; color: #64748b; cursor: pointer; transition: 0.3s;
-            border-bottom: 3px solid transparent;
-        }
-        .tab-btn.active { background: #d1fae5; color: var(--primary-dark); border-bottom: 3px solid var(--primary); }
-        .tab-content { display: none; animation: fadeIn 0.4s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .status-icon { font-size: 1.25rem; width: 25px; display: inline-block; text-align: center; margin-left: 5px;}
-        .section-title { font-size: 1.15rem; font-weight: bold; color: var(--primary-dark); border-bottom: 2px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 16px; margin-top: 24px;}
-        .hint-text { font-size: 0.85rem; color: #64748b; margin-top: 2px; }
+        .geogebra-container { position: relative; border-radius: 0.5rem; overflow: hidden; border: 1px solid #e2e8f0; background: #fff; }
+        .step-box { background: white; border-left: 4px solid var(--primary); padding: 1.25rem; margin-bottom: 1rem; border-radius: 0 0.5rem 0.5rem 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .step-title { font-weight: 700; color: #1e293b; margin-bottom: 0.75rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.25rem; font-size: 1.05rem;}
+        
+        .katex-display { margin: 0.5em 0 !important; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="text-slate-800 min-h-screen flex flex-col">
 
-    <div class="max-w-[1400px] mx-auto">
-        <!-- Encabezado -->
-        <header class="bg-gradient-to-r from-emerald-800 to-teal-600 text-white p-8 rounded-2xl shadow-lg mb-8 text-center">
-            <h1 class="text-3xl font-bold mb-3">🧩 Actividad: Análisis de Funciones Inversas (9 puntos)</h1>
-            <p class="text-teal-50 text-lg max-w-4xl mx-auto">
-                <strong>Instrucciones:</strong> Analice la función base dada, determine su restricción, y extraiga los parámetros de su <strong>función inversa exacta</strong>. Calcule los 5 puntos clave de la función base y sus correspondientes en la inversa.
-            </p>
-        </header>
-
-        <!-- Navegación de Pestañas -->
-        <div class="flex border-b-2 border-emerald-600 mb-6 space-x-2 overflow-x-auto">
-            <button class="tab-btn active" onclick="openTab('act1', this)">Actividad 1: Arcoseno</button>
-            <button class="tab-btn" onclick="openTab('act2', this)">Actividad 2: Arcocoseno</button>
-            <button class="tab-btn" onclick="openTab('act3', this)">Actividad 3: Arcotangente</button>
+    <header class="bg-gradient-to-r from-indigo-700 to-emerald-600 text-white shadow-md py-5">
+        <div class="max-w-[1400px] mx-auto px-4 text-center">
+            <h1 class="text-3xl font-extrabold tracking-tight">🔬 Laboratorio Gemelo: Funciones Inversas Exactas</h1>
+            <p class="text-indigo-100 mt-2 font-medium">Análisis analítico con valores fraccionarios exactos y términos de Pi</p>
         </div>
+    </header>
 
-        <!-- ================= ACTIVIDAD 1: ARCOSENO ================= -->
-        <div id="act1" class="tab-content active bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200">
-            <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-lg text-center mb-6">
-                <h2 class="text-md text-emerald-800 font-bold mb-1 uppercase tracking-wide">Función Base a Invertir</h2>
-                <div class="text-3xl text-emerald-900 font-serif my-2">
-                    $$ f(x) = 2\sin(2x - \pi) + 1 $$
-                </div>
-                <p class="text-sm text-slate-600">Encuentre la función $I(x) = A\arcsin(Bx+C)+D$ asociada.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">I. Acotación de la Función Base</h3></div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Dominio Restringido de la Base (Tramo Principal):</label>
-                    <div class="flex items-center">
-                        <select id="a1-dom-base">
-                            <option value="">-- Selecciona el Dominio --</option>
-                            <option value="int1">[0, π]</option>
-                            <option value="int2">[π/4, 3π/4]</option>
-                            <option value="int3">[-π/2, π/2]</option>
-                        </select>
-                        <span class="status-icon" id="icon-a1-dom-base"></span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rango de la Función Base:</label>
-                    <div class="flex items-center">
-                        <select id="a1-ran-base">
-                            <option value="">-- Selecciona el Rango --</option>
-                            <option value="r1">[-1, 3]</option>
-                            <option value="r2">[1, 3]</option>
-                            <option value="r3">[-3, 1]</option>
-                        </select>
-                        <span class="status-icon" id="icon-a1-ran-base"></span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">II. Parámetros Analíticos de la Inversa $I(x)$</h3></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro A ($1/b$):</label><div class="flex items-center"><math-field id="a1-A"></math-field><span class="status-icon" id="icon-a1-A"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro B ($1/a$):</label><div class="flex items-center"><math-field id="a1-B"></math-field><span class="status-icon" id="icon-a1-B"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro C ($-d/a$):</label><div class="flex items-center"><math-field id="a1-C"></math-field><span class="status-icon" id="icon-a1-C"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro D ($-c/b$):</label><div class="flex items-center"><math-field id="a1-D"></math-field><span class="status-icon" id="icon-a1-D"></span></div></div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">III. Dominio y Rango de la Inversa</h3></div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Dominio de la Inversa ($D_I$):</label>
-                    <div class="flex items-center">
-                        <select id="a1-dom-inv">
-                            <option value="">-- Selecciona el Dominio --</option>
-                            <option value="d1">[-1, 3]</option>
-                            <option value="d2">[π/4, 3π/4]</option>
-                            <option value="R">ℝ</option>
-                        </select>
-                        <span class="status-icon" id="icon-a1-dom-inv"></span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rango de la Inversa ($R_I$):</label>
-                    <div class="flex items-center">
-                        <select id="a1-ran-inv">
-                            <option value="">-- Selecciona el Rango --</option>
-                            <option value="r1">[-1, 3]</option>
-                            <option value="r2">[π/4, 3π/4]</option>
-                            <option value="R">ℝ</option>
-                        </select>
-                        <span class="status-icon" id="icon-a1-ran-inv"></span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-emerald-800 border-emerald-200">IV. 3 Puntos Clave de la Base $P(x,y)$</h3>
-                <p class="text-sm text-slate-500 mb-3">Construya los puntos partiendo de las fronteras calculadas con la desigualdad de acotación y ubicando el centro.</p></div>
-                
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_1$ (Frontera inicial):</label><div class="flex items-center"><math-field id="a1-p1"></math-field><span class="status-icon" id="icon-a1-p1"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_3$ (Centro):</label><div class="flex items-center"><math-field id="a1-p3"></math-field><span class="status-icon" id="icon-a1-p3"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_5$ (Frontera final):</label><div class="flex items-center"><math-field id="a1-p5"></math-field><span class="status-icon" id="icon-a1-p5"></span></div></div>
-
-                <div class="md:col-span-2 mt-4"><h3 class="section-title text-indigo-800 border-indigo-200">V. 3 Puntos Clave de la Inversa $Q(x,y)$</h3>
-                <p class="text-sm text-slate-500 mb-3">Refleje las coordenadas de los puntos base $P$ invirtiendo $X$ y $Y$.</p></div>
-                
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_1$ (Reflejo de $P_1$):</label><div class="flex items-center"><math-field id="a1-q1"></math-field><span class="status-icon" id="icon-a1-q1"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_3$ (Reflejo de $P_3$):</label><div class="flex items-center"><math-field id="a1-q3"></math-field><span class="status-icon" id="icon-a1-q3"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_5$ (Reflejo de $P_5$):</label><div class="flex items-center"><math-field id="a1-q5"></math-field><span class="status-icon" id="icon-a1-q5"></span></div></div>
-            </div>
-            
-            <button onclick="checkAct1()" class="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md">Verificar Análisis Procedimental Actividad 1</button>
-            
-            <div id="ggb-twins-act1" class="hidden mt-8 grid-cols-1 lg:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-inner">
-                <div>
-                    <h3 class="text-center font-bold text-slate-700 mb-2">Paso 1: Acotación Función Base $f(x)$</h3>
-                    <div id="ggb-base-act1" class="w-full rounded border border-slate-300" style="height: 400px;"></div>
-                </div>
-                <div>
-                    <h3 class="text-center font-bold text-indigo-700 mb-2">Paso 2: Gráfica Función Inversa $I(x)$</h3>
-                    <div id="ggb-inv-act1" class="w-full rounded border border-indigo-300" style="height: 400px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= ACTIVIDAD 2: ARCOCOSENO ================= -->
-        <div id="act2" class="tab-content bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200">
-            <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-lg text-center mb-6">
-                <h2 class="text-md text-emerald-800 font-bold mb-1 uppercase tracking-wide">Función Base a Invertir</h2>
-                <div class="text-3xl text-emerald-900 font-serif my-2">
-                    $$ f(x) = -3\cos\left(x + \frac{\pi}{2}\right) - 2 $$
-                </div>
-                <p class="text-sm text-slate-600">Encuentre la función $I(x) = A\arccos(Bx+C)+D$ asociada.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">I. Acotación de la Función Base</h3></div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Dominio Restringido de la Base:</label>
-                    <div class="flex items-center">
-                        <select id="a2-dom-base">
-                            <option value="">-- Selecciona el Dominio --</option>
-                            <option value="int1">[-π/2, π/2]</option>
-                            <option value="int2">[0, π]</option>
-                            <option value="int3">[-π, 0]</option>
-                        </select>
-                        <span class="status-icon" id="icon-a2-dom-base"></span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rango de la Función Base:</label>
-                    <div class="flex items-center">
-                        <select id="a2-ran-base">
-                            <option value="">-- Selecciona el Rango --</option>
-                            <option value="r1">[-5, 1]</option>
-                            <option value="r2">[-1, 5]</option>
-                            <option value="r3">[-3, -2]</option>
-                        </select>
-                        <span class="status-icon" id="icon-a2-ran-base"></span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">II. Parámetros Analíticos de la Inversa $I(x)$</h3></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro A ($1/b$):</label><div class="flex items-center"><math-field id="a2-A"></math-field><span class="status-icon" id="icon-a2-A"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro B ($1/a$):</label><div class="flex items-center"><math-field id="a2-B"></math-field><span class="status-icon" id="icon-a2-B"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro C ($-d/a$):</label><div class="flex items-center"><math-field id="a2-C"></math-field><span class="status-icon" id="icon-a2-C"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro D ($-c/b$):</label><div class="flex items-center"><math-field id="a2-D"></math-field><span class="status-icon" id="icon-a2-D"></span></div></div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">III. Dominio y Rango de la Inversa</h3></div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Dominio de la Inversa ($D_I$):</label>
-                    <div class="flex items-center">
-                        <select id="a2-dom-inv">
-                            <option value="">-- Selecciona el Dominio --</option>
-                            <option value="d1">[-π/2, π/2]</option>
-                            <option value="d2">[-5, 1]</option>
-                            <option value="R">ℝ</option>
-                        </select>
-                        <span class="status-icon" id="icon-a2-dom-inv"></span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rango de la Inversa ($R_I$):</label>
-                    <div class="flex items-center">
-                        <select id="a2-ran-inv">
-                            <option value="">-- Selecciona el Rango --</option>
-                            <option value="r1">[-5, 1]</option>
-                            <option value="r2">[-π/2, π/2]</option>
-                            <option value="R">ℝ</option>
-                        </select>
-                        <span class="status-icon" id="icon-a2-ran-inv"></span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-emerald-800 border-emerald-200">IV. 3 Puntos Clave de la Base $P(x,y)$</h3>
-                <p class="text-sm text-slate-500 mb-3">Construya los puntos partiendo de las fronteras calculadas con la desigualdad de acotación y ubicando el centro.</p></div>
-                
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_1$ (Frontera inicial):</label><div class="flex items-center"><math-field id="a2-p1"></math-field><span class="status-icon" id="icon-a2-p1"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_3$ (Centro):</label><div class="flex items-center"><math-field id="a2-p3"></math-field><span class="status-icon" id="icon-a2-p3"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_5$ (Frontera final):</label><div class="flex items-center"><math-field id="a2-p5"></math-field><span class="status-icon" id="icon-a2-p5"></span></div></div>
-
-                <div class="md:col-span-2 mt-4"><h3 class="section-title text-indigo-800 border-indigo-200">V. 3 Puntos Clave de la Inversa $Q(x,y)$</h3>
-                <p class="text-sm text-slate-500 mb-3">Refleje las coordenadas de los puntos base $P$ invirtiendo $X$ y $Y$.</p></div>
-                
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_1$ (Reflejo de $P_1$):</label><div class="flex items-center"><math-field id="a2-q1"></math-field><span class="status-icon" id="icon-a2-q1"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_3$ (Reflejo de $P_3$):</label><div class="flex items-center"><math-field id="a2-q3"></math-field><span class="status-icon" id="icon-a2-q3"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_5$ (Reflejo de $P_5$):</label><div class="flex items-center"><math-field id="a2-q5"></math-field><span class="status-icon" id="icon-a2-q5"></span></div></div>
-            </div>
-            
-            <button onclick="checkAct2()" class="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md">Verificar Análisis Procedimental Actividad 2</button>
-            
-            <div id="ggb-twins-act2" class="hidden mt-8 grid-cols-1 lg:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-inner">
-                <div>
-                    <h3 class="text-center font-bold text-slate-700 mb-2">Paso 1: Acotación Función Base $f(x)$</h3>
-                    <div id="ggb-base-act2" class="w-full rounded border border-slate-300" style="height: 400px;"></div>
-                </div>
-                <div>
-                    <h3 class="text-center font-bold text-indigo-700 mb-2">Paso 2: Gráfica Función Inversa $I(x)$</h3>
-                    <div id="ggb-inv-act2" class="w-full rounded border border-indigo-300" style="height: 400px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= ACTIVIDAD 3: ARCOTANGENTE ================= -->
-        <div id="act3" class="tab-content bg-white p-6 md:p-8 rounded-xl shadow-sm border border-slate-200">
-            <div class="bg-emerald-50 border border-emerald-200 p-5 rounded-lg text-center mb-6">
-                <h2 class="text-md text-emerald-800 font-bold mb-1 uppercase tracking-wide">Función Base a Invertir</h2>
-                <div class="text-3xl text-emerald-900 font-serif my-2">
-                    $$ f(x) = \tan\left(x - \frac{\pi}{4}\right) + 3 $$
-                </div>
-                <p class="text-sm text-slate-600">Encuentre la función $I(x) = A\arctan(Bx+C)+D$ asociada.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-                
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">I. Acotación de la Función Base</h3></div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Dominio Restringido de la Base (Abierto):</label>
-                    <div class="flex items-center">
-                        <select id="a3-dom-base">
-                            <option value="">-- Selecciona el Dominio --</option>
-                            <option value="int1">]−π/2, π/2[</option>
-                            <option value="int2">]−π/4, 3π/4[</option>
-                            <option value="R">ℝ</option>
-                        </select>
-                        <span class="status-icon" id="icon-a3-dom-base"></span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rango de la Función Base:</label>
-                    <div class="flex items-center">
-                        <select id="a3-ran-base">
-                            <option value="">-- Selecciona el Rango --</option>
-                            <option value="R">ℝ</option>
-                            <option value="r1">[-3, 3]</option>
-                            <option value="r2">]−π/4, 3π/4[</option>
-                        </select>
-                        <span class="status-icon" id="icon-a3-ran-base"></span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">II. Parámetros Analíticos de la Inversa $I(x)$</h3></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro A ($1/b$):</label><div class="flex items-center"><math-field id="a3-A"></math-field><span class="status-icon" id="icon-a3-A"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro B ($1/a$):</label><div class="flex items-center"><math-field id="a3-B"></math-field><span class="status-icon" id="icon-a3-B"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro C ($-d/a$):</label><div class="flex items-center"><math-field id="a3-C"></math-field><span class="status-icon" id="icon-a3-C"></span></div></div>
-                <div><label class="block font-bold text-slate-700 mb-1">Parámetro D ($-c/b$):</label><div class="flex items-center"><math-field id="a3-D"></math-field><span class="status-icon" id="icon-a3-D"></span></div></div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-indigo-800 border-indigo-200">III. Dominio y Rango de la Inversa</h3></div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Dominio de la Inversa ($D_I$):</label>
-                    <div class="flex items-center">
-                        <select id="a3-dom-inv">
-                            <option value="">-- Selecciona el Dominio --</option>
-                            <option value="d1">]−π/4, 3π/4[</option>
-                            <option value="R">ℝ</option>
-                            <option value="d2">[-3, 3]</option>
-                        </select>
-                        <span class="status-icon" id="icon-a3-dom-inv"></span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">Rango de la Inversa ($R_I$):</label>
-                    <div class="flex items-center">
-                        <select id="a3-ran-inv">
-                            <option value="">-- Selecciona el Rango --</option>
-                            <option value="r1">]−π/4, 3π/4[</option>
-                            <option value="R">ℝ</option>
-                            <option value="r2">]−π/2, π/2[</option>
-                        </select>
-                        <span class="status-icon" id="icon-a3-ran-inv"></span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-2"><h3 class="section-title text-emerald-800 border-emerald-200">IV. 3 Elementos Clave de la Base $P$ (Escriba "x=..." para asíntotas)</h3>
-                <p class="text-sm text-slate-500 mb-3">Construya los puntos y asíntotas de forma intuitiva. Las fronteras obtenidas en la acotación corresponden a las Asíntotas Verticales de este tramo.</p></div>
-                
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_1$ (Asíntota inicial):</label><div class="flex items-center"><math-field id="a3-p1"></math-field><span class="status-icon" id="icon-a3-p1"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_3$ (Centro):</label><div class="flex items-center"><math-field id="a3-p3"></math-field><span class="status-icon" id="icon-a3-p3"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$P_5$ (Asíntota final):</label><div class="flex items-center"><math-field id="a3-p5"></math-field><span class="status-icon" id="icon-a3-p5"></span></div></div>
-
-                <div class="md:col-span-2 mt-4"><h3 class="section-title text-indigo-800 border-indigo-200">V. 3 Elementos Clave de la Inversa $Q$ (Escriba "y=..." para asíntotas)</h3>
-                <p class="text-sm text-slate-500 mb-3">Refleje las coordenadas invirtiendo $X$ y $Y$. Las asíntotas verticales se vuelven horizontales.</p></div>
-                
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_1$ (Asíntota, reflejo de $P_1$):</label><div class="flex items-center"><math-field id="a3-q1"></math-field><span class="status-icon" id="icon-a3-q1"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_3$ (Reflejo de $P_3$):</label><div class="flex items-center"><math-field id="a3-q3"></math-field><span class="status-icon" id="icon-a3-q3"></span></div></div>
-                <div><label class="block text-sm font-semibold text-slate-600 mb-1">$Q_5$ (Asíntota, reflejo de $P_5$):</label><div class="flex items-center"><math-field id="a3-q5"></math-field><span class="status-icon" id="icon-a3-q5"></span></div></div>
-            </div>
-            
-            <button onclick="checkAct3()" class="mt-8 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 shadow-md">Verificar Análisis Procedimental Actividad 3</button>
-            
-            <div id="ggb-twins-act3" class="hidden mt-8 grid-cols-1 lg:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-inner">
-                <div>
-                    <h3 class="text-center font-bold text-slate-700 mb-2">Paso 1: Acotación Función Base $f(x)$</h3>
-                    <div id="ggb-base-act3" class="w-full rounded border border-slate-300" style="height: 400px;"></div>
-                </div>
-                <div>
-                    <h3 class="text-center font-bold text-indigo-700 mb-2">Paso 2: Gráfica Función Inversa $I(x)$</h3>
-                    <div id="ggb-inv-act3" class="w-full rounded border border-indigo-300" style="height: 400px;"></div>
-                </div>
-            </div>
+    <div class="max-w-[1400px] mx-auto px-4 w-full mt-6">
+        <div class="flex justify-center space-x-2 border-b border-gray-300">
+            <button id="btn-teoria" class="tab-btn px-6 py-3 rounded-t-lg font-bold bg-indigo-100 text-indigo-700 transition-colors border-b-2 border-indigo-700" onclick="openTab('teoria', this)">📚 Marco Teórico</button>
+            <button id="btn-explorador" class="tab-btn px-6 py-3 rounded-t-lg font-bold bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors border-b-2 border-transparent" onclick="openTab('explorador', this)">🎛️ Explorador Interactivo</button>
         </div>
     </div>
 
-    <script>
-        // Manejo de Pestañas
-        function openTab(tabId, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        }
+    <!-- PESTAÑA: TEORÍA -->
+    <main id="teoria" class="tab-content max-w-[1200px] mx-auto px-4 py-8">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-2xl font-bold text-indigo-800 mb-6 border-b pb-2">Fundamentos de las Funciones Trigonométricas Inversas</h2>
+            
+            <div class="mb-8">
+                <p class="mb-4 text-slate-700 text-[1.05rem] leading-relaxed">
+                    Las ondas trigonométricas son periódicas, lo que significa que su gráfica se repite infinitamente a lo largo del eje horizontal. Debido a esto, <strong>ninguna de ellas es biunívoca (uno a uno)</strong> y todas fallan la prueba de la recta horizontal. Para que puedan poseer una función matemática inversa, es estrictamente obligatorio <strong>restringir o acotar la función base</strong>.
+                </p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg shadow-sm">
+                    <p class="text-slate-800 text-[1.05rem] leading-relaxed">
+                        Esta acotación consiste en seleccionar un único "trozo" principal de la onda original que barra todos los valores posibles de su amplitud exactamente una vez. Al hacerlo, se cumple el principio fundamental del álgebra de las funciones inversas: <strong>El Dominio de la función base acotada se convierte en el Rango de la función inversa, y el Rango de la función base se convierte en el Dominio de la inversa</strong>. Geométricamente, esto representa una reflexión simétrica a través de la recta identidad $y = x$.
+                    </p>
+                </div>
+            </div>
+            
+            <select id="theoryFuncSelect" class="w-full md:w-1/2 p-3 border-2 border-indigo-200 rounded-lg bg-indigo-50 text-indigo-900 font-bold mb-6 focus:outline-none" onchange="updateTheorySection()">
+                <option value="arcsin">Análisis de la Función Arcoseno</option>
+                <option value="arccos">Análisis de la Función Arcocoseno</option>
+                <option value="arctan">Análisis de la Función Arcotangente</option>
+            </select>
 
-        // ==============================================================
-        // EVALUADOR MATEMÁTICO RIGUROSO CON MATH.JS
-        // ==============================================================
-        
-        // Función para limpiar LaTeX y prepararlo para Math.js
-        function evaluateLatex(latexStr) {
-            try {
-                let expr = (latexStr || "")
-                    .replace(/\\mleft/g, '').replace(/\\mright/g, '')
-                    .replace(/\\left/g, '').replace(/\\right/g, '')
-                    .replace(/\\displaystyle/g, '')
-                    .replace(/\s/g, '')
-                    .replace(/\\pi/g, 'pi')
-                    .replace(/\\cdot/g, '*').replace(/\\times/g, '*');
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-indigo-50 p-6 rounded-lg border border-indigo-100 shadow-sm flex flex-col">
+                    <h3 class="font-bold text-indigo-800 text-lg mb-4 border-b border-indigo-200 pb-2">Relación de Parámetros (Transformación)</h3>
+                    <p class="text-slate-700 text-[0.95rem] mb-3">Si partimos de una función base configurada como:</p>
+                    <div class="text-center font-bold text-indigo-900 mb-3 text-lg">$$f(x) = a \cdot \text{trig}(bx + c) + d$$</div>
+                    <p class="text-slate-700 text-[0.95rem] mb-3">Su función inversa equivalente se estructura reescribiendo los parámetros de manera cruzada:</p>
+                    <div class="text-center font-bold text-indigo-900 mb-4 text-lg">$$I(x) = A \cdot \text{trig}^{-1}(Bx + C) + D$$</div>
+                    <ul class="text-[0.95rem] list-disc pl-5 text-slate-800 space-y-2 font-mono bg-white p-3 rounded border border-indigo-100 mt-auto">
+                        <li>$A = 1 / b$</li>
+                        <li>$B = 1 / a$</li>
+                        <li>$C = -d / a$</li>
+                        <li>$D = -c / b$</li>
+                    </ul>
+                </div>
                 
-                // Extraer fracciones \frac{a}{b} -> (a)/(b) (Soporta múltiples)
-                let prev;
-                do {
-                    prev = expr;
-                    expr = expr.replace(/\\frac{([^{}]+)}{([^{}]+)}/g, "($1)/($2)");
-                } while(expr !== prev);
+                <div class="bg-emerald-50 p-6 rounded-lg border border-emerald-100 shadow-sm flex flex-col justify-center">
+                    <h3 class="font-bold text-emerald-800 text-lg mb-4 border-b border-emerald-200 pb-2">Acotación y Ejes Invertidos</h3>
+                    <div id="theoryAmpText" class="text-slate-700 text-[0.95rem] space-y-3">
+                        <!-- JS injects here -->
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-emerald-200">
+                        <p class="text-center text-xs font-bold text-emerald-700 uppercase tracking-wide mb-1">Restricción del Argumento Inverso</p>
+                        <div class="text-center text-xl font-bold text-emerald-900" id="theoryInequality">
+                            <!-- JS injects here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-                // Reemplazar uniones directas de números con pi (ej. 2pi -> 2*pi) para math.js
-                expr = expr.replace(/([0-9])pi/g, "$1*pi");
+    <!-- PESTAÑA: EXPLORADOR -->
+    <main id="explorador" class="tab-content hidden flex-grow max-w-[1400px] mx-auto px-4 py-8 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- PANEL IZQUIERDO: CONTROLES -->
+            <div class="lg:col-span-4 flex flex-col gap-5">
+                
+                <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
+                    <h2 class="text-lg font-bold text-indigo-800 mb-3 border-b pb-2">1. Configuración de la Función Base</h2>
+                    <select id="funcSelect" class="w-full p-3 border-2 border-indigo-200 rounded-lg bg-indigo-50 text-indigo-900 font-bold focus:outline-none focus:border-indigo-500 cursor-pointer text-md mb-4" onchange="changeFunction()">
+                        <option value="arcsin">Base: Seno ➔ Inversa: Arcoseno</option>
+                        <option value="arccos">Base: Coseno ➔ Inversa: Arcocoseno</option>
+                        <option value="arctan">Base: Tangente ➔ Inversa: Arcotangente</option>
+                    </select>
 
-                return math.evaluate(expr);
-            } catch (e) {
-                return null;
-            }
-        }
+                    <p class="text-xs text-slate-500 mb-4">Ingresa los parámetros de la <strong>función base</strong> ($a, b, c, d$). La inversa calculará sus parámetros correspondientes.</p>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Amplitud Base (a):</label>
+                            <math-field id="paramA" oninput="updateAll()">1</math-field>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Frecuencia Base (b):</label>
+                            <math-field id="paramB" oninput="updateAll()">1</math-field>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Desfase Base (c):</label>
+                            <math-field id="paramC" oninput="updateAll()">0</math-field>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Desplaz. Base (d):</label>
+                            <math-field id="paramD" oninput="updateAll()">0</math-field>
+                        </div>
+                    </div>
+                </div>
 
-        // Función para estilizar el campo según si es correcto o no
-        function setStatus(element, icon, isCorrect) {
-            if (isCorrect) {
-                element.style.borderColor = '#059669'; element.style.backgroundColor = '#ecfdf5'; icon.innerHTML = '✅';
+                <!-- Pizarra de Transformación Analítica -->
+                <div class="bg-slate-800 rounded-xl shadow-lg border border-slate-700 overflow-hidden flex flex-col">
+                    <div class="bg-slate-900 py-3 px-4 border-b border-slate-700">
+                        <h2 class="text-md font-bold text-emerald-400 text-center">Pizarra de Transformación</h2>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-center space-y-4">
+                        <div>
+                            <div class="text-xs text-slate-400 text-center font-bold mb-1">FUNCIÓN BASE RESTRINGIDA</div>
+                            <div id="baseFormula" class="text-lg text-emerald-300 text-center">$$f(x)$$</div>
+                        </div>
+                        <div class="border-t border-slate-600 pt-4">
+                            <div class="text-xs text-slate-400 text-center font-bold mb-2">CÁLCULO EXACTO PARÁMETROS INVERSOS</div>
+                            <div id="stepCalculoParametros" class="grid grid-cols-2 gap-2 text-[15px] text-slate-300 text-center mb-2"></div>
+                        </div>
+                        <div class="border-t border-slate-600 pt-4">
+                            <div class="text-xs text-slate-400 text-center font-bold mb-1">FUNCIÓN INVERSA RESULTANTE</div>
+                            <div id="currentFormula" class="text-xl text-indigo-300 text-center font-bold">$$I(x)$$</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PANEL DERECHO: GEO GEBRA Y ANÁLISIS -->
+            <div class="lg:col-span-8 flex flex-col gap-6">
+                
+                <!-- Lienzos GeoGebra Gemelos Apilados -->
+                <div class="flex flex-col gap-6">
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="text-center font-bold text-emerald-700 mb-1 text-md uppercase tracking-wide">Función Base Restringida</h3>
+                        <p class="text-center text-xs text-slate-500 mb-3">La gráfica modela $f(x)$ acotada para garantizar que sea biunívoca.</p>
+                        <div id="ggb-base" class="geogebra-container w-full" style="height: 420px;"></div>
+                    </div>
+                    
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="text-center font-bold text-indigo-700 mb-1 text-md uppercase tracking-wide">Función Inversa Transformada</h3>
+                        <p class="text-center text-xs text-slate-500 mb-3">Construcción automática de $I(x) = A f^{-1}(Bx+C) + D$.</p>
+                        <div id="ggb-inversa" class="geogebra-container w-full" style="height: 420px;"></div>
+                    </div>
+                </div>
+
+                <!-- Análisis Procedimental Inversa de 6 Pasos -->
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6 border-b-2 border-indigo-100 pb-2">📝 Análisis Procedimental Gemelo (6 Pasos)</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div class="step-box" style="border-color: #3b82f6;">
+                            <div class="step-title text-blue-700">Paso 1: Acotación de la Base</div>
+                            <div id="step1" class="text-sm text-slate-700 space-y-2"></div>
+                        </div>
+                        <div class="step-box" style="border-color: #8b5cf6;">
+                            <div class="step-title text-purple-700">Paso 2: Intercambio Analítico</div>
+                            <div id="step2" class="text-sm text-slate-700 space-y-2"></div>
+                        </div>
+                        <div class="step-box" style="border-color: #10b981;">
+                            <div class="step-title text-emerald-700">Paso 3: Dominio de Inversa (Eje X)</div>
+                            <div id="step3" class="text-sm text-slate-700 space-y-2"></div>
+                        </div>
+                        <div class="step-box" style="border-color: #f59e0b;">
+                            <div class="step-title text-amber-700">Paso 4: Rango Angular (Eje Y)</div>
+                            <div id="step4" class="text-sm text-slate-700 space-y-2"></div>
+                        </div>
+                        <div class="step-box md:col-span-2" style="border-color: #ef4444;">
+                            <div class="step-title text-red-700">Paso 5: Centro de Inflexión y Efecto Paramétrico</div>
+                            <div id="step5" class="text-sm text-slate-700 space-y-2"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- PASO 6: CÁLCULO DE PUNTOS -->
+                    <div class="bg-slate-50 border-l-4 border-indigo-600 p-5 rounded-r-xl mt-4 shadow-inner">
+                        <div class="step-title text-indigo-800 border-indigo-200">Paso 6: Cálculo Intuitivo de Puntos Clave ($P_1$–$P_5$ y $Q_1$–$Q_5$)</div>
+                        <div id="step6" class="text-slate-700 text-[0.95rem] mt-3 space-y-3 leading-relaxed"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function updateTheorySection() {
+            const func = document.getElementById('theoryFuncSelect').value;
+            const ampText = document.getElementById('theoryAmpText');
+            const ineqText = document.getElementById('theoryInequality');
+
+            if (func === 'arcsin') {
+                ampText.innerHTML = `
+                    <p><strong>1. Elegimos el tramo del seno:</strong> usamos la parte creciente entre $-\\frac{\\pi}{2}$ y $\\frac{\\pi}{2}$. Allí el seno recorre todos los valores de $-1$ a $1$ una sola vez.</p>
+                    <p class="text-center">$-\\frac{\\pi}{2}\\leq bx+c\\leq\\frac{\\pi}{2}$</p>
+                    <p><strong>2. Dominio restringido:</strong> las fronteras se encuentran usando $x=\\frac{\\theta-c}{b}$. Si $b>0$, el extremo con $-\\frac{\\pi}{2}$ queda a la izquierda; si $b<0$, se invierte el orden.</p>
+                    <p><strong>3. Rango de la base:</strong> el seno va de $-1$ a $1$. La amplitud da la distancia $|a|$ desde el centro $d$, así que $u=d-|a|$ y $v=d+|a|$.</p>
+                    <p><strong>4. Función inversa:</strong> el rango $[u,v]$ de la base pasa a ser el dominio de la inversa; el dominio restringido de la base pasa a ser su rango.</p>
+                `;
+                ineqText.innerHTML = "$$-1 \\leq Bx+C \\leq 1$$";
+            } else if (func === 'arccos') {
+                ampText.innerHTML = `
+                    <p><strong>1. Elegimos el tramo del coseno:</strong> usamos $[0,\\pi]$, donde el coseno disminuye de $1$ a $-1$ y cada valor aparece una sola vez.</p>
+                    <p class="text-center">$0\\leq bx+c\\leq\\pi$</p>
+                    <p><strong>2. Dominio restringido:</strong> calculamos las fronteras con $x=\\frac{\\theta-c}{b}$. Para $b>0$ van de $\\theta=0$ a $\\theta=\\pi$; si $b<0$, se invierte el orden horizontal.</p>
+                    <p><strong>3. Rango de la base:</strong> como el coseno también va de $-1$ a $1$, el rango transformado queda entre $u=d-|a|$ y $v=d+|a|$.</p>
+                    <p><strong>4. Función inversa:</strong> $[u,v]$ se convierte en el dominio de la inversa, y el dominio restringido de la base se convierte en su rango.</p>
+                `;
+                ineqText.innerHTML = "$$-1 \\leq Bx+C \\leq 1$$";
             } else {
-                element.style.borderColor = '#ef4444'; element.style.backgroundColor = '#fef2f2'; icon.innerHTML = '❌';
+                ampText.innerHTML = `
+                    <p><strong>1. Elegimos un tramo de la tangente:</strong> tomamos el intervalo entre dos asíntotas consecutivas. Los extremos no pertenecen al dominio.</p>
+                    <p class="text-center">$-\\frac{\\pi}{2}\\lt bx+c\\lt\\frac{\\pi}{2}$</p>
+                    <p><strong>2. Dominio restringido:</strong> calculamos las fronteras con $x=\\frac{\\theta-c}{b}$. Si $b<0$, el orden de las fronteras se invierte.</p>
+                    <p><strong>3. Rango de la base:</strong> dentro de este tramo, la tangente recorre todos los números reales, así que $R_f=\\mathbb{R}$ (si $a\\ne0$).</p>
+                    <p><strong>4. Función inversa:</strong> su dominio es $\\mathbb{R}$ y su rango es el intervalo abierto entre las dos asíntotas horizontales.</p>
+                `;
+                ineqText.innerHTML = "$$Bx+C\\in\\mathbb{R}$$";
             }
-            return isCorrect;
+            renderMath();
         }
 
-        // Verifica un número simple o expresión evaluable
-        function verifyValue(inputId, expectedVal) {
-            const mf = document.getElementById(inputId);
-            const icon = document.getElementById(`icon-${inputId}`);
-            let val = evaluateLatex(mf.getValue('latex'));
-            
-            let isCorrect = (val !== null) && (Math.abs(val - expectedVal) < 1e-5);
-            return setStatus(mf, icon, isCorrect);
-        }
+        let ggbAppletBase = null;
+        let ggbAppletInv = null;
+        let isGgbLoaded = false;
+        let loadedCount = 0;
 
-        // Verifica un punto ingresado en formato (X, Y)
-        function verifyPoint(inputId, expectedX, expectedY) {
-            const mf = document.getElementById(inputId);
-            const icon = document.getElementById(`icon-${inputId}`);
-            let rawLatex = mf.getValue('latex').replace(/\s/g, '');
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('bg-indigo-100', 'text-indigo-700', 'border-indigo-700');
+                b.classList.add('bg-gray-100', 'text-gray-500', 'border-transparent');
+            });
             
-            // Eliminar paréntesis envolventes
-            if (rawLatex.startsWith('\\left(')) rawLatex = rawLatex.substring(6);
-            else if (rawLatex.startsWith('(')) rawLatex = rawLatex.substring(1);
+            document.getElementById(tabId).classList.remove('hidden');
+            btn.classList.add('bg-indigo-100', 'text-indigo-700', 'border-indigo-700');
+            btn.classList.remove('bg-gray-100', 'text-gray-500', 'border-transparent');
             
-            if (rawLatex.endsWith('\\right)')) rawLatex = rawLatex.substring(0, rawLatex.length - 7);
-            else if (rawLatex.endsWith(')')) rawLatex = rawLatex.substring(0, rawLatex.length - 1);
-            
-            // Dividir por la coma central
-            let parts = rawLatex.split(',');
-            if (parts.length !== 2) return setStatus(mf, icon, false);
-            
-            let xVal = evaluateLatex(parts[0]);
-            let yVal = evaluateLatex(parts[1]);
-            
-            let isCorrect = false;
-            if (xVal !== null && yVal !== null) {
-                isCorrect = (Math.abs(xVal - expectedX) < 1e-5) && (Math.abs(yVal - expectedY) < 1e-5);
+            if (tabId === 'explorador' && !isGgbLoaded) {
+                initGeoGebra();
+                isGgbLoaded = true;
+            } else if (tabId === 'explorador') {
+                updateAll();
             }
-            return setStatus(mf, icon, isCorrect);
         }
 
-        // Verifica ecuaciones de asíntotas "x = val" o "y = val"
-        function verifyAsymptote(inputId, expectedVar, expectedVal) {
-            const mf = document.getElementById(inputId);
-            const icon = document.getElementById(`icon-${inputId}`);
-            let val = mf.getValue('latex').replace(/\\mleft/g, '').replace(/\\mright/g, '').replace(/\\left/g, '').replace(/\\right/g, '').replace(/\s/g, '');
-            
-            let parts = val.split('=');
-            let isCorrect = false;
-            if (parts.length === 2) {
-                let vName = parts[0];
-                let vVal = evaluateLatex(parts[1]);
-                if (vName === expectedVar && vVal !== null && Math.abs(vVal - expectedVal) < 1e-5) {
-                    isCorrect = true;
-                }
-            }
-            return setStatus(mf, icon, isCorrect);
-        }
-
-        // Verificador de comboboxes (Se mantiene igual, compara texto estricto)
-        function verifySelect(inputId, correctValue) {
-            const sel = document.getElementById(inputId);
-            const icon = document.getElementById(`icon-${inputId}`);
-            let isCorrect = (sel.value === correctValue);
-            return setStatus(sel, icon, isCorrect);
-        }
-
-        const ggbLoaded = { act1: false, act2: false, act3: false };
-
-        function drawTwinGraphs(actId, baseDef, invDef, config) {
-            const container = document.getElementById(`ggb-twins-${actId}`);
-            container.classList.remove('hidden');
-            container.classList.add('grid');
-
-            if (ggbLoaded[actId]) return;
-
-            // Applet Función Base Acotada
+        function initGeoGebra() {
             let paramsBase = {
-                "material_id": "fxrtq97y", 
-                "width": container.clientWidth / 2 - 20, 
-                "height": 400,
-                "showToolBar": true, "showAlgebraInput": false, "showMenuBar": false,
-                "useBrowserForJS": true, "language": "es", "enableLabelDrags": false,
-                "appletOnLoad": function(api) {
-                    api.setCoordSystem(config.xMinB, config.xMaxB, config.yMinB, config.yMaxB);
-                    
-                    // Función base restringida
-                    api.evalCommand(`f(x) = If(${config.pInit} <= x <= ${config.pEnd}, ${baseDef})`);
-                    api.evalCommand(`SetColor(f, "#10b981")`); 
-                    api.evalCommand(`SetLineThickness(f, 5)`);
-                    
-                    // Guías
-                    api.evalCommand(`L1: x = ${config.pInit}`);
-                    api.evalCommand(`L2: x = ${config.pEnd}`);
-                    api.evalCommand(`SetLineStyle(L1, 2)`); api.evalCommand(`SetLineStyle(L2, 2)`);
-                    api.evalCommand(`SetColor(L1, "Gray")`); api.evalCommand(`SetColor(L2, "Gray")`);
-
-                    // Eje equilibrio
-                    api.evalCommand(`eq: y = ${config.d}`);
-                    api.evalCommand(`SetColor(eq, "Red")`); api.evalCommand(`SetLineStyle(eq, 2)`);
-
-                    // Puntos
-                    config.basePoints.forEach((pt) => {
-                        api.evalCommand(`P_${pt.id} = (${pt.x}, ${pt.y})`);
-                        api.evalCommand(`SetColor(P_${pt.id}, "Black")`);
-                        api.evalCommand(`SetPointSize(P_${pt.id}, 5)`);
-                    });
-                }
+                "material_id": "psqq7jhs",
+                "width": 800, "height": 420,
+                "showToolBar": false, "showMenuBar": false, "showAlgebraInput": false,
+                "useBrowserForJS": true, "language": "es", "scaleContainerClass": "geogebra-container",
+                "appletOnLoad": function(api) { ggbAppletBase = api; checkAppletsLoaded(); }
             };
-
-            // Applet Función Inversa
+            
             let paramsInv = {
-                "material_id": "fxrtq97y", 
-                "width": container.clientWidth / 2 - 20, 
-                "height": 400,
-                "showToolBar": true, "showAlgebraInput": false, "showMenuBar": false,
-                "useBrowserForJS": true, "language": "es", "enableLabelDrags": false,
-                "appletOnLoad": function(api) {
-                    api.setCoordSystem(config.yMinB, config.yMaxB, config.xMinB, config.xMaxB); 
-                    
-                    // Inversa matemática
-                    api.evalCommand(`I(x) = ${invDef}`);
-                    api.evalCommand(`SetColor(I, "#4f46e5")`); 
-                    api.evalCommand(`SetLineThickness(I, 5)`);
-                    
-                    // Guías
-                    api.evalCommand(`L1: y = ${config.pInit}`);
-                    api.evalCommand(`L2: y = ${config.pEnd}`);
-                    let bColor = config.isTan ? '"Orange"' : '"Gray"';
-                    api.evalCommand(`SetLineStyle(L1, 2)`); api.evalCommand(`SetLineStyle(L2, 2)`);
-                    api.evalCommand(`SetColor(L1, ${bColor})`); api.evalCommand(`SetColor(L2, ${bColor})`);
-                    
-                    // Eje equilibrio invertido
-                    api.evalCommand(`eqInv: x = ${config.d}`);
-                    api.evalCommand(`SetColor(eqInv, "Red")`); api.evalCommand(`SetLineStyle(eqInv, 2)`);
-
-                    // Puntos reflejados Q
-                    config.basePoints.forEach((pt) => {
-                        api.evalCommand(`Q_${pt.id} = (${pt.y}, ${pt.x})`);
-                        api.evalCommand(`SetColor(Q_${pt.id}, "Black")`);
-                        api.evalCommand(`SetPointSize(Q_${pt.id}, 5)`);
-                    });
-                }
+                "material_id": "jdvnrn6r", 
+                "width": 800, "height": 420,
+                "showToolBar": false, "showMenuBar": false, "showAlgebraInput": false,
+                "useBrowserForJS": true, "language": "es", "scaleContainerClass": "geogebra-container",
+                "appletOnLoad": function(api) { ggbAppletInv = api; checkAppletsLoaded(); }
             };
 
             try {
                 let appBase = new GGBApplet(paramsBase, true);
-                appBase.inject(`ggb-base-${actId}`);
+                appBase.inject('ggb-base');
+                
                 let appInv = new GGBApplet(paramsInv, true);
-                appInv.inject(`ggb-inv-${actId}`);
-                ggbLoaded[actId] = true;
-            } catch (e) { console.error("Error GeoGebra", e); }
+                appInv.inject('ggb-inversa');
+            } catch (error) { console.error("Error cargando GeoGebra:", error); }
         }
 
-        function checkAct1() {
-            let res = [];
-            // Selectores
-            res.push(verifySelect('a1-dom-base', 'int2')); // [\pi/4, 3\pi/4]
-            res.push(verifySelect('a1-ran-base', 'r1'));  // [-1, 3]
-            res.push(verifySelect('a1-dom-inv', 'd1')); // [-1, 3]
-            res.push(verifySelect('a1-ran-inv', 'r2')); // [\pi/4, 3\pi/4]
-            
-            // Parámetros Inversa: A=0.5, B=0.5, C=-0.5, D=pi/2
-            res.push(verifyValue('a1-A', 0.5));
-            res.push(verifyValue('a1-B', 0.5));
-            res.push(verifyValue('a1-C', -0.5));
-            res.push(verifyValue('a1-D', Math.PI/2));
-
-            // Puntos Base f(x) = 2sin(2x - pi) + 1
-            res.push(verifyPoint('a1-p1', Math.PI/4, -1));
-            res.push(verifyPoint('a1-p3', Math.PI/2, 1));
-            res.push(verifyPoint('a1-p5', 3*Math.PI/4, 3));
-
-            // Puntos Inversa
-            res.push(verifyPoint('a1-q1', -1, Math.PI/4));
-            res.push(verifyPoint('a1-q3', 1, Math.PI/2));
-            res.push(verifyPoint('a1-q5', 3, 3*Math.PI/4));
-
-            if (res.every(r => r === true)) {
-                let config = {
-                    xMinB: 0, xMaxB: Math.PI, yMinB: -2, yMaxB: 4, 
-                    pInit: Math.PI/4, pEnd: 3*Math.PI/4, d: 1, isTan: false,
-                    basePoints: [
-                        {id: 1, x: Math.PI/4, y: -1},
-                        {id: 3, x: Math.PI/2, y: 1},
-                        {id: 5, x: 3*Math.PI/4, y: 3}
-                    ]
-                };
-                drawTwinGraphs('act1', "2*sin(2*x - pi) + 1", "0.5*asin(0.5*x - 0.5) + pi/2", config);
-            } else {
-                document.getElementById('ggb-twins-act1').classList.add('hidden');
-            }
+        function checkAppletsLoaded() {
+            loadedCount++;
+            if(loadedCount >= 2) changeFunction();
         }
 
-        function checkAct2() {
-            let res = [];
-            // Selectores
-            res.push(verifySelect('a2-dom-base', 'int1')); // [-\pi/2, \pi/2]
-            res.push(verifySelect('a2-ran-base', 'r1'));  // [-5, 1]
-            res.push(verifySelect('a2-dom-inv', 'd2')); // [-5, 1]
-            res.push(verifySelect('a2-ran-inv', 'r2')); // [-\pi/2, \pi/2]
-            
-            // Parámetros Inversa: A=1, B=-1/3, C=-2/3, D=-pi/2
-            res.push(verifyValue('a2-A', 1));
-            res.push(verifyValue('a2-B', -1/3));
-            res.push(verifyValue('a2-C', -2/3));
-            res.push(verifyValue('a2-D', -Math.PI/2));
-
-            // Puntos Base f(x) = -3cos(x + pi/2) - 2
-            res.push(verifyPoint('a2-p1', -Math.PI/2, -5));
-            res.push(verifyPoint('a2-p3', 0, -2));
-            res.push(verifyPoint('a2-p5', Math.PI/2, 1));
-
-            // Puntos Inversa
-            res.push(verifyPoint('a2-q1', -5, -Math.PI/2));
-            res.push(verifyPoint('a2-q3', -2, 0));
-            res.push(verifyPoint('a2-q5', 1, Math.PI/2));
-
-            if (res.every(r => r === true)) {
-                let config = {
-                    xMinB: -Math.PI, xMaxB: Math.PI, yMinB: -6, yMaxB: 2, 
-                    pInit: -Math.PI/2, pEnd: Math.PI/2, d: -2, isTan: false,
-                    basePoints: [
-                        {id: 1, x: -Math.PI/2, y: -5},
-                        {id: 3, x: 0, y: -2},
-                        {id: 5, x: Math.PI/2, y: 1}
-                    ]
-                };
-                drawTwinGraphs('act2', "-3*cos(x + pi/2) - 2", "1*acos(-1/3*x - 2/3) - pi/2", config);
-            } else {
-                document.getElementById('ggb-twins-act2').classList.add('hidden');
-            }
+        function changeFunction() {
+            if (!ggbAppletInv || !ggbAppletBase) return;
+            updateAll();
         }
 
-        function checkAct3() {
-            let res = [];
-            // Selectores
-            res.push(verifySelect('a3-dom-base', 'int2')); // ]-\pi/4, 3\pi/4[
-            res.push(verifySelect('a3-ran-base', 'R'));  // R
-            res.push(verifySelect('a3-dom-inv', 'R')); // R
-            res.push(verifySelect('a3-ran-inv', 'r1')); // ]-\pi/4, 3\pi/4[
-            
-            // Parámetros Inversa: A=1, B=1, C=-3, D=pi/4
-            res.push(verifyValue('a3-A', 1));
-            res.push(verifyValue('a3-B', 1));
-            res.push(verifyValue('a3-C', -3));
-            res.push(verifyValue('a3-D', Math.PI/4));
+        const getMathVal = (id, defaultVal) => {
+            try {
+                const mf = document.getElementById(id);
+                let expr = mf.getValue('ascii-math') || mf.value;
+                if (!expr) return defaultVal;
+                expr = expr.replace(/\\pi/g, 'pi').replace(/\\frac{([^}]*)}{([^}]*)}/g, '($1)/($2)').replace(/[{}]/g, '').replace(/\\/g, '');
+                expr = expr.replace(/π/g, 'pi'); 
+                let val = math.evaluate(expr);
+                return (typeof val === 'number' && !isNaN(val)) ? val : defaultVal;
+            } catch (e) { return defaultVal; }
+        };
 
-            // Puntos y Asíntotas Base f(x) = tan(x - pi/4) + 3
-            res.push(verifyAsymptote('a3-p1', 'x', -Math.PI/4));
-            res.push(verifyPoint('a3-p3', Math.PI/4, 3));
-            res.push(verifyAsymptote('a3-p5', 'x', 3*Math.PI/4));
+        // Busca fracciones sencillas con tolerancia estricta para no convertir
+        // irracionales como pi/2 en aproximaciones racionales enormes.
+        function approximateRational(value, maxDenominator = 1000) {
+            if (!Number.isFinite(value)) return null;
+            const sign = value < 0 ? -1 : 1;
+            const target = Math.abs(value);
+            if (target < 1e-12) return { n: 0, d: 1 };
 
-            // Puntos y Asíntotas Inversa
-            res.push(verifyAsymptote('a3-q1', 'y', -Math.PI/4));
-            res.push(verifyPoint('a3-q3', 3, Math.PI/4));
-            res.push(verifyAsymptote('a3-q5', 'y', 3*Math.PI/4));
-
-            if (res.every(r => r === true)) {
-                let config = {
-                    xMinB: -Math.PI, xMaxB: Math.PI, yMinB: -2, yMaxB: 8, 
-                    pInit: -Math.PI/4, pEnd: 3*Math.PI/4, d: 3, isTan: true,
-                    basePoints: [
-                        {id: 3, x: Math.PI/4, y: 3}
-                    ]
-                };
-                drawTwinGraphs('act3', "tan(x - pi/4) + 3", "1*atan(x - 3) + pi/4", config);
-            } else {
-                document.getElementById('ggb-twins-act3').classList.add('hidden');
-            }
-        }
-
-        // Función para barajar (randomizar) el orden de los selectores visualmente
-        function shuffleSelectOptions() {
-            document.querySelectorAll('select').forEach(select => {
-                const options = Array.from(select.options);
-                const firstOption = options.shift(); // Mantener "-- Selecciona --" arriba
-                for (let i = options.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [options[i], options[j]] = [options[j], options[i]];
+            let bestN = 0, bestD = 1, bestError = Infinity;
+            for (let d = 1; d <= maxDenominator; d++) {
+                const n = Math.round(target * d);
+                const error = Math.abs(target - n / d);
+                if (error < bestError) {
+                    bestN = n;
+                    bestD = d;
+                    bestError = error;
+                    if (error < 1e-12) break;
                 }
-                select.innerHTML = '';
-                select.appendChild(firstOption);
-                options.forEach(opt => select.appendChild(opt));
-            });
+            }
+
+            // La tolerancia evita confundir pi/2 con una fracción racional aproximada.
+            if (bestError > 1e-9 * Math.max(1, target)) return null;
+            const gcd = (a, b) => b ? gcd(b, a % b) : a;
+            const divisor = gcd(bestN, bestD) || 1;
+            return { n: sign * bestN / divisor, d: bestD / divisor };
         }
 
-        window.addEventListener("DOMContentLoaded", () => {
-            // Aplicar la aleatoriedad a los selectores al cargar
-            shuffleSelectOptions();
+        function formatRational(frac) {
+            if (!frac || frac.n === 0) return "0";
+            const sign = frac.n < 0 ? "-" : "";
+            const n = Math.abs(frac.n);
+            return sign + (frac.d === 1 ? String(n) : "\\frac{" + n + "}{" + frac.d + "}");
+        }
 
-            if (window.mathVirtualKeyboard) {
-                mathVirtualKeyboard.layouts = "default";
-                mathVirtualKeyboard.visible = false;
+        function formatPiMultiple(frac) {
+            if (!frac || frac.n === 0) return "0";
+            const sign = frac.n < 0 ? "-" : "";
+            const n = Math.abs(frac.n);
+            const numerator = n === 1 ? "\\pi" : n + "\\pi";
+            return sign + (frac.d === 1 ? numerator : "\\frac{" + numerator + "}{" + frac.d + "}");
+        }
+
+        function formatRationalOverPi(frac) {
+            if (!frac || frac.n === 0) return "0";
+            const sign = frac.n < 0 ? "-" : "";
+            const n = Math.abs(frac.n);
+            const denominator = frac.d === 1 ? "\\pi" : frac.d + "\\pi";
+            return sign + "\\frac{" + n + "}{" + denominator + "}";
+        }
+
+        // Presenta números racionales, múltiplos racionales de pi y racionales/pi
+        // en forma exacta. Si el valor no pertenece a esas formas sencillas,
+        // muestra una aproximación decimal explícita, no una fracción engañosa.
+        function toExactSmart(val) {
+            if (!Number.isFinite(val)) return val < 0 ? "-\\infty" : "\\infty";
+            if (Math.abs(val) < 1e-10) return "0";
+
+            let frac = approximateRational(val);
+            if (frac) return formatRational(frac);
+
+            frac = approximateRational(val / Math.PI);
+            if (frac) return formatPiMultiple(frac);
+
+            frac = approximateRational(val * Math.PI);
+            if (frac) return formatRationalOverPi(frac);
+
+            const rounded = Number(val.toPrecision(7)).toString();
+            return "\\approx " + rounded;
+        }
+
+        // Se conservan estos nombres para no alterar el resto del programa.
+        function toExactFraction(val) { return toExactSmart(val); }
+        function toExactPiFraction(val) { return toExactSmart(val); }
+
+        function formatOperator(val, isPi = false) {
+            if (Math.abs(val) < 1e-10) return "";
+            const exactStr = toExactSmart(Math.abs(val));
+            return val > 0 ? "+ " + exactStr : "- " + exactStr;
+        }
+
+        function updateAll() {
+            const func = document.getElementById('funcSelect').value;
+            
+            // Valores ingresados base
+            let a = getMathVal('paramA', 1); if (a === 0) a = 0.0001;
+            let b = getMathVal('paramB', 1); if (b === 0) b = 0.0001;
+            let c = getMathVal('paramC', 0);
+            let d = getMathVal('paramD', 0);
+
+            // Valores Inversos Analíticos cruzados
+            let invA = 1 / b;
+            let invB = 1 / a;
+            let invC = -d / a;
+            let invD = -c / b;
+
+            // Formateo Exacto Base
+            let baseName = func === 'arcsin' ? '\\sin' : (func === 'arccos' ? '\\cos' : '\\tan');
+            let exactA = toExactFraction(a);
+            let exactB = toExactFraction(b);
+            let opC_base = formatOperator(c, true); 
+            let opD_base = formatOperator(d, false); 
+            
+            // Omite coeficientes 1 y convierte -1 en un signo, para que no aparezcan "1 sin" ni "1x".
+            const baseTerm = exactA === "1" ? baseName : (exactA === "-1" ? "-" + baseName : exactA + baseName);
+            const baseArg = exactB === "1" ? "x" : (exactB === "-1" ? "-x" : exactB + "x");
+            const baseInner = baseArg + (opC_base ? " " + opC_base : "");
+            document.getElementById('baseFormula').innerHTML = `$$ f(x) = ${baseTerm}(${baseInner})${opD_base ? " " + opD_base : ""} $$`;
+
+            // Formateo Exacto Inversos
+            document.getElementById('stepCalculoParametros').innerHTML = `
+                <div>$A = \\frac{1}{b} = ${toExactFraction(invA)}$</div>
+                <div>$B = \\frac{1}{a} = ${toExactFraction(invB)}$</div>
+                <div>$C = \\frac{-d}{a} = ${toExactFraction(invC)}$</div>
+                <div>$D = \\frac{-c}{b} = ${toExactPiFraction(invD)}$</div>
+            `;
+
+            let invName = func === 'arcsin' ? '\\arcsin' : (func === 'arccos' ? '\\arccos' : '\\arctan');
+            let exactInvA = toExactFraction(invA);
+            let exactInvB = toExactFraction(invB);
+            let opC_inv = formatOperator(invC, false); 
+            let opD_inv = formatOperator(invD, true);  
+            
+            const invTerm = exactInvA === "1" ? invName : (exactInvA === "-1" ? "-" + invName : exactInvA + invName);
+            const invArg = exactInvB === "1" ? "x" : (exactInvB === "-1" ? "-x" : exactInvB + "x");
+            const invInner = invArg + (opC_inv ? " " + opC_inv : "");
+            document.getElementById('currentFormula').innerHTML = `$$ I(x) = ${invTerm}(${invInner})${opD_inv ? " " + opD_inv : ""} $$`;
+
+            // Procedimiento Base (Cálculo de límites)
+            let exactAbsA = toExactFraction(Math.abs(a));
+            let exactD = toExactFraction(d);
+            let u = d - Math.abs(a);
+            let v = d + Math.abs(a);
+            let exactU = toExactFraction(u);
+            let exactV = toExactFraction(v);
+            let rangeBaseStr = func === 'arctan' ? '(-\\infty, \\infty)' : `[${exactU}, ${exactV}]`;
+
+            // Límites del dominio acotado base
+            let bound1 = func === 'arcsin' ? -Math.PI/2 : (func === 'arccos' ? 0 : -Math.PI/2);
+            let bound2 = func === 'arcsin' ? Math.PI/2 : (func === 'arccos' ? Math.PI : Math.PI/2);
+            let baseDom1 = (bound1 - c) / b;
+            let baseDom2 = (bound2 - c) / b;
+            if (b < 0) { let temp = baseDom1; baseDom1 = baseDom2; baseDom2 = temp; }
+            let exactBaseDom1 = toExactPiFraction(baseDom1);
+            let exactBaseDom2 = toExactPiFraction(baseDom2);
+            let domBaseStr = func === 'arctan' ? `(${exactBaseDom1}, ${exactBaseDom2})` : `[${exactBaseDom1}, ${exactBaseDom2}]`;
+
+            // Límites angulares y tipo de desigualdad según la función seleccionada.
+            const thetaLowLatex = func === 'arccos' ? '0' : '-\\frac{\\pi}{2}';
+            const thetaHighLatex = func === 'arccos' ? '\\pi' : '\\frac{\\pi}{2}';
+            const angularOp = func === 'arctan' ? '\\lt' : '\\leq';
+
+            // Desigualdades simbólicas del dominio restringido, separando el signo de b.
+            const restrictionBPositive = `\\frac{(${thetaLowLatex})-c}{b} ${angularOp} x ${angularOp} \\frac{(${thetaHighLatex})-c}{b}`;
+            const restrictionBNegative = `\\frac{(${thetaHighLatex})-c}{b} ${angularOp} x ${angularOp} \\frac{(${thetaLowLatex})-c}{b}`;
+            const restrictionCurrent = b > 0 ? restrictionBPositive : restrictionBNegative;
+            const rangeCalculationHTML = func === 'arctan'
+                ? `<p>$\\tan\\theta\\in\\mathbb{R}$; como $a\\ne0$, $R_f=\\mathbb{R}$.</p>`
+                : `<p>$-1\\leq ${func === 'arcsin' ? '\\sin\\theta' : '\\cos\\theta'}\\leq1$; por tanto, $R_f=[d-|a|,d+|a|]$.</p>
+                   <p>$d-|a|=${toExactSmart(d)}-${toExactSmart(Math.abs(a))}=${toExactSmart(d-Math.abs(a))}$</p>
+                   <p>$d+|a|=${toExactSmart(d)}+${toExactSmart(Math.abs(a))}=${toExactSmart(d+Math.abs(a))}$</p>`;
+
+            // Puntos Clave Inversa (X proviene del rango original, Y proviene del dominio original)
+            let args_base = func === 'arctan' ? [-Infinity, -1, 0, 1, Infinity] : [-1, -0.5, 0, 0.5, 1];
+            let points = args_base.map(arg => {
+                let x, yAngle;
+                let isAsymp = !isFinite(arg);
+                if (isAsymp) {
+                    x = (arg === -Infinity) ? -Infinity : Infinity;
+                    if (invB < 0) x = -x;
+                    yAngle = (arg === -Infinity) ? -Math.PI/2 : Math.PI/2;
+                } else {
+                    x = (arg - invC) / invB;
+                    if (func === 'arcsin') yAngle = Math.asin(arg);
+                    else if (func === 'arccos') yAngle = Math.acos(arg);
+                    else yAngle = Math.atan(arg);
+                }
+                let y = invA * yAngle + invD;
+                return { x: x, y: y, isAsymp: isAsymp, arg: arg };
+            });
+
+            points.sort((p1, p2) => {
+                if (p1.x === -Infinity) return -1;
+                if (p2.x === -Infinity) return 1;
+                if (p1.x === Infinity) return 1;
+                if (p2.x === Infinity) return -1;
+                return p1.x - p2.x;
+            });
+
+            // ---------------------------------------------------------
+            // REDISEÑO EXPANSO Y EXPLICATIVO DE LOS 6 PASOS PROCEDIMENTALES
+            // ---------------------------------------------------------
+
+            // ---------------------------------------------------------
+            // DESARROLLO PROCEDIMENTAL: CÁLCULO INTUITIVO EN SEIS PASOS
+            // Se mantiene intacta la lógica de dibujo de los dos applets.
+            // ---------------------------------------------------------
+
+            const baseTrigLatex = func === 'arcsin' ? '\\sin' : (func === 'arccos' ? '\\cos' : '\\tan');
+            const inverseTrigLatex = func === 'arcsin' ? '\\arcsin' : (func === 'arccos' ? '\\arccos' : '\\arctan');
+            const thetaIntervalLatex = func === 'arccos'
+                ? '\\left[0,\\pi\\right]'
+                : (func === 'arctan' ? '\\left(-\\frac{\\pi}{2},\\frac{\\pi}{2}\\right)' : '\\left[-\\frac{\\pi}{2},\\frac{\\pi}{2}\\right]');
+
+            const xStartRestr = Math.min((bound1 - c) / b, (bound2 - c) / b);
+            const xEndRestr = Math.max((bound1 - c) / b, (bound2 - c) / b);
+            const xStartRestrTex = toExactSmart(xStartRestr);
+            const xEndRestrTex = toExactSmart(xEndRestr);
+            const uValue = d - Math.abs(a);
+            const vValue = d + Math.abs(a);
+            const uTex = toExactSmart(uValue);
+            const vTex = toExactSmart(vValue);
+            const startTheta = b > 0 ? bound1 : bound2;
+            const endTheta = b > 0 ? bound2 : bound1;
+            const startThetaTex = toExactSmart(startTheta);
+            const endThetaTex = toExactSmart(endTheta);
+            const startRangeValue = func === 'arcsin' ? Math.sin(startTheta) : (func === 'arccos' ? Math.cos(startTheta) : null);
+            const endRangeValue = func === 'arcsin' ? Math.sin(endTheta) : (func === 'arccos' ? Math.cos(endTheta) : null);
+            const tidyReference = value => {
+                if (Math.abs(value) < 1e-9) return 0;
+                if (Math.abs(value - 1) < 1e-9) return 1;
+                if (Math.abs(value + 1) < 1e-9) return -1;
+                if (Math.abs(value - 0.5) < 1e-9) return 0.5;
+                if (Math.abs(value + 0.5) < 1e-9) return -0.5;
+                return value;
+            };
+            const increasingBase = func === 'arccos' ? (a * b < 0) : (a * b > 0);
+            const baseRangeStart = func === 'arctan' ? null : a * startRangeValue + d;
+            const baseRangeEnd = func === 'arctan' ? null : a * endRangeValue + d;
+
+            // PASO 1: escoger el tramo, localizar sus fronteras y obtener el rango.
+            document.getElementById('step1').innerHTML = `
+                <p class="mb-2 text-slate-700">Partimos de $f(x)=a${baseTrigLatex}(bx+c)+d$. Para que tenga inversa, escogemos una sola rama: $${thetaIntervalLatex}$. Llamamos $\\theta=bx+c$ al ángulo de la función.</p>
+                <div class="bg-blue-50 p-3 rounded-lg text-center text-slate-800 shadow-inner">
+                    <p>La rama elegida exige $${thetaLowLatex} ${angularOp} bx+c ${angularOp} ${thetaHighLatex}$.</p>
+                    <p class="mt-2">Para ubicar sus fronteras, sustituimos los dos ángulos límite en $x=\\frac{\\theta-c}{b}$:</p>
+                    <p>$x_{\\text{inicio}}=\\min\\left(\\frac{${thetaLowLatex}-(${toExactSmart(c)})}{${toExactSmart(b)}},\\frac{${thetaHighLatex}-(${toExactSmart(c)})}{${toExactSmart(b)}}\\right)=${xStartRestrTex}$</p>
+                    <p>$x_{\\text{final}}=\\max\\left(\\frac{${thetaLowLatex}-(${toExactSmart(c)})}{${toExactSmart(b)}},\\frac{${thetaHighLatex}-(${toExactSmart(c)})}{${toExactSmart(b)}}\\right)=${xEndRestrTex}$</p>
+                </div>
+                <p class="mt-3 text-slate-700">Así, el dominio restringido es $D_f=${domBaseStr}$. Si $b<0$, las fronteras se intercambian al ordenar los valores de $x$; en la tangente son abiertas porque son asíntotas.</p>
+                <p class="mt-3 mb-1 text-slate-700"><b>Ahora encontramos el rango:</b></p>
+                ${func === 'arctan' ? `
+                    <p>En la rama elegida, la tangente toma todos los valores reales. Como $a\\ne0$, el desplazamiento y la escala no eliminan ese recorrido.</p>
+                    <div class="bg-indigo-50 p-2 text-center rounded-lg font-semibold text-indigo-900">$R_f=\\mathbb{R}$</div>
+                ` : `
+                    <p>El seno o coseno recorre desde $-1$ hasta $1$. La amplitud marca la distancia $|a|$ desde el centro $d$.</p>
+                    <div class="bg-white border border-blue-100 p-3 rounded-lg text-center">
+                        <p>$u=d-|a|=${toExactSmart(d)}-${toExactSmart(Math.abs(a))}=${uTex}$</p>
+                        <p>$v=d+|a|=${toExactSmart(d)}+${toExactSmart(Math.abs(a))}=${vTex}$</p>
+                    </div>
+                    <div class="bg-indigo-50 p-2 text-center rounded-lg font-semibold text-indigo-900 mt-2">$R_f=[u,v]=[${uTex},${vTex}]$</div>
+                `}
+            `;
+
+            // PASO 2: idea de inversión y parámetros de la función inversa.
+            document.getElementById('step2').innerHTML = `
+                <p class="mb-2 text-slate-700">La gráfica de la inversa es el reflejo de la rama restringida respecto de $y=x$. Por eso intercambiamos las funciones de entrada y salida y usamos la trigonométrica inversa correspondiente.</p>
+                <div class="bg-purple-50 p-3 rounded-lg text-purple-900 text-center space-y-2">
+                    <p>$I(x)=\\frac{1}{b}${inverseTrigLatex}\\left(\\frac{x-d}{a}\\right)-\\frac{c}{b}$</p>
+                    <p class="text-sm">La expresión muestra los cambios de escala y desplazamiento necesarios para deshacer los de la función base.</p>
+                </div>
+                <p class="mt-3 mb-2 text-slate-700">En la forma $I(x)=A\\,\\operatorname{trig}^{-1}(Bx+C)+D$, los parámetros quedan:</p>
+                <div class="grid grid-cols-2 gap-2 bg-white p-3 rounded-lg border border-purple-100 text-center">
+                    <div>$A=\\frac1b=${toExactSmart(invA)}$</div>
+                    <div>$B=\\frac1a=${toExactSmart(invB)}$</div>
+                    <div>$C=-\\frac da=${toExactSmart(invC)}$</div>
+                    <div>$D=-\\frac cb=${toExactSmart(invD)}$</div>
+                </div>
+                <p class="mt-2 text-[0.85rem] text-slate-600">Se supone $a\\ne0$ y $b\\ne0$; de lo contrario, la función no tendría la transformación inversa planteada.</p>
+            `;
+
+            // PASO 3: dominio de la inversa = rango de la base.
+            document.getElementById('step3').innerHTML = func === 'arctan' ? `
+                <p class="mb-2 text-slate-700">El dominio de una inversa es el rango de la función original. La rama de la tangente recorre todos los valores reales y el cambio de escala conserva ese recorrido.</p>
+                <div class="bg-emerald-50 p-3 rounded-lg text-center text-slate-800">
+                    <p>$R_f=\\mathbb{R}$</p>
+                    <p class="mt-2 font-bold">$D_I=R_f=\\mathbb{R}$</p>
+                </div>
+            ` : `
+                <p class="mb-2 text-slate-700">El dominio de la inversa es el rango que encontramos en el Paso 1. Basta tomar el intervalo desde el valor mínimo $u$ hasta el máximo $v$.</p>
+                <div class="bg-emerald-50 p-3 rounded-lg text-center text-slate-800">
+                    <p>$u=d-|a|=${uTex}$</p>
+                    <p>$v=d+|a|=${vTex}$</p>
+                    <p class="mt-2 font-bold">$D_I=R_f=[${uTex},${vTex}]$</p>
+                </div>
+                <p class="mt-2 text-[0.85rem] text-slate-700">Por eso la inversa de seno o coseno solo recibe entradas entre esos dos extremos.</p>
+            `;
+
+            // PASO 4: rango de la inversa = dominio restringido de la base.
+            document.getElementById('step4').innerHTML = `
+                <p class="mb-2 text-slate-700">Al invertir, el dominio restringido de la base se convierte en el rango de la inversa. No hace falta volver a resolver toda la desigualdad: usamos las dos fronteras que ya calculamos en el Paso 1.</p>
+                <div class="bg-amber-50 p-3 rounded-lg text-center text-slate-800 shadow-inner">
+                    <p>$x_{\\text{inicio}}=${xStartRestrTex},\\qquad x_{\\text{final}}=${xEndRestrTex}$</p>
+                    <p class="mt-2">Así, el intervalo de salida angular queda:</p>
+                    <p class="font-bold">$R_I=D_f=${domBaseStr}$</p>
+                </div>
+                <p class="mt-2 text-[0.85rem] text-slate-700">En arcoseno y arcocoseno los extremos se incluyen. En arcotangente son abiertos: las asíntotas verticales de la base se convierten en asíntotas horizontales de la inversa.</p>
+            `;
+
+            // PASO 5: el punto central se localiza con el valor medio del intervalo.
+            const thetaCenter = func === 'arccos' ? Math.PI / 2 : 0;
+            const thetaCenterLatex = func === 'arccos' ? '\\frac{\\pi}{2}' : '0';
+            const xCenterBase = (xStartRestr + xEndRestr) / 2;
+            const xCenterExact = toExactSmart(xCenterBase);
+            const yCenterExact = toExactSmart(d);
+            const inverseDirection = func === 'arccos'
+                ? ((a * b > 0) ? 'decreciente' : 'creciente')
+                : ((a * b > 0) ? 'creciente' : 'decreciente');
+            document.getElementById('step5').innerHTML = `
+                <p class="mb-2 text-slate-700">El punto central $P_3$ está a la mitad de las dos fronteras horizontales. Por eso promediamos sus coordenadas $x$; su altura es el eje medio $y=d$, pues en el centro el valor trigonométrico es $0$.</p>
+                <div class="flex flex-wrap justify-center items-center gap-3 mt-3 mb-3">
+                    <div class="text-center font-bold text-sm bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                        <p>$x_{P_3}=\\frac{x_{\\text{inicio}}+x_{\\text{final}}}{2}$</p>
+                        <p>$=\\frac{(${xStartRestrTex})+(${xEndRestrTex})}{2}=${xCenterExact}$</p>
+                        <p class="mt-1">$y_{P_3}=d=${yCenterExact}$</p>
+                        <p class="mt-1">$P_3=(${xCenterExact},${yCenterExact})$</p>
+                    </div>
+                    <div class="bg-red-50 p-3 rounded-lg text-center font-bold text-red-900 shadow-inner">
+                        $Q_3=(y_{P_3},x_{P_3})=(${yCenterExact},${xCenterExact})$
+                    </div>
+                </div>
+                <div class="text-[0.85rem] text-slate-700 bg-red-50/50 p-3 rounded-lg border-l-4 border-red-400">
+                    <b>Orientación de la rama:</b> para estos parámetros, la curva base es $${inverseDirection}$. El signo de $a$ puede reflejarla verticalmente y el signo de $b$ puede invertir el sentido horizontal.
+                </div>
+            `;
+
+            // PASO 6: puntos elegidos por fronteras, centro y referencias conocidas.
+            // Esta lista solo organiza el desarrollo mostrado; no modifica los applets.
+            const thetaSamplesForProcedure = func === 'arcsin'
+                ? [-Math.PI / 2, -Math.PI / 6, 0, Math.PI / 6, Math.PI / 2]
+                : (func === 'arccos'
+                    ? [0, Math.PI / 3, Math.PI / 2, 2 * Math.PI / 3, Math.PI]
+                    : [-Math.PI / 2, -Math.PI / 4, 0, Math.PI / 4, Math.PI / 2]);
+
+            const procedurePoints = thetaSamplesForProcedure.map((theta, originalIndex) => {
+                const xP = (theta - c) / b;
+                const isAsymptote = func === 'arctan' && (originalIndex === 0 || originalIndex === 4);
+                const rawRef = func === 'arcsin' ? Math.sin(theta) : (func === 'arccos' ? Math.cos(theta) : Math.tan(theta));
+                const ref = tidyReference(rawRef);
+                const yP = isAsymptote ? null : a * ref + d;
+                return { theta, xP, yP, ref, isAsymptote };
+            }).sort((left, right) => left.xP - right.xP);
+
+            const fmtTheta = theta => {
+                if (Math.abs(theta - Math.PI / 2) < 1e-9) return '\\frac{\\pi}{2}';
+                if (Math.abs(theta + Math.PI / 2) < 1e-9) return '-\\frac{\\pi}{2}';
+                if (Math.abs(theta - Math.PI / 3) < 1e-9) return '\\frac{\\pi}{3}';
+                if (Math.abs(theta - 2 * Math.PI / 3) < 1e-9) return '\\frac{2\\pi}{3}';
+                if (Math.abs(theta - Math.PI) < 1e-9) return '\\pi';
+                if (Math.abs(theta - Math.PI / 6) < 1e-9) return '\\frac{\\pi}{6}';
+                if (Math.abs(theta + Math.PI / 6) < 1e-9) return '-\\frac{\\pi}{6}';
+                if (Math.abs(theta - Math.PI / 4) < 1e-9) return '\\frac{\\pi}{4}';
+                if (Math.abs(theta + Math.PI / 4) < 1e-9) return '-\\frac{\\pi}{4}';
+                return '0';
+            };
+            const pointCalcItems = procedurePoints.map((pt, i) => {
+                const index = i + 1;
+                const thetaTex = fmtTheta(pt.theta);
+                const xPTex = toExactSmart(pt.xP);
+                if (pt.isAsymptote) {
+                    const lineName = index === 1 ? 'frontera inicial' : 'frontera final';
+                    return `<li class="mb-2"><b>$P_${index}$ y $Q_${index}$ — ${lineName}:</b> desde la restricción del Paso 1, $x=${xPTex}$. La tangente no toma un valor finito allí: en la base es la asíntota vertical $x=${xPTex}$ y en la inversa es la asíntota horizontal $y=${xPTex}$.</li>`;
+                }
+                const yPTex = toExactSmart(pt.yP);
+                const refTex = toExactSmart(pt.ref);
+                if (index === 1 || index === 5) {
+                    const isStart = index === 1;
+                    const boundaryLabel = isStart ? 'frontera inicial' : 'frontera final';
+                    const rangeLabel = Math.abs(pt.yP - uValue) < 1e-8 ? 'extremo inferior del rango' : (Math.abs(pt.yP - vValue) < 1e-8 ? 'extremo superior del rango' : 'valor correspondiente del rango');
+                    return `<li class="mb-2"><b>$P_${index}$ — ${boundaryLabel}:</b> usamos la frontera $x_{${isStart ? 'inicio' : 'final'}}=${xPTex}$. En ese extremo, $\\theta=${thetaTex}$ y el valor de la función trigonométrica es $${refTex}$; por eso $y_{P_${index}}=a(${refTex})+d=(${toExactSmart(a)})(${refTex})+(${toExactSmart(d)})=${yPTex}$, que corresponde al ${rangeLabel}. Así, $P_${index}=(${xPTex},${yPTex})$ y $Q_${index}=(${yPTex},${xPTex})$.</li>`;
+                }
+                if (index === 3) {
+                    return `<li class="mb-2"><b>$P_3$ — punto medio:</b> no necesitamos despejar otra vez el argumento. Tomamos el valor medio entre las dos fronteras, $x_{P_3}=\\frac{x_{\\text{inicio}}+x_{\\text{final}}}{2}=\\frac{(${xStartRestrTex})+(${xEndRestrTex})}{2}=${xCenterExact}$. Como el argumento está en el centro de la rama, la parte trigonométrica vale $0$ y $y_{P_3}=d=${yCenterExact}$. Por tanto, $P_3=(${xCenterExact},${yCenterExact})$ y $Q_3=(${yCenterExact},${xCenterExact})$.</li>`;
+                }
+                return `<li class="mb-2"><b>$P_${index}$ — punto intermedio:</b> usamos un valor trigonométrico conocido ($${baseTrigLatex}(${thetaTex})=${refTex}$). La abscisa se obtiene ubicando ese ángulo, $x_{P_${index}}=\\frac{${thetaTex}-(${toExactSmart(c)})}{${toExactSmart(b)}}=${xPTex}$; la altura resulta $y_{P_${index}}=a(${refTex})+d=(${toExactSmart(a)})(${refTex})+(${toExactSmart(d)})=${yPTex}$. Así, $P_${index}=(${xPTex},${yPTex})$ y al intercambiar coordenadas, $Q_${index}=(${yPTex},${xPTex})$.</li>`;
+            }).join('');
+
+            const pointIntro = func === 'arcsin'
+                ? 'Para el seno, los extremos provienen de $-\\frac{\\pi}{2}$ y $\\frac{\\pi}{2}$; el centro corresponde a $0$. Los puntos intermedios aprovechan que $\\sin(-\\frac{\\pi}{6})=-\\frac12$ y $\\sin(\\frac{\\pi}{6})=\\frac12$.'
+                : (func === 'arccos'
+                    ? 'Para el coseno, las fronteras son $0$ y $\\pi$; el centro corresponde a $\\frac{\\pi}{2}$. Los puntos intermedios aprovechan $\\cos(\\frac{\\pi}{3})=\\frac12$ y $\\cos(\\frac{2\\pi}{3})=-\\frac12$.'
+                    : 'Para la tangente, las fronteras son asíntotas en $\\pm\\frac{\\pi}{2}$; el centro corresponde a $0$. Los dos puntos intermedios usan $\\tan(-\\frac{\\pi}{4})=-1$ y $\\tan(\\frac{\\pi}{4})=1$.');
+
+            const explHTML = `
+                <p class="mb-3 text-[0.95rem] text-slate-700">${pointIntro} Primero ubicamos las dos fronteras y el punto central; después colocamos los dos puntos intermedios con valores trigonométricos conocidos. Así se construye la forma de la rama sin convertir el procedimiento en una larga cadena de despejes.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-white p-4 border border-indigo-100 rounded-xl shadow-sm">
+                    <div>
+                        <h4 class="font-bold text-indigo-800 mb-2">Cómo se construyen los puntos $P$</h4>
+                        <p class="text-[0.9rem] text-slate-700">$P_1$ está en la frontera inicial y $P_5$ en la final. Para seno y coseno sus alturas son los extremos del rango, $u$ y $v$; cuál aparece primero depende de si la rama es creciente o decreciente.</p>
+                        <p class="mt-2 text-[0.9rem] text-slate-700">$P_3$ queda a mitad del intervalo horizontal y tiene altura $d$. $P_2$ y $P_4$ se obtienen con los valores conocidos de la función trigonométrica.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-indigo-800 mb-2">Cómo se construyen los puntos $Q$</h4>
+                        <p class="text-[0.9rem] text-slate-700 mb-2">La inversa refleja cada punto respecto de $y=x$: basta intercambiar sus coordenadas.</p>
+                        <div class="bg-indigo-50 p-3 rounded-lg text-center font-semibold text-indigo-900">$P_i=(x_i,y_i)\\Longrightarrow Q_i=(y_i,x_i)$</div>
+                        <p class="text-[0.9rem] text-slate-700 mt-2">Así, no hace falta volver a calcular las alturas de $Q$: se toman directamente de las abscisas de $P$, y viceversa.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-4 border border-indigo-100 rounded-xl shadow-sm mb-4">
+                    <h4 class="font-bold text-indigo-800 mb-2">Cálculo intuitivo de cada punto</h4>
+                    <ol class="list-decimal pl-5 text-[0.88rem] text-slate-700 space-y-1">${pointCalcItems}</ol>
+                </div>
+            `;
+
+            let cardsPHTML = `
+                <h4 class="font-bold text-emerald-800 text-center mt-4">Puntos de la función base: $P_1$ a $P_5$</h4>
+                <div class="flex flex-wrap gap-3 justify-center mt-3">`;
+            procedurePoints.forEach((pt, i) => {
+                const index = i + 1;
+                if (pt.isAsymptote) {
+                    cardsPHTML += `
+                        <div class="bg-red-50 border-2 border-red-300 p-2 rounded-lg text-center flex-1 min-w-[120px] shadow-sm">
+                            <div class="font-bold text-red-700 text-sm mb-1">P${index} (Asíntota vertical)</div>
+                            <div class="text-[0.95rem]">$$ x = ${toExactSmart(pt.xP)} $$</div>
+                        </div>`;
+                } else {
+                    cardsPHTML += `
+                        <div class="bg-white border-2 border-emerald-200 p-2 rounded-lg text-center flex-1 min-w-[120px] shadow-sm">
+                            <div class="font-bold text-emerald-700 text-sm mb-1">P${index}</div>
+                            <div class="text-[0.95rem]">$$ (${toExactSmart(pt.xP)}, ${toExactSmart(pt.yP)}) $$</div>
+                        </div>`;
+                }
+            });
+            cardsPHTML += `</div>`;
+
+            let cardsQHTML = `
+                <h4 class="font-bold text-indigo-800 text-center mt-6">Puntos de la función inversa: $Q_1$ a $Q_5$</h4>
+                <div class="flex flex-wrap gap-3 justify-center mt-3">`;
+            procedurePoints.forEach((pt, i) => {
+                const index = i + 1;
+                if (pt.isAsymptote) {
+                    cardsQHTML += `
+                        <div class="bg-amber-50 border-2 border-amber-300 p-2 rounded-lg text-center flex-1 min-w-[120px] shadow-sm">
+                            <div class="font-bold text-amber-800 text-sm mb-1">Q${index} (Asíntota horizontal)</div>
+                            <div class="text-[0.95rem]">$$ y = ${toExactSmart(pt.xP)} $$</div>
+                        </div>`;
+                } else {
+                    cardsQHTML += `
+                        <div class="bg-white border-2 border-indigo-200 p-2 rounded-lg text-center flex-1 min-w-[120px] shadow-sm">
+                            <div class="font-bold text-indigo-700 text-sm mb-1">Q${index}</div>
+                            <div class="text-[0.95rem]">$$ (${toExactSmart(pt.yP)}, ${toExactSmart(pt.xP)}) $$</div>
+                            <div class="text-xs text-slate-500 mt-1">Coordenadas intercambiadas de P${index}</div>
+                        </div>`;
+                }
+            });
+            cardsQHTML += `</div>`;
+            document.getElementById('step6').innerHTML = explHTML + cardsPHTML + cardsQHTML;
+
+            // GEO GEBRA APPLET BASE (Inyectar a,b,c,d y trazar P1-P5)
+            // ==========================================
+            if (ggbAppletBase && ggbAppletBase.setValue) {
+                try {
+                    ggbAppletBase.setValue('a', a);
+                    ggbAppletBase.setValue('b', b);
+                    ggbAppletBase.setValue('c', c);
+                    ggbAppletBase.setValue('d', d);
+                    
+                    ggbAppletBase.setVisible('h', func === 'arcsin');
+                    ggbAppletBase.setVisible('p', func === 'arccos');
+                    ggbAppletBase.setVisible('q', func === 'arctan');
+
+                    for(let i=1; i<=5; i++) { try { ggbAppletBase.deleteObject("P" + i); } catch(e){} }
+                    ['FrontInicio', 'FrontFin', 'Centro', 'AsintotaSup', 'AsintotaInf'].forEach(l => { try{ggbAppletBase.deleteObject(l);}catch(e){} });
+
+                    points.forEach((pt, i) => {
+                        let pName = "P" + (i+1);
+                        if (!pt.isAsymp) {
+                            // Para la Base, el Eje X es ángulo (pt.y) y Eje Y es el valor real (pt.x)
+                            ggbAppletBase.evalCommand(`${pName} = (${pt.y}, ${pt.x})`);
+                            ggbAppletBase.evalCommand(`SetColor(${pName}, "Red")`);
+                            ggbAppletBase.evalCommand(`SetPointSize(${pName}, 5)`);
+                        }
+                    });
+
+
+                    if (func === 'arctan') {
+                        ggbAppletBase.evalCommand(`AsintotaInf: x = ${points[0].y}`);
+                        ggbAppletBase.evalCommand(`AsintotaSup: x = ${points[4].y}`);
+                        ggbAppletBase.evalCommand('SetLineStyle(AsintotaInf, 2)');
+                        ggbAppletBase.evalCommand('SetLineStyle(AsintotaSup, 2)');
+                        ggbAppletBase.evalCommand('SetColor(AsintotaInf, "Red")');
+                        ggbAppletBase.evalCommand('SetColor(AsintotaSup, "Red")');
+                    } else {
+                        ggbAppletBase.evalCommand(`FrontInicio: x = ${points[0].y}`);
+                        ggbAppletBase.evalCommand(`FrontFin: x = ${points[4].y}`);
+                        ggbAppletBase.evalCommand('SetLineStyle(FrontInicio, 2)');
+                        ggbAppletBase.evalCommand('SetLineStyle(FrontFin, 2)');
+                        ggbAppletBase.evalCommand('SetColor(FrontInicio, "Gray")');
+                        ggbAppletBase.evalCommand('SetColor(FrontFin, "Gray")');
+                    }
+                    ggbAppletBase.evalCommand(`Centro: y = ${d}`);
+                    ggbAppletBase.evalCommand('SetLineStyle(Centro, 2)');
+                    ggbAppletBase.evalCommand('SetColor(Centro, "Green")');
+                } catch(e) {}
             }
-        });
+
+	       // 3. Creación y renderizado de la función f(x)
+       		try { ggbAppletBase.deleteObject("f"); } catch(e){}
+	        let cmdBase = "";
+	        if (func === 'arcsin') cmdBase = "f(x) = a * sin(b * x + c) + d";
+	        else if (func === 'arccos') cmdBase = "f(x) = a * cos(b * x + c) + d";
+	        else if (func === 'arctan') cmdBase = "f(x) = a * tan(b * x + c) + d";
+        
+	        ggbAppletBase.evalCommand(cmdBase);
+	        ggbAppletBase.setColor("f", 160, 160, 160);
+        ggbAppletBase.setLineThickness("f", 5);
+
+            // ==========================================
+            // ZOOM AUTOMÁTICO: APPLET BASE
+            // Mostrar la restricción y parte de la onda
+            // situada fuera de ella.
+            // ==========================================
+            {
+                const thetaMinZoom =
+                    func === 'arccos' ? 0 : -Math.PI / 2;
+
+                const thetaMaxZoom =
+                    func === 'arccos' ? Math.PI : Math.PI / 2;
+
+                const x1Zoom = (thetaMinZoom - c) / b;
+                const x2Zoom = (thetaMaxZoom - c) / b;
+                const xMinRestriccion = Math.min(x1Zoom, x2Zoom);
+                const xMaxRestriccion = Math.max(x1Zoom, x2Zoom);
+                const anchoRestriccion = xMaxRestriccion - xMinRestriccion;
+                const margenXBase = 0.25 * anchoRestriccion;
+
+                let semialturaBase;
+                if (func === 'arctan') {
+                    semialturaBase = 3 * Math.max(Math.abs(a), 0.25);
+                } else {
+                    semialturaBase = Math.max(Math.abs(a), 0.05);
+                }
+
+                const yMinBaseZoom = d - semialturaBase;
+                const yMaxBaseZoom = d + semialturaBase;
+                const margenYBase = Math.max(
+                    0.12 * (yMaxBaseZoom - yMinBaseZoom),
+                    0.02
+                );
+
+                if (ggbAppletBase && typeof ggbAppletBase.setCoordSystem === 'function') {
+                    ggbAppletBase.setCoordSystem(
+                        xMinRestriccion - margenXBase,
+                        xMaxRestriccion + margenXBase,
+                        yMinBaseZoom - margenYBase,
+                        yMaxBaseZoom + margenYBase
+                    );
+                }
+            }
+
+// ==========================================
+            // GEO GEBRA APPLET INVERSO (Inyectar Q1-Q5)
+            // ==========================================
+            if (ggbAppletInv && ggbAppletInv.setValue) {
+                try {
+                    ggbAppletInv.setValue('a', a);
+                    ggbAppletInv.setValue('b', b);
+                    ggbAppletInv.setValue('c', c);
+                    ggbAppletInv.setValue('d', d);
+                    
+                    try { ggbAppletInv.deleteObject("I"); } catch(e){}
+                    let cmdInv = "";
+                    if (func === 'arcsin') cmdInv = "I(x) = A * asin(B * x + C) + D";
+                    else if (func === 'arccos') cmdInv = "I(x) = A * acos(B * x + C) + D";
+                    else if (func === 'arctan') cmdInv = "I(x) = A * atan(B * x + C) + D";
+                    
+                    ggbAppletInv.evalCommand(cmdInv);
+                    ggbAppletInv.setColor("I", 79, 70, 229);
+                    ggbAppletInv.setLineThickness("I", 5);
+
+                    ['FrontInicio', 'FrontFin', 'Centro', 'AsintotaSup', 'AsintotaInf'].forEach(l => { try{ggbAppletInv.deleteObject(l);}catch(e){} });
+
+                    points.forEach((pt, i) => {
+                        let qName = "Q" + (i+1);
+                        if (!pt.isAsymp) {
+                            // En la inversa, las coordenadas son (pt.x, pt.y): valor real en X y ángulo en Y.
+                            ggbAppletInv.evalCommand(`${qName} = (${pt.x}, ${pt.y})`);
+                            ggbAppletInv.evalCommand(`SetColor(${qName}, "#4f46e5")`);
+                            ggbAppletInv.evalCommand(`SetPointSize(${qName}, 5)`);
+                            const qCaption = ["Q₁", "Q₂", "Q₃", "Q₄", "Q₅"][i];
+                            ggbAppletInv.evalCommand(`SetCaption(${qName}, "${qCaption}")`);
+                            ggbAppletInv.evalCommand(`SetLabelMode(${qName}, 3)`);
+                        }
+                    });
+
+                    if (func === 'arctan') {
+                        ggbAppletInv.evalCommand(`AsintotaInf: y = ${points[0].y}`);
+                        ggbAppletInv.evalCommand(`AsintotaSup: y = ${points[4].y}`);
+                        ggbAppletInv.evalCommand('SetLineStyle(AsintotaInf, 2)');
+                        ggbAppletInv.evalCommand('SetLineStyle(AsintotaSup, 2)');
+                        ggbAppletInv.evalCommand('SetColor(AsintotaInf, "Orange")');
+                        ggbAppletInv.evalCommand('SetColor(AsintotaSup, "Orange")');
+                    } else {
+                        ggbAppletInv.evalCommand(`FrontInicio: x = ${points[0].x}`);
+                        ggbAppletInv.evalCommand(`FrontFin: x = ${points[4].x}`);
+                        ggbAppletInv.evalCommand('SetLineStyle(FrontInicio, 2)');
+                        ggbAppletInv.evalCommand('SetLineStyle(FrontFin, 2)');
+                        ggbAppletInv.evalCommand('SetColor(FrontInicio, "Gray")');
+                        ggbAppletInv.evalCommand('SetColor(FrontFin, "Gray")');
+                    }
+                    ggbAppletInv.evalCommand(`Centro: y = ${points[2].y}`);
+                    ggbAppletInv.evalCommand('SetLineStyle(Centro, 2)');
+                    ggbAppletInv.evalCommand('SetColor(Centro, "Green")');
+
+                    // ==========================================
+                    // ZOOM AUTOMÁTICO: APPLET INVERSO
+                    // Mostrar la acotación con un margen visual pequeño.
+                    // ==========================================
+                    {
+                        const thetaMinInv =
+                            func === 'arccos' ? 0 : -Math.PI / 2;
+                        const thetaMaxInv =
+                            func === 'arccos' ? Math.PI : Math.PI / 2;
+                        const amplitudInv = Math.abs(a);
+
+                        let xMinInv;
+                        let xMaxInv;
+                        if (func === 'arctan') {
+                            const semianchoInv = Math.max(4 * amplitudInv, 0.5);
+                            xMinInv = d - semianchoInv;
+                            xMaxInv = d + semianchoInv;
+                        } else {
+                            xMinInv = d - amplitudInv;
+                            xMaxInv = d + amplitudInv;
+                        }
+
+                        const y1Inv = (thetaMinInv - c) / b;
+                        const y2Inv = (thetaMaxInv - c) / b;
+                        const yMinInv = Math.min(y1Inv, y2Inv);
+                        const yMaxInv = Math.max(y1Inv, y2Inv);
+                        const margenXInv = 0.06 * (xMaxInv - xMinInv);
+                        const margenYInv = 0.06 * (yMaxInv - yMinInv);
+
+                        if (ggbAppletInv && typeof ggbAppletInv.setCoordSystem === 'function') {
+                            ggbAppletInv.setCoordSystem(
+                                xMinInv - margenXInv,
+                                xMaxInv + margenXInv,
+                                yMinInv - margenYInv,
+                                yMaxInv + margenYInv
+                            );
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error al actualizar el applet inverso:", e);
+                }
+            }
+
+            renderMath();
+        }
+
+        // Renderizador robusco que no depende de timer si no de DOM y limpia fallos de escape
+        function renderMath() {
+            if(window.renderMathInElement) {
+                window.renderMathInElement(document.body, {
+                    delimiters: [
+                        {left: "$$", right: "$$", display: true},
+                        {left: "$", right: "$", display: false},
+                        {left: "\\(", right: "\\)", display: false},
+                        {left: "\\[", right: "\\]", display: true}
+                    ],
+                    ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "math-field"],
+                    ignoredClasses: ["katex", "tex2jax_ignore", "tex2jax_ignore_span"],
+                    throwOnError: false
+                });
+            } else {
+                setTimeout(renderMath, 100);
+            }
+        }
+
+        window.onload = () => {
+            updateTheorySection();
+            setTimeout(updateAll, 300);
+        };
     </script>
 </body>
 </html>
