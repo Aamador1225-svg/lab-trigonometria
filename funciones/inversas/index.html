@@ -438,7 +438,7 @@
             
             // Omite coeficientes 1 y convierte -1 en un signo, para que no aparezcan "1 sin" ni "1x".
             const baseTerm = exactA === "1" ? baseName : (exactA === "-1" ? "-" + baseName : exactA + baseName);
-            const baseArg = exactB === "1" ? "x" : (exactB === "-1" ? "-x" : exactB + "x");
+            const baseArg = exactB === "1" ? "x" : (exactB === "-1" ? "-x" : exactB + "\\cdot x");
             const baseInner = baseArg + (opC_base ? " " + opC_base : "");
             document.getElementById('baseFormula').innerHTML = `$$ f(x) = ${baseTerm}(${baseInner})${opD_base ? " " + opD_base : ""} $$`;
 
@@ -457,7 +457,7 @@
             let opD_inv = formatOperator(invD, true);  
             
             const invTerm = exactInvA === "1" ? invName : (exactInvA === "-1" ? "-" + invName : exactInvA + invName);
-            const invArg = exactInvB === "1" ? "x" : (exactInvB === "-1" ? "-x" : exactInvB + "x");
+            const invArg = exactInvB === "1" ? "x" : (exactInvB === "-1" ? "-x" : exactInvB + "\\cdot x");
             const invInner = invArg + (opC_inv ? " " + opC_inv : "");
             document.getElementById('currentFormula').innerHTML = `$$ I(x) = ${invTerm}(${invInner})${opD_inv ? " " + opD_inv : ""} $$`;
 
