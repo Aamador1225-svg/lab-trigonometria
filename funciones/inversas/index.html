@@ -401,7 +401,7 @@
             if (frac) return formatRationalOverPi(frac);
 
             const rounded = Number(val.toPrecision(7)).toString();
-            return "\\approx " + rounded;
+            return rounded;
         }
 
         // Se conservan estos nombres para no alterar el resto del programa.
